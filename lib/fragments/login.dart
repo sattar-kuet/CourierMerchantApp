@@ -17,15 +17,18 @@ class _LoginPageState extends State<LoginPage> {
           title: Text("Login"),
         ),
         drawer: MenuDrawer(),
-        body: Column(children: [
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
           Padding(padding: const EdgeInsets.all(20.0),
           child: TextField(
              decoration: const InputDecoration(
                 border: UnderlineInputBorder(),
-                labelText: 'Enter Mobile Number2',
+                labelText: 'Enter Mobile Number',
               ),
           ),
-          )
+          ),
+         
         ]),
         // body: Center(
         //   child: Padding(
