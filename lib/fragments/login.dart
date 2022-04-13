@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import '../common/menu_drawer.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   static const String routeName = '/loginPage';
 
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final mobileTxtField = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -11,6 +17,27 @@ class LoginPage extends StatelessWidget {
           title: Text("Login"),
         ),
         drawer: MenuDrawer(),
-        body: Center(child: Text("This is login page")));
+        body: Column(children: [
+          Padding(padding: const EdgeInsets.all(20.0),
+          child: TextField(
+             decoration: const InputDecoration(
+                border: UnderlineInputBorder(),
+                labelText: 'Enter Mobile Number2',
+              ),
+          ),
+          )
+        ]),
+        // body: Center(
+        //   child: Padding(
+        //   padding: const EdgeInsets.all(20.0),
+        //   child: TextFormField(
+        //       decoration: const InputDecoration(
+        //         border: UnderlineInputBorder(),
+        //         labelText: 'Enter Mobile Number',
+        //       ),
+        //     ),
+        // ),
+        
+       );
   }
 }
