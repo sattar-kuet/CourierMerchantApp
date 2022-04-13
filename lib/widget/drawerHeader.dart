@@ -2,29 +2,42 @@ import 'package:flutter/material.dart';
 
 Widget drawerHeader() {
   return DrawerHeader(
-      margin: EdgeInsets.zero,
-      padding: EdgeInsets.zero,
-      decoration: BoxDecoration(
-        color: Colors.amber,
-      ),
-      child: Stack(children: <Widget>[
-        Container(
-          alignment: Alignment.center,
-          width: 100,
-          height: 100,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/logo.png'),
-            ),
+    decoration: BoxDecoration(
+      color: Colors.pink,
+    ),
+    child: Stack(
+      children: <Widget>[
+        Align(
+          alignment: Alignment.centerLeft,
+          child: CircleAvatar(
+            backgroundImage: NetworkImage(
+                'http://www.bbk.ac.uk/mce/wp-content/uploads/2015/03/8327142885_9b447935ff.jpg'),
+            radius: 50.0,
           ),
         ),
-        Positioned(
-            bottom: 12.0,
-            left: 16.0,
-            child: Text("Welcome to Flutter",
-                style: TextStyle(
-                    color: Color.fromARGB(255, 10, 10, 10),
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.w500))),
-      ]));
+        Align(
+          alignment: Alignment.centerRight,
+          child: Text(
+            'Alec Reynolds',
+            style: TextStyle(color: Colors.white, fontSize: 20.0),
+          ),
+        ),
+   
+        Align(
+          alignment: Alignment.centerRight + Alignment(0, .8),
+          child: Container(
+            child: Padding(
+              padding: EdgeInsets.all(1.0),
+              child: IconButton(
+                icon: Icon(Icons.edit),
+                color: Colors.white,
+               onPressed: (){},)
+             
+            ),
+          
+          ),
+        ),
+      ],
+    ),
+  );
 }
