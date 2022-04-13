@@ -5,11 +5,19 @@ Widget drawerHeader() {
       margin: EdgeInsets.zero,
       padding: EdgeInsets.zero,
       decoration: BoxDecoration(
-          image: DecorationImage(
-        fit: BoxFit.fill,
-        image: AssetImage('assets/logo.png'),
-      )),
+        color: Colors.amber,
+      ),
       child: Stack(children: <Widget>[
+        Container(
+          alignment: Alignment.center,
+          width: 100,
+          height: 100,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/logo.png'),
+            ),
+          ),
+        ),
         Positioned(
             bottom: 12.0,
             left: 16.0,
