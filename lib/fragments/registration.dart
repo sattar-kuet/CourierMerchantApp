@@ -10,7 +10,7 @@ class RegistrationPage extends StatelessWidget {
         appBar: AppBar(
           title: Text("Registration"),
         ),
-        drawer: MenuDrawer(),
+        
         body: Center(child: Text("This is Registration page")));
   }
 }
