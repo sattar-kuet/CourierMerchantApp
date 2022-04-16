@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/fragments/login_by_otp.dart';
 import 'package:flutter_app/fragments/registration.dart';
- import './common/bottom_navigation.dart';
- import './common/floating_button.dart';
-import './fragments/login.dart';
+import 'fragments/intro_screen.dart';
 import './routes/pageRoute.dart';
 
 void main() => runApp(CourierApp());
@@ -12,9 +11,10 @@ class CourierApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(title: 'startapp', home: LoginPage(), routes: {
-      PageRoutes.login: (context) => LoginPage(),
+    return MaterialApp(title: 'startapp', home: IntroPage(), routes: {
+      PageRoutes.login: (context) => IntroPage(),
       PageRoutes.registration: (context) => RegistrationPage(),
+      PageRoutes.loginByOtp: (context) => LoginbyotpPage(),
       
     }
    

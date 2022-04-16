@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import '../common/menu_drawer.dart';
 import '../routes/pageRoute.dart';
 import '../utility/validatation.dart';
+import '../data/http_helper.dart';
 
-class LoginPage extends StatefulWidget {
-  static const String routeName = '/loginPage';
+class IntroPage extends StatefulWidget {
+  static const String routeName = '/IntroPage';
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<IntroPage> createState() => _IntroPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _IntroPageState extends State<IntroPage> {
   final _formKey = GlobalKey<FormState>();
   
   final mobileTxtField = TextEditingController();
@@ -47,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
           ElevatedButton(
             onPressed: () {
               if (_formKey.currentState!.validate()) {
-                   loginORregister();
+                   loginORregister(context);
               }
             },    
             child: Text('Next'),
@@ -57,9 +57,19 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  void loginORregister(){
-    print(mobileTxtField);
-    Navigator.pushReplacementNamed(context, PageRoutes.registration);
+  void loginORregister(BuildContext context){
+    HttpHelper httpHelper = HttpHelper();
+    dynamic res = httpHelper.isUserExist(mobileTxtField.text);
+    print(res);
+    if(httpHelper.isUserExist(mobileTxtField.text) == false){
+        Navigator.pushReplacementNamed(context, PageRoutes.registration);
+    }else{
+        String otp = httpHelper.sendOtp(mobileTxtField.text).toString();
+        print(otp);
+        Navigator.pushReplacementNamed(context, PageRoutes.loginByOtp);
+    }
+   // print(mobileTxtField);
+    
   }
   
 }
