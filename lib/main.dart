@@ -15,9 +15,8 @@ class CourierApp extends StatelessWidget {
       PageRoutes.login: (context) => IntroPage(),
       PageRoutes.registration: (context) => RegistrationPage(),
       PageRoutes.loginByOtp: (context) => LoginbyotpPage(),
-      
     }
-   
+
         // home: Scaffold(
         //   appBar: AppBar(title: Text('custom navigation')),
         //   backgroundColor: Colors.blueAccent,
