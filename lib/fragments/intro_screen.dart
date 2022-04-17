@@ -58,6 +58,7 @@ class _IntroPageState extends State<IntroPage> {
     );
   }
 
+<<<<<<< HEAD
   void loginORregister(BuildContext context) async {
     HttpHelper httpHelper = HttpHelper();
     dynamic res = httpHelper.isUserExist(mobileTxtField.text);
@@ -73,6 +74,30 @@ class _IntroPageState extends State<IntroPage> {
       print(otp);
       Navigator.pushReplacementNamed(context, PageRoutes.loginByOtp);
     }
+=======
+  void loginORregister(BuildContext context) {
+    HttpHelper httpHelper = HttpHelper();
+    dynamic res = httpHelper.isUserExist(mobileTxtField.text);
+    print(res);
+
+    httpHelper.isUserExist(mobileTxtField.text).then((value) {
+      if (value.user_exist == false) {
+        Navigator.pushReplacementNamed(context, PageRoutes.registration);
+      } else {
+        String otp = httpHelper.sendOtp(mobileTxtField.text).toString();
+        print(otp);
+        Navigator.pushReplacementNamed(context, PageRoutes.loginByOtp);
+      }
+    });
+
+    // if (httpHelper.isUserExist(mobileTxtField.text) == false) {
+    //   Navigator.pushReplacementNamed(context, PageRoutes.registration);
+    // } else {
+    //   String otp = httpHelper.sendOtp(mobileTxtField.text).toString();
+    //   print(otp);
+    //   Navigator.pushReplacementNamed(context, PageRoutes.loginByOtp);
+    // }
+>>>>>>> 9cce93da58b5ec0c828223deb7b833cf179a16aa
     // print(mobileTxtField);
   }
 }

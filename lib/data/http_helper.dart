@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter_app/model/user.dart';
 import 'package:http/http.dart' as http;
 import '../constants.dart' as Constants;
 import 'dart:convert';
@@ -20,7 +23,7 @@ class HttpHelper {
     http.Response respose = await http.get(uri);
     Map<String, dynamic> data = json.decode(respose.body);
     //print();
-    String sentOtp = data[1]['otp'].toString();
+    String sentOtp = data['otp'].toString();
     return sentOtp;
   }
 }
