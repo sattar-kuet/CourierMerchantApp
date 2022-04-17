@@ -12,7 +12,7 @@ class IntroPage extends StatefulWidget {
 
 class _IntroPageState extends State<IntroPage> {
   final _formKey = GlobalKey<FormState>();
-  
+
   final mobileTxtField = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -40,16 +40,16 @@ class _IntroPageState extends State<IntroPage> {
                 labelText: 'আপনার মোবাইল নাম্বারটি দিন',
               ),
               validator: (value) {
-               return Validation.validdateMobile(value);
+                return Validation.validdateMobile(value);
               },
             ),
           ),
           ElevatedButton(
             onPressed: () {
               if (_formKey.currentState!.validate()) {
-                   loginORregister(context);
+                loginORregister(context);
               }
-            },    
+            },
             child: Text('Next'),
           )
         ]),
@@ -57,19 +57,28 @@ class _IntroPageState extends State<IntroPage> {
     );
   }
 
-  void loginORregister(BuildContext context){
+  void loginORregister(BuildContext context) {
     HttpHelper httpHelper = HttpHelper();
     dynamic res = httpHelper.isUserExist(mobileTxtField.text);
     print(res);
-    if(httpHelper.isUserExist(mobileTxtField.text) == false){
+
+    httpHelper.isUserExist(mobileTxtField.text).then((value) {
+      if (value.user_exist == false) {
         Navigator.pushReplacementNamed(context, PageRoutes.registration);
-    }else{
+      } else {
         String otp = httpHelper.sendOtp(mobileTxtField.text).toString();
         print(otp);
         Navigator.pushReplacementNamed(context, PageRoutes.loginByOtp);
-    }
-   // print(mobileTxtField);
-    
+      }
+    });
+
+    // if (httpHelper.isUserExist(mobileTxtField.text) == false) {
+    //   Navigator.pushReplacementNamed(context, PageRoutes.registration);
+    // } else {
+    //   String otp = httpHelper.sendOtp(mobileTxtField.text).toString();
+    //   print(otp);
+    //   Navigator.pushReplacementNamed(context, PageRoutes.loginByOtp);
+    // }
+    // print(mobileTxtField);
   }
-  
 }
