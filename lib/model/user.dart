@@ -1,9 +1,7 @@
-import 'package:flutter/material.dart';
-
 enum UserState { available, away, busy }
 
 class User {
-  bool? user_exist;
+  bool? userExist;
   int? status;
   int? otp;
 
@@ -12,8 +10,8 @@ class User {
   User.fromPhoneJSONMap(Map<String, dynamic> jsonMap) {
     try {
       status = jsonMap['status'];
-      user_exist =
-          jsonMap['user_exist'] != null ? jsonMap['user_exist'] : false;
+      userExist =
+          jsonMap['userExist'] != null ? jsonMap['userExist'] : false;
     } catch (e) {
       print(e.toString());
     }

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:otp_text_field/otp_field.dart';
-import 'package:otp_text_field/style.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
 class LoginbyotpPage extends StatefulWidget {

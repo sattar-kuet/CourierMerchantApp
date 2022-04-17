@@ -1,4 +1,4 @@
-const String AUTHORITY = 'courierdemo.itscholarbd.com';
+const String BASE_URL = 'https://courierdemo.itscholarbd.com/api/v2';
 
 class Color {
   static const BUTTON_BG = '#dda';
