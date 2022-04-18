@@ -65,9 +65,7 @@ class _IntroPageState extends State<IntroPage> {
       Navigator.pushReplacementNamed(context, PageRoutes.registration);
     } else {
       String signatureCode = await SmsAutoFill().getAppSignature;
-      String otp =
-          service.sendOtp(mobileTxtField.text, signatureCode).toString();
-      print(otp);
+      service.sendOtp(mobileTxtField.text, signatureCode).toString();
       Navigator.pushReplacementNamed(context, PageRoutes.loginByOtp);
     }
     print(mobileTxtField);

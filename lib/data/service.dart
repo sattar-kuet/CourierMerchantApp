@@ -1,23 +1,17 @@
 //import 'dart:io';
 //import 'package:flutter_app/model/user.dart';
 import './api.dart';
-//import 'dart:convert';
 
 class Service {
   Future<bool> isUserExist(String mobile) async {
     var data = {'mobile': mobile};
     var response = CallApi().postData(data, 'isUserExist');
-    // var responseData = json.decode(response.body);
-    // return responseData['user_exist'];
-    return true;
+    return response['user_exist'];
   }
 
-  Future<String> sendOtp(String mobile, String signatureCode) async {
+  Future<void> sendOtp(String mobile, String signatureCode) async {
     var data = {'mobile': mobile, 'signatureCode': signatureCode};
     var response = CallApi().postData(data, 'sendOtp');
-    // var responseData = json.decode(response.body);
-    return '123';
-    //responseData['otp'];
   }
   // Future<User> sendOtp(String mobile, String signatureCode) async {
   //   final String url =
