@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 import '../routes/pageRoute.dart';
 import '../utility/validatation.dart';
-import '../data/http_helper.dart';
+import '../data/service.dart';
 
 class IntroPage extends StatefulWidget {
   static const String routeName = '/IntroPage';
@@ -59,13 +59,14 @@ class _IntroPageState extends State<IntroPage> {
   }
 
   void loginORregister(BuildContext context) async {
-    HttpHelper httpHelper = HttpHelper();
+    Service service = Service();
     // ignore: unrelated_type_equality_checks
-    if (httpHelper.isUserExist(mobileTxtField.text) == false) {
+    if (service.isUserExist(mobileTxtField.text) == false) {
       Navigator.pushReplacementNamed(context, PageRoutes.registration);
     } else {
       String signatureCode = await SmsAutoFill().getAppSignature;
-      String otp = httpHelper.sendOtp(mobileTxtField.text,signatureCode).toString();
+      String otp =
+          service.sendOtp(mobileTxtField.text, signatureCode).toString();
       print(otp);
       Navigator.pushReplacementNamed(context, PageRoutes.loginByOtp);
     }

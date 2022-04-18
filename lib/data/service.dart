@@ -1,24 +1,23 @@
 //import 'dart:io';
 //import 'package:flutter_app/model/user.dart';
-import 'package:http/http.dart' as http;
-import '../constants.dart' as Constants;
-import 'dart:convert';
+import './api.dart';
+//import 'dart:convert';
 
-class HttpHelper {
-  final String baseUrl = Constants.BASE_URL;
-
+class Service {
   Future<bool> isUserExist(String mobile) async {
-     var url = Uri.parse('$baseUrl/isUserExist');
-    var response = await http.post(url, body: {'mobile': mobile});
-    Map<String, dynamic> data = json.decode(response.body);
-    return data['user_exist'];
+    var data = {'mobile': mobile};
+    var response = CallApi().postData(data, 'isUserExist');
+    // var responseData = json.decode(response.body);
+    // return responseData['user_exist'];
+    return true;
   }
 
   Future<String> sendOtp(String mobile, String signatureCode) async {
-    var url = Uri.parse('$baseUrl/sendOtp');
-    var response = await http.post(url, body: {'mobile': mobile, 'signatureCode': signatureCode});
-    Map<String, dynamic> data = json.decode(response.body);
-    return data['otp'];
+    var data = {'mobile': mobile, 'signatureCode': signatureCode};
+    var response = CallApi().postData(data, 'sendOtp');
+    // var responseData = json.decode(response.body);
+    return '123';
+    //responseData['otp'];
   }
   // Future<User> sendOtp(String mobile, String signatureCode) async {
   //   final String url =
