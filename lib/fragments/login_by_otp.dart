@@ -14,6 +14,12 @@ class _LoginPageState extends State<LoginbyotpPage> {
   final mobileTxtField = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    final Map arguments = ModalRoute.of(context)?.settings.arguments as Map;
+    // ignore: unnecessary_null_comparison
+     String otp = '';
+    if(arguments !=null){
+      otp = arguments['otp'];
+    }
     return Scaffold(
       body: new Form(
         key: _formKey,
@@ -24,9 +30,7 @@ class _LoginPageState extends State<LoginbyotpPage> {
             margin: EdgeInsets.only(bottom: 50),
             child: Image(image: AssetImage('assets/logo.png')),
           ),
-          Text(
-            'OTP দিন',
-          ),
+          Text('Sent Otp is: $otp'),
           Padding(
             padding: const EdgeInsets.all(5.0),
             child: PinFieldAutoFill(

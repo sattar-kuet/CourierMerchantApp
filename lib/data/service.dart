@@ -5,13 +5,14 @@ import './api.dart';
 class Service {
   Future<bool> isUserExist(String mobile) async {
     var data = {'mobile': mobile};
-    var response = CallApi().postData(data, 'isUserExist');
+    var response = await CallApi().postData(data, 'isUserExist');
     return response['user_exist'];
   }
 
   Future<void> sendOtp(String mobile, String signatureCode) async {
     var data = {'mobile': mobile, 'signatureCode': signatureCode};
-    var response = CallApi().postData(data, 'sendOtp');
+    var response = await CallApi().postData(data, 'sendOtp');
+    return response['otp'];
   }
   // Future<User> sendOtp(String mobile, String signatureCode) async {
   //   final String url =

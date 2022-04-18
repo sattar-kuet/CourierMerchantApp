@@ -48,7 +48,7 @@ class _IntroPageState extends State<IntroPage> {
           ElevatedButton(
             onPressed: () {
               if (_formKey.currentState!.validate()) {
-                loginORregister(context);
+                _loginORregister(context);
               }
             },
             child: Text('Next'),
@@ -58,15 +58,17 @@ class _IntroPageState extends State<IntroPage> {
     );
   }
 
-  void loginORregister(BuildContext context) async {
+
+  void _loginORregister(BuildContext context) async {
     Service service = Service();
     // ignore: unrelated_type_equality_checks
     if (service.isUserExist(mobileTxtField.text) == false) {
-      Navigator.pushReplacementNamed(context, PageRoutes.registration);
+      Navigator.pushNamed(context, PageRoutes.registration);
     } else {
+
       String signatureCode = await SmsAutoFill().getAppSignature;
-      service.sendOtp(mobileTxtField.text, signatureCode).toString();
-      Navigator.pushReplacementNamed(context, PageRoutes.loginByOtp);
+      String otp = service.sendOtp(mobileTxtField.text, signatureCode).toString();
+      Navigator.pushNamed(context, PageRoutes.loginByOtp,arguments: {otp:otp});
     }
     print(mobileTxtField);
   }
