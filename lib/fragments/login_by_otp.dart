@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/data/service.dart';
 import 'package:sms_autofill/sms_autofill.dart';
+import '../routes/pageRoute.dart';
 
 class LoginbyotpPage extends StatefulWidget {
   static const String routeName = '/loginbyotpPage';
@@ -10,15 +12,17 @@ class LoginbyotpPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginbyotpPage> {
   final _formKey = GlobalKey<FormState>();
-
+  String enteredOtp = '';
   final mobileTxtField = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final Map arguments = ModalRoute.of(context)?.settings.arguments as Map;
     String sentOtp = '';
+    String mobile = '';
     // ignore: unnecessary_null_comparison
     if (arguments != null) {
       sentOtp = arguments['otp'];
+      mobile = arguments['mobile'];
     }
     return Scaffold(
       body: new Form(
@@ -37,7 +41,10 @@ class _LoginPageState extends State<LoginbyotpPage> {
               codeLength: 4,
               onCodeChanged: (enteredCode) {
                 if (enteredCode.toString() == sentOtp.toString()) {
-                  proceedAsLoggedIn();
+                  _login(mobile,enteredCode.toString());
+                  setState(() {
+                    enteredOtp = enteredCode.toString();
+                  });
                 }
               },
             ),
@@ -45,7 +52,7 @@ class _LoginPageState extends State<LoginbyotpPage> {
           ElevatedButton(
             onPressed: () {
               if (_formKey.currentState!.validate()) {
-                login();
+                _login(mobile,enteredOtp);
               }
             },
             child: Text('Login'),
@@ -55,5 +62,12 @@ class _LoginPageState extends State<LoginbyotpPage> {
     );
   }
 
-  void login() {}
+  Future<void> _login(String mobile, String otp) async{
+   var response =  await Service().login(mobile,otp);
+   if(response['status'] == 1){
+     Navigator.pushNamed(context, PageRoutes.home);
+   }else{
+     print(response);
+   }
+  }
 }

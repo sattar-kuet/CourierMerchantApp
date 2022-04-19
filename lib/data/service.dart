@@ -1,7 +1,9 @@
 //import 'dart:io';
 //import 'package:flutter_app/model/user.dart';
+
 import './api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 class Service {
   Future<bool> isUserExist(String mobile) async {
@@ -21,6 +23,22 @@ class Service {
     var response = await CallApi().postData(data, 'sendOtp');
     return response['otp'].toString();
   }
+
+Future<Map<String, dynamic>> login(String mobile, String otp) async{
+    var data = {
+      'mobile': mobile,
+      'otp': otp
+    };
+    var response = await CallApi().postData(data, 'login');
+    if(response['status'] == 1){
+        SharedPreferences localStorage = await SharedPreferences.getInstance();
+        localStorage.setString('token', response['token']);
+        localStorage.setString('user', json.encode(response['user']));
+    }
+    return response;
+
+}
+
   // Future<User> sendOtp(String mobile, String signatureCode) async {
   //   final String url =
   //       'https://courierdemo.itscholarbd.com/api/v2/sendOtp/$mobile/$signatureCode';
