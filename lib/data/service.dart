@@ -1,18 +1,25 @@
 //import 'dart:io';
 //import 'package:flutter_app/model/user.dart';
 import './api.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Service {
   Future<bool> isUserExist(String mobile) async {
-    var data = {'mobile': mobile};
+    var token = await _getToken();
+    var data = {'mobile': mobile, 'token': token};
     var response = await CallApi().postData(data, 'isUserExist');
     return response['user_exist'];
   }
 
-  Future<void> sendOtp(String mobile, String signatureCode) async {
-    var data = {'mobile': mobile, 'signatureCode': signatureCode};
+  Future<String> sendOtp(String mobile, String signatureCode) async {
+    var token = await _getToken();
+    var data = {
+      'mobile': mobile,
+      'signatureCode': signatureCode,
+      'token': token
+    };
     var response = await CallApi().postData(data, 'sendOtp');
-    return response['otp'];
+    return response['otp'].toString();
   }
   // Future<User> sendOtp(String mobile, String signatureCode) async {
   //   final String url =
@@ -47,4 +54,9 @@ class Service {
   //     throw new Exception(response.body);
   //   }
   // }
+  dynamic _getToken() async {
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+    var token = localStorage.getString('token');
+    return token;
+  }
 }
