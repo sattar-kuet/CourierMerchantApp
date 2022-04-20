@@ -13,7 +13,7 @@ class LoginbyotpPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginbyotpPage> {
   final _formKey = GlobalKey<FormState>();
-  String enteredOtp = '';
+  TextEditingController optInutField = TextEditingController();
   final mobileTxtField = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -37,34 +37,31 @@ class _LoginPageState extends State<LoginbyotpPage> {
           ),
           Text('Sent Otp is: $sentOtp'),
           Padding(
-            padding: const EdgeInsets.all(5.0),
+            padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 70),
             child: PinFieldAutoFill(
               codeLength: 4,
+              controller: optInutField,
+              autoFocus: true,
+              cursor: Cursor(
+                enabled: true,
+                color: Colors.black,
+                width: 1,
+                height: 30,
+              ),
               onCodeChanged: (enteredCode) {
                 if (enteredCode.toString() == sentOtp.toString()) {
-                  _login(mobile, enteredCode.toString());
-                  setState(() {
-                    enteredOtp = enteredCode.toString();
-                  });
+                  _login(mobile);
                 }
               },
             ),
           ),
-          ElevatedButton(
-            onPressed: () {
-              if (_formKey.currentState!.validate()) {
-                _login(mobile, enteredOtp);
-              }
-            },
-            child: Text('Login'),
-          )
         ]),
       ),
     );
   }
 
-  Future<void> _login(String mobile, String otp) async {
-    var response = await Service().login(mobile, otp);
+  Future<void> _login(String mobile) async {
+    var response = await Service().login(mobile, optInutField.text);
     if (response != null) {
       //print username from response
       print(response['user']['name']);
