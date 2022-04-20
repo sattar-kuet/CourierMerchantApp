@@ -62,10 +62,7 @@ class _LoginPageState extends State<LoginbyotpPage> {
 
   Future<void> _login(String mobile) async {
     var response = await Service().login(mobile, optInutField.text);
-    if (response != null) {
-      //print username from response
-      print(response['user']['name']);
-      //Navigator.pushNamed(context, PageRoutes.profile);
+    if (response['status'] == 1) {
       Navigator.push(context,
           MaterialPageRoute(builder: (context) => ProfileDetails(response)));
     } else {

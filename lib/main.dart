@@ -2,7 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/fragments/login_by_otp.dart';
-import 'package:flutter_app/fragments/profile_details.dart';
+//import 'package:flutter_app/fragments/profile_details.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_app/fragments/registration.dart';
 import 'fragments/intro_screen.dart';
 import './routes/pageRoute.dart';
@@ -22,7 +23,8 @@ class CourierApp extends StatelessWidget {
       PageRoutes.registration: (context) => RegistrationPage(),
       PageRoutes.loginByOtp: (context) => LoginbyotpPage(),
       // PageRoutes.profile: (context) => ProfileDetails(),
-    }
+    },
+    builder: EasyLoading.init(),
 
         // home: Scaffold(
         //   appBar: AppBar(title: Text('custom navigation')),

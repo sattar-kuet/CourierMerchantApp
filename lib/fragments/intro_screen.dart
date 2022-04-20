@@ -49,6 +49,7 @@ class _IntroPageState extends State<IntroPage> {
             onPressed: () {
               if (_formKey.currentState!.validate()) {
                 _loginORregister(context);
+                 Center(child: CircularProgressIndicator());
               }
             },
             child: Text('Next'),
