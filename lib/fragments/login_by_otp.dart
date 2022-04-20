@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/data/service.dart';
+import 'package:flutter_app/fragments/profile_details.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 import '../routes/pageRoute.dart';
 
@@ -41,7 +42,7 @@ class _LoginPageState extends State<LoginbyotpPage> {
               codeLength: 4,
               onCodeChanged: (enteredCode) {
                 if (enteredCode.toString() == sentOtp.toString()) {
-                  _login(mobile,enteredCode.toString());
+                  _login(mobile, enteredCode.toString());
                   setState(() {
                     enteredOtp = enteredCode.toString();
                   });
@@ -52,7 +53,7 @@ class _LoginPageState extends State<LoginbyotpPage> {
           ElevatedButton(
             onPressed: () {
               if (_formKey.currentState!.validate()) {
-                _login(mobile,enteredOtp);
+                _login(mobile, enteredOtp);
               }
             },
             child: Text('Login'),
@@ -62,12 +63,16 @@ class _LoginPageState extends State<LoginbyotpPage> {
     );
   }
 
-  Future<void> _login(String mobile, String otp) async{
-   var response =  await Service().login(mobile,otp);
-   if(response['status'] == 1){
-     Navigator.pushNamed(context, PageRoutes.home);
-   }else{
-     print(response);
-   }
+  Future<void> _login(String mobile, String otp) async {
+    var response = await Service().login(mobile, otp);
+    if (response != null) {
+      //print username from response
+      print(response['user']['name']);
+      //Navigator.pushNamed(context, PageRoutes.profile);
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => ProfileDetails(response)));
+    } else {
+      print(response);
+    }
   }
 }
