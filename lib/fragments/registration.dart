@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../utility/validatation.dart';
+import '../widget/TextInput.dart';
+import 'package:searchable_dropdown/searchable_dropdown.dart';
 
 class RegistrationPage extends StatefulWidget {
   static const String routeName = '/registrationPage';
@@ -42,6 +43,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
               icon: Icons.business_center,
             ),
           ),
+          
           ElevatedButton(
             onPressed: () {
               if (_formKey.currentState!.validate()) {
@@ -56,32 +58,4 @@ class _RegistrationPageState extends State<RegistrationPage> {
   }
 
   void _register(BuildContext context) {}
-}
-
-class TextInput extends StatelessWidget {
-  const TextInput({
-    Key? key,
-    required this.inputController,
-    required this.label,
-    required this.icon,
-  }) : super(key: key);
-
-  final TextEditingController inputController;
-  final String label;
-  final icon;
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      controller: inputController,
-      keyboardType: TextInputType.text,
-      decoration: InputDecoration(
-        border: UnderlineInputBorder(),
-        prefixIcon: Icon(icon),
-        labelText: label,
-      ),
-      validator: (value) {
-        return Validation.required(value);
-      },
-    );
-  }
 }
