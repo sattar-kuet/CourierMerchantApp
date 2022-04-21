@@ -24,20 +24,16 @@ class Service {
     return response['otp'].toString();
   }
 
-Future<Map<String, dynamic>> login(String mobile, String otp) async{
-    var data = {
-      'mobile': mobile,
-      'otp': otp
-    };
+  Future<Map<String, dynamic>> login(String mobile, String otp) async {
+    var data = {'mobile': mobile, 'otp': otp};
     var response = await CallApi().postData(data, 'login');
-    if(response['status'] == 1){
-        SharedPreferences localStorage = await SharedPreferences.getInstance();
-        localStorage.setString('token', response['token']);
-        localStorage.setString('user', json.encode(response['user']));
+    if (response['status'] == 1) {
+      SharedPreferences localStorage = await SharedPreferences.getInstance();
+      localStorage.setString('token', response['token']);
+      localStorage.setString('user', json.encode(response['user']));
     }
     return response;
-
-}
+  }
 
   // Future<User> sendOtp(String mobile, String signatureCode) async {
   //   final String url =

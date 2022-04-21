@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/data/service.dart';
 import 'package:flutter_app/fragments/profile_details.dart';
+import 'package:otp_text_field/otp_field.dart';
 import 'package:sms_autofill/sms_autofill.dart';
-import '../routes/pageRoute.dart';
+import '../utility/helper.dart';
 
 class LoginbyotpPage extends StatefulWidget {
   static const String routeName = '/loginbyotpPage';
@@ -49,8 +50,14 @@ class _LoginPageState extends State<LoginbyotpPage> {
                 height: 30,
               ),
               onCodeChanged: (enteredCode) {
-                if (enteredCode.toString() == sentOtp.toString()) {
-                  _login(mobile);
+                if (enteredCode?.length == 4) {
+                  if (enteredCode.toString() == sentOtp.toString()) {
+                    _login(mobile);
+                  } else {
+                    optInutField.clear();
+                    Helper.errorSnackbar(
+                        context, 'Wrong CODE. Please try again.');
+                  }
                 }
               },
             ),
@@ -66,6 +73,8 @@ class _LoginPageState extends State<LoginbyotpPage> {
       Navigator.push(context,
           MaterialPageRoute(builder: (context) => ProfileDetails(response)));
     } else {
+      Helper.errorSnackbar(context, response['message'].toString());
+      optInutField.clear();
       print(response);
     }
   }

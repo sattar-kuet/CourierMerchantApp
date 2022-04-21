@@ -7,4 +7,10 @@ class Validation {
     RegExp regExp = new RegExp(pattern);
     return regExp.hasMatch(value) ? null : 'Please Enter a valid number';
   }
+
+  static dynamic required(value) {
+    if (value.isEmpty) {
+      return 'This field is required.';
+    }
+  }
 }
