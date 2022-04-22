@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:sms_autofill/sms_autofill.dart';
 import '../routes/pageRoute.dart';
 import '../utility/validatation.dart';
@@ -49,7 +50,7 @@ class _IntroPageState extends State<IntroPage> {
             onPressed: () {
               if (_formKey.currentState!.validate()) {
                 _loginORregister(context);
-                 Center(child: CircularProgressIndicator());
+                Center(child: CircularProgressIndicator());
               }
             },
             child: Text('Next'),

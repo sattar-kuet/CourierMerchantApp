@@ -18,7 +18,7 @@ class CourierApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(title: 'startapp', home: IntroPage(), routes: {
+    return MaterialApp(title: 'startapp', home: RegistrationPage(), routes: {
       PageRoutes.login: (context) => IntroPage(),
       PageRoutes.registration: (context) => RegistrationPage(),
       PageRoutes.loginByOtp: (context) => LoginbyotpPage(),
