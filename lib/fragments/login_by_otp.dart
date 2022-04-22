@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/data/service.dart';
 import 'package:flutter_app/fragments/profile_details.dart';
-import 'package:otp_text_field/otp_field.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 import '../utility/helper.dart';
 
@@ -75,7 +74,7 @@ class _LoginPageState extends State<LoginbyotpPage> {
     } else {
       Helper.errorSnackbar(context, response['message'].toString());
       optInutField.clear();
-      print(response);
+      //print(response);
     }
   }
 }

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:search_choices/search_choices.dart';
-
+import '../data/service.dart';
+import '../fragments/new_pickup_point.dart';
+import '../common/logo.dart';
+import '../utility/helper.dart';
 import '../widget/TextInput.dart';
+import 'package:awesome_select/awesome_select.dart';
 
 class RegistrationPage extends StatefulWidget {
   static const String routeName = '/registrationPage';
@@ -12,195 +15,87 @@ class RegistrationPage extends StatefulWidget {
 
 class _RegistrationPageState extends State<RegistrationPage> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController nameInput = TextEditingController();
-  final TextEditingController businessName = TextEditingController();
-  final TextEditingController productTypeId = TextEditingController();
-  String? selectedValueSingleDialog;
-  List<DropdownMenuItem> items = [];
-  TextFormField? input;
-  String inputString = "";
-  final String loremIpsum =
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
-  
-  @override
-  void initState() {
-    String wordPair = "";
-    loremIpsum
-        .toLowerCase()
-        .replaceAll(",", "")
-        .replaceAll(".", "")
-        .split(" ")
-        .forEach((word) {
-      if (wordPair.isEmpty) {
-        wordPair = word + " ";
-      } else {
-        wordPair += word;
-        if (items.indexWhere((item) {
-              return (item.value == wordPair);
-            }) ==
-            -1) {
-          items.add(DropdownMenuItem(
-            child: Text(wordPair),
-            value: wordPair,
-          ));
-        }
-        wordPair = "";
-      }
-    });
-    input = TextFormField(
-      validator: (value) {
-        return ((value?.length ?? 0) < 6
-            ? "must be at least 6 characters long"
-            : null);
-      },
-      initialValue: inputString,
-      onChanged: (value) {
-        inputString = value;
-      },
-      autofocus: true,
-    );
-    print(">>>>>>items: " + wordPair.toString());
-    super.initState();
-  }
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController businessNameController = TextEditingController();
+  int productTypeId = 0;
+  List<S2Choice<int>> options = [
+    S2Choice<int>(value: 1, title: 'Ionic'),
+    S2Choice<int>(value: 2, title: 'Flutter'),
+    S2Choice<int>(value: 3, title: 'React Native')
+  ];
 
   @override
   Widget build(BuildContext context) {
-    Map<String, Widget> widgets;
-    widgets = {
-      "আপনার প্রোডাক্ট টাইপ ": SearchChoices.single(
-        items: items,
-        value: selectedValueSingleDialog,
-        hint: "সিলেক্ট করুন",
-        searchHint: "Select one",
-        onChanged: (value) {
-          setState(() {
-            selectedValueSingleDialog = value;
-            print(">>>>>selectedValueSingleDialog: $selectedValueSingleDialog");
-          });
-        },
-        isExpanded: true,
-      ),
-    };
+     final Map arguments = ModalRoute.of(context)?.settings.arguments as Map;
+    String mobile = '';
+    // ignore: unnecessary_null_comparison
+    if (arguments != null) {
+      mobile = arguments['mobile'];
+    }
     return Scaffold(
-      body: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Column(
-          children: [
-            new Form(
-              key: _formKey,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      height: 70,
-                      margin: EdgeInsets.only(bottom: 50),
-                      child: Image(image: AssetImage('assets/logo.png')),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 30.0),
-                      child: TextInput(
-                        inputController: nameInput,
-                        label: 'আপনার নাম',
-                        icon: Icons.account_box_sharp,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 30.0),
-                      child: TextInput(
-                        inputController: nameInput,
-                        label: 'আপনার বিজনেস এর নাম',
-                        icon: Icons.business_center,
-                      ),
-                    ),
-                  ]),
+      body: new Form(
+        key: _formKey,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          logo(),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30.0),
+            child: TextInput(
+              inputController: nameController,
+              label: 'আপনার নাম',
+              icon: Icons.account_box_sharp,
             ),
-            Column(
-              children: widgets
-                  .map((k, v) {
-                    return (MapEntry(
-                        k,
-                        Center(
-                            child: Card(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  side: BorderSide(
-                                    color: Colors.grey,
-                                    width: 1.0,
-                                  ),
-                                ),
-                                margin: EdgeInsets.all(20),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(20.0),
-                                  child: Column(
-                                    children: <Widget>[
-                                      Text("$k:"),
-                                      v,
-                                    ],
-                                  ),
-                                )))));
-                  })
-                  .values
-                  .toList()
-                ..add(
-                  Center(
-                    child: SizedBox(
-                      height: 1,
-                    ),
-                  ),
-                ), //prevents scrolling issues at the end of the list of Widgets
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30.0),
+            child: TextInput(
+              inputController: businessNameController,
+              label: 'আপনার বিজনেস এর নাম',
+              icon: Icons.business_center,
             ),
-            ElevatedButton(
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  _register(context);
-                }
-              },
-              child: Text('Next'),
-            )
-          ],
-        ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30.0),
+            child: SmartSelect<int>.single(
+              modalFilter: true,
+              modalFilterAuto: true,
+              tileBuilder: (context, state) => S2Tile<dynamic>(
+                //https://github.com/akbarpulatov/flutter_awesome_select/blob/master/example/lib/features_single/single_chips.dart
+                title: const Text('প্রোডাক্ট এর ধরন',),
+                value: state.selected?.toWidget() ?? Container(),
+                leading: Icon(Icons.list_outlined),
+                onTap: state.showModal,
+              ),
+              title: 'প্রোডাক্ট এর ধরন',  
+              placeholder: 'সিলেক্ট করুন',
+              choiceItems: options,
+              onChange: (state) => setState(() => productTypeId = state.value!),
+              selectedValue: productTypeId,
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              if (_formKey.currentState!.validate()) {
+                _register(context, mobile);
+              }
+            },
+            child: Text('রেজিস্ট্রার'),
+          )
+        ]),
       ),
-      // body: new Form(
-      //   key: _formKey,
-      //   autovalidateMode: AutovalidateMode.onUserInteraction,
-      //   child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      //     Container(
-      //       height: 70,
-      //       margin: EdgeInsets.only(bottom: 50),
-      //       child: Image(image: AssetImage('assets/logo.png')),
-      //     ),
-      //     Padding(
-      //       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30.0),
-      //       child: TextInput(
-      //         inputController: nameInput,
-      //         label: 'আপনার নাম',
-      //         icon: Icons.account_box_sharp,
-      //       ),
-      //     ),
-      //     Padding(
-      //       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30.0),
-      //       child: TextInput(
-      //         inputController: nameInput,
-      //         label: 'আপনার বিজনেস এর নাম',
-      //         icon: Icons.business_center,
-      //       ),
-      //     ),
-
-      //     ElevatedButton(
-      //       onPressed: () {
-      //         if (_formKey.currentState!.validate()) {
-      //           _register(context);
-      //         }
-      //       },
-      //       child: Text('Next'),
-      //     )
-      //   ]),
-      // ),
     );
+    
   }
+   void _register(BuildContext context, String mobile) async {
+      var response = await Service().register(mobile, nameController.text, businessNameController.text, productTypeId);
+    if (response['status'] == 1) {
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => NewPickupPoint()));
+    } else {
+      Helper.errorSnackbar(context, response['message'].toString());
+      //print(response);
+    }
 
-  void _register(BuildContext context) {}
+    
+  }
 }

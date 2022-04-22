@@ -34,6 +34,20 @@ class Service {
     }
     return response;
   }
+  Future<Map<String, dynamic>> register(String mobile, String name, String businessName, int productTypeId) async {
+    var data = {'mobile': mobile, 
+                'name': name,
+                'businessName': businessName,
+                'productTypeId': productTypeId,
+                };
+    var response = await CallApi().postData(data, 'register');
+    if (response['status'] == 1) {
+      SharedPreferences localStorage = await SharedPreferences.getInstance();
+      localStorage.setString('token', response['token']);
+      localStorage.setString('user', json.encode(response['user']));
+    }
+    return response;
+  }
 
   // Future<User> sendOtp(String mobile, String signatureCode) async {
   //   final String url =
