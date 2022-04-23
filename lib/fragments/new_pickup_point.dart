@@ -18,13 +18,29 @@ class _NewPickupPointState extends State<NewPickupPoint> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController nameController = TextEditingController();
   TextEditingController addressController = TextEditingController();
-  var districtList = Service().getDistrictList();
+  var districtList = Service().getDistrictList().then((value) => print(value));
   int districId = 0;
   List<S2Choice<int>> districts = [
-    S2Choice<int>(value: 1, title: 'Dhaka'),
-    S2Choice<int>(value: 2, title: 'Cumilla'),
-    S2Choice<int>(value: 3, title: 'Rajshahi')
+    // S2Choice<int>(value: 1, title: 'Dhaka'),
+    // S2Choice<int>(value: 2, title: 'Cumilla'),
+    // S2Choice<int>(value: 3, title: 'Rajshahi')
   ];
+  @override
+  void initState(){
+    super.initState();
+    returnDistrictValues();
+  }
+  returnDistrictValues()async{
+    var _futureOfList = Service().getDistrictList();
+  List list = await _futureOfList ;
+  for(var i = 0; i < list.length; i++){
+   setState(() {
+    districts.add(S2Choice<int>(value: list[i]['id'], title: list[i]['name'])); 
+   });
+   
+  }
+}
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
