@@ -1,7 +1,13 @@
+import 'package:awesome_select/awesome_select.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/data/service.dart';
+import '../common/bottom_navigation.dart';
+import '../common/floating_button.dart';
+import '../common/logo.dart';
+import '../widget/TextInput.dart';
 
 class NewPickupPoint extends StatefulWidget {
-  static const String routeName = '/NewPickupPointPage';
+  static const String routeName = '/newPickupPointPage';
   const NewPickupPoint({Key? key}) : super(key: key);
 
   @override
@@ -9,68 +15,112 @@ class NewPickupPoint extends StatefulWidget {
 }
 
 class _NewPickupPointState extends State<NewPickupPoint> {
+  final _formKey = GlobalKey<FormState>();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
+  var districtList = Service().getDistrictList();
+  int districId = 0;
+  List<S2Choice<int>> districts = [
+    S2Choice<int>(value: 1, title: 'Dhaka'),
+    S2Choice<int>(value: 2, title: 'Cumilla'),
+    S2Choice<int>(value: 3, title: 'Rajshahi')
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Add new pickup point'),
       ),
-      body: Column(
-        children: [
-          Container(
-            child: Text('List of pickup point'),
-          ),
-          Container(
-            child: ElevatedButton(
-              onPressed: () {
-                 showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    scrollable: true,
-                    title: Text('Login'),
-                    content: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Form(
-                        child: Column(
-                          children: <Widget>[
-                            TextFormField(
-                              decoration: InputDecoration(
-                                labelText: 'Name',
-                                icon: Icon(Icons.account_box),
-                              ),
-                            ),
-                            TextFormField(
-                              decoration: InputDecoration(
-                                labelText: 'Email',
-                                icon: Icon(Icons.email),
-                              ),
-                            ),
-                            TextFormField(
-                              decoration: InputDecoration(
-                                labelText: 'Message',
-                                icon: Icon(Icons.message ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                     actions: [
-                      ElevatedButton(
-                          child: Text("Submit"),
-                          onPressed: () {
-                            // your code
-                          })
-                    ],
-                  );
-                });
-              },
-              child: Icon(Icons.plus_one),
+      body: SingleChildScrollView(
+        child: new Form(
+          key: _formKey,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            logo(),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 10, horizontal: 30.0),
+              child: TextInput(
+                inputController: nameController,
+                label: 'পিকআপ পয়েন্টের নাম',
+                icon: Icons.edit,
+              ),
             ),
-          ),
-        ],
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 10, horizontal: 30.0),
+              child: SmartSelect<int>.single(
+                modalFilter: true,
+                modalFilterAuto: true,
+                tileBuilder: (context, state) => S2Tile<dynamic>(
+                  //https://github.com/akbarpulatov/flutter_awesome_select/blob/master/example/lib/features_single/single_chips.dart
+                  title: const Text(
+                    'জেলা',
+                  ),
+                  value: state.selected?.toWidget() ?? Container(),
+                  leading: Icon(Icons.list_outlined),
+                  onTap: state.showModal,
+                ),
+                title: 'জেলা',
+                placeholder: 'সিলেক্ট করুন',
+                choiceItems: districts,
+                onChange: (state) => setState(() => districId = state.value!),
+                selectedValue: districId,
+              ),
+            ),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 10, horizontal: 30.0),
+              child: SmartSelect<int>.single(
+                modalFilter: true,
+                modalFilterAuto: true,
+                tileBuilder: (context, state) => S2Tile<dynamic>(
+                  //https://github.com/akbarpulatov/flutter_awesome_select/blob/master/example/lib/features_single/single_chips.dart
+                  title: const Text(
+                    'এলাকা',
+                  ),
+                  value: state.selected?.toWidget() ?? Container(),
+                  leading: Icon(Icons.list_outlined),
+                  onTap: state.showModal,
+                ),
+                title: 'এলাকা',
+                placeholder: 'সিলেক্ট করুন',
+                choiceItems: districts,
+                onChange: (state) => setState(() => districId = state.value!),
+                selectedValue: districId,
+              ),
+            ),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 10, horizontal: 30.0),
+              child: TextInput(
+                  inputController: addressController,
+                  label: 'বিস্তারিত ঠিকানা',
+                  icon: Icons.map_outlined),
+            ),
+            Text(
+              'যেমনঃ ২য় তলা, বাসা নংঃ ১১৮, ব্লকঃ ডি, রোডঃ ০৫, মহানগর প্রজেক্ট, রামপুরা, ঢাকা',
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 10,
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  _addPickupPoint(context, districId);
+                }
+              },
+              child: Text('রেজিস্ট্রার'),
+            )
+          ]),
+        ),
       ),
+      bottomNavigationBar: BottomNavigation(),
+      floatingActionButton: floating,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
+
+  void _addPickupPoint(BuildContext context, districtId) {}
 }
