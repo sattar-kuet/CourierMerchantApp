@@ -18,11 +18,23 @@ class _RegistrationPageState extends State<RegistrationPage> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController businessNameController = TextEditingController();
   int productTypeId = 0;
-  List<S2Choice<int>> options = [
-    S2Choice<int>(value: 1, title: 'Ionic'),
-    S2Choice<int>(value: 2, title: 'Flutter'),
-    S2Choice<int>(value: 3, title: 'React Native')
-  ];
+  List<S2Choice<int>> productTypes = [];
+
+  void initState() {
+    super.initState();
+    setProductList();
+  }
+
+  void setProductList() async {
+    var _futureOfList = Service().getProductTypes();
+    List list = await _futureOfList;
+    for (var i = 0; i < list.length; i++) {
+      setState(() {
+        productTypes
+            .add(S2Choice<int>(value: list[i]['id'], title: list[i]['name']));
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

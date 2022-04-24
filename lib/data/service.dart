@@ -54,11 +54,18 @@ class Service {
     return response;
   }
 
+   Future<dynamic> getProductTypes() async {
+    var token = await _getToken();
+    var response = await CallApi().getData('productTypes');
+    return response['data'];
+  }
+
   Future<dynamic> getDistrictList() async {
     var token = await _getToken();
     var response = await CallApi().getData('pickupPointDistrictList');
     return response['data'];
   }
+ 
 
   Future<dynamic> getAreaList(districtId) async {
     var token = await _getToken();
