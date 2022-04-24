@@ -65,7 +65,6 @@ class _NewPickupPointState extends State<NewPickupPoint> {
           key: _formKey,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            logo(),
             Padding(
               padding:
                   const EdgeInsets.symmetric(vertical: 10, horizontal: 30.0),
