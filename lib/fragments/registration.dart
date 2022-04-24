@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../data/service.dart';
 import '../fragments/new_pickup_point.dart';
-import '../common/logo.dart';
 import '../utility/helper.dart';
 import '../widget/TextInput.dart';
 import 'package:awesome_select/awesome_select.dart';
