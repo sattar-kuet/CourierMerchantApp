@@ -142,7 +142,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                   _addPickupPoint(context, districId, areaId);
                 }
               },
-              child: Text('রেজিস্ট্রার'),
+              child: Text('Add Pickup Point'),
             )
           ]),
         ),
