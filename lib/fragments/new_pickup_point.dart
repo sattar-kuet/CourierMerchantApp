@@ -20,27 +20,40 @@ class _NewPickupPointState extends State<NewPickupPoint> {
   TextEditingController addressController = TextEditingController();
   var districtList = Service().getDistrictList().then((value) => print(value));
   int districId = 0;
+  int areaId = 0;
   List<S2Choice<int>> districts = [
     // S2Choice<int>(value: 1, title: 'Dhaka'),
     // S2Choice<int>(value: 2, title: 'Cumilla'),
     // S2Choice<int>(value: 3, title: 'Rajshahi')
   ];
+  List<S2Choice<int>> areas = [];
   @override
-  void initState(){
+  void initState() {
     super.initState();
     returnDistrictValues();
   }
-  returnDistrictValues()async{
+
+  returnDistrictValues() async {
     var _futureOfList = Service().getDistrictList();
-  List list = await _futureOfList ;
-  for(var i = 0; i < list.length; i++){
-   setState(() {
-    districts.add(S2Choice<int>(value: list[i]['id'], title: list[i]['name'])); 
-   });
-   
+    List list = await _futureOfList;
+    for (var i = 0; i < list.length; i++) {
+      setState(() {
+        districts
+            .add(S2Choice<int>(value: list[i]['id'], title: list[i]['name']));
+      });
+    }
   }
-}
-  
+
+  updateAreaList() async {
+    var _futureOfList = Service().getAreaList(districId);
+    List list = await _futureOfList;
+    for (var i = 0; i < list.length; i++) {
+      setState(() {
+        areas.add(S2Choice<int>(value: list[i]['id'], title: list[i]['name']));
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,7 +93,10 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                 title: 'জেলা',
                 placeholder: 'সিলেক্ট করুন',
                 choiceItems: districts,
-                onChange: (state) => setState(() => districId = state.value!),
+                onChange: (state) {
+                  setState(() => districId = state.value!);
+                  updateAreaList();
+                },
                 selectedValue: districId,
               ),
             ),
@@ -102,8 +118,8 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                 title: 'এলাকা',
                 placeholder: 'সিলেক্ট করুন',
                 choiceItems: districts,
-                onChange: (state) => setState(() => districId = state.value!),
-                selectedValue: districId,
+                onChange: (state) => setState(() => areaId = state.value!),
+                selectedValue: areaId,
               ),
             ),
             Padding(
@@ -124,7 +140,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
             ElevatedButton(
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
-                  _addPickupPoint(context, districId);
+                  _addPickupPoint(context, districId, areaId);
                 }
               },
               child: Text('রেজিস্ট্রার'),
@@ -138,5 +154,5 @@ class _NewPickupPointState extends State<NewPickupPoint> {
     );
   }
 
-  void _addPickupPoint(BuildContext context, districtId) {}
+  void _addPickupPoint(BuildContext context, districtId, areaId) {}
 }
