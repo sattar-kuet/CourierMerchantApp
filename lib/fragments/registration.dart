@@ -49,7 +49,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
         key: _formKey,
         autovalidateMode: AutovalidateMode.onUserInteraction,
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          logo(),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30.0),
             child: TextInput(
@@ -80,7 +79,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
               ),
               title: 'প্রোডাক্ট এর ধরন',  
               placeholder: 'সিলেক্ট করুন',
-              choiceItems: options,
+              choiceItems: productTypes,
               onChange: (state) => setState(() => productTypeId = state.value!),
               selectedValue: productTypeId,
             ),
