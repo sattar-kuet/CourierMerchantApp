@@ -1,5 +1,6 @@
 //import 'dart:io';
 //import 'package:flutter_app/model/user.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_app/constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_app/utility/helper.dart';
@@ -77,8 +78,15 @@ class Service {
     return response['data'];
   }
 
+  Future getPickupAddress()async{
+    var data = {"user_id": 1};
+    var response = await CallApi().postData(data, 'getPickupAddress');
+    return response['data'];
+
+  }
+
   Future<dynamic> addPickupPoint(
-      String title, int district, int area, String street) async {
+      String title, int district, int area, String street, context) async {
     var token = await _getToken();
     var data = {
       'user_id': Helper.getLoggedInUserId(),
@@ -91,6 +99,10 @@ class Service {
     };
     var response = await CallApi().postData(data, 'addPickupPoint');
     print(response);
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(response['message']),
+      duration: Duration(seconds: 2),
+    ));
     return response['data'];
   }
 

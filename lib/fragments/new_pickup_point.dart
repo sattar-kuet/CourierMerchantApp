@@ -21,6 +21,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
   var districtList = Service().getDistrictList().then((value) => print(value));
   int districId = 0;
   int areaId = 0;
+  var userPickupPoint;
   List<S2Choice<int>> districts = [
     // S2Choice<int>(value: 1, title: 'Dhaka'),
     // S2Choice<int>(value: 2, title: 'Cumilla'),
@@ -31,6 +32,11 @@ class _NewPickupPointState extends State<NewPickupPoint> {
   void initState() {
     super.initState();
     returnDistrictValues();
+    Service().getPickupAddress().then((value) {
+      setState(() {
+        userPickupPoint = value;
+      });
+    });
   }
 
   returnDistrictValues() async {
@@ -66,11 +72,35 @@ class _NewPickupPointState extends State<NewPickupPoint> {
           autovalidateMode: AutovalidateMode.onUserInteraction,
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
             Container(
-              height: MediaQuery.of(context).size.height * 0.2,
+              padding: EdgeInsets.only(bottom:10),
+              constraints: BoxConstraints(minHeight: MediaQuery.of(context).size.height * 0.2),
               width: MediaQuery.of(context).size.width,
               decoration: boxDecoration,
               margin: const EdgeInsets.all(10),
-              child: Text("Add Pickup Point", style: TextStyle(fontSize: 20)),
+              alignment: Alignment.bottomCenter,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ListTile(title: Text('Pickup Point Name'),
+                    trailing: Column(mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(onPressed: (){}, icon: Icon(Icons.edit, color: Colors.indigo[900],), padding: EdgeInsets.all(0),constraints: BoxConstraints(),),
+                      IconButton(onPressed: (){}, icon: Icon(Icons.delete, color: Colors.red,), padding: EdgeInsets.all(0),constraints: BoxConstraints(),)
+                    ],),),
+                    
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ListTile(title: Text('Pickup Point Name'),
+                    trailing: Column(mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(onPressed: (){}, icon: Icon(Icons.edit, color: Colors.indigo[900],), padding: EdgeInsets.all(0),constraints: BoxConstraints(),),
+                      IconButton(onPressed: (){}, icon: Icon(Icons.delete, color: Colors.red,), padding: EdgeInsets.all(0),constraints: BoxConstraints(),)
+                    ],),),),
+                  
+                ],
+              )
               
             ),
             Padding(
@@ -148,7 +178,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
             ElevatedButton(
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
-                 Service().addPickupPoint(nameController.text, districId, areaId, addressController.text);
+                 Service().addPickupPoint(nameController.text, districId, areaId, addressController.text, context);
                 }
               },
               child: Text('Add Pickup Point'),
@@ -162,34 +192,31 @@ class _NewPickupPointState extends State<NewPickupPoint> {
     );
   }
 
-  void _addPickupPoint(BuildContext context, districtId, areaId) {
-
-  }
   final BoxDecoration boxDecoration = BoxDecoration(
   borderRadius: BorderRadius.circular(6.0),
   color: Colors.grey.shade50,
-  // shape: BoxShape.rectangle,
+  shape: BoxShape.rectangle,
   boxShadow: [
     BoxShadow(
         color: Colors.grey.shade300,
-        spreadRadius: 1.5,
+        spreadRadius: 0.0,
         blurRadius: 1.5,
         offset: Offset(3.0, 3.0)),
     BoxShadow(
         color: Colors.grey.shade400,
-        spreadRadius: 2,
-        blurRadius: 2 / 2.0,
-        offset: Offset(3.0, 3.0)
-        ),
+        spreadRadius: 0.0,
+        blurRadius: 1.5 / 2.0,
+        offset: Offset(3.0, 3.0)),
     BoxShadow(
         color: Colors.white,
         spreadRadius: 2.0,
-        blurRadius: 2,
-        offset: Offset(0, -3.0)),
-    BoxShadow(
-        color: Colors.white,
-        spreadRadius: 2.0,
-        blurRadius: 2 / 2,
+        blurRadius: 1.5,
         offset: Offset(-3.0, -3.0)),
-  ],);
+    BoxShadow(
+        color: Colors.white,
+        spreadRadius: 2.0,
+        blurRadius: 1.5 / 2,
+        offset: Offset(-3.0, -3.0)),
+  ],
+);
 }
