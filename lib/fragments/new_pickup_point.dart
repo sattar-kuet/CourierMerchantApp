@@ -65,6 +65,14 @@ class _NewPickupPointState extends State<NewPickupPoint> {
           key: _formKey,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Container(
+              height: MediaQuery.of(context).size.height * 0.2,
+              width: MediaQuery.of(context).size.width,
+              decoration: boxDecoration,
+              margin: const EdgeInsets.all(10),
+              child: Text("Add Pickup Point", style: TextStyle(fontSize: 20)),
+              
+            ),
             Padding(
               padding:
                   const EdgeInsets.symmetric(vertical: 10, horizontal: 30.0),
@@ -117,7 +125,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                 ),
                 title: 'এলাকা',
                 placeholder: 'সিলেক্ট করুন',
-                choiceItems: districts,
+                choiceItems: areas,
                 onChange: (state) => setState(() => areaId = state.value!),
                 selectedValue: areaId,
               ),
@@ -140,7 +148,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
             ElevatedButton(
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
-                  _addPickupPoint(context, districId, areaId);
+                 Service().addPickupPoint(nameController.text, districId, areaId, addressController.text);
                 }
               },
               child: Text('Add Pickup Point'),
@@ -154,5 +162,34 @@ class _NewPickupPointState extends State<NewPickupPoint> {
     );
   }
 
-  void _addPickupPoint(BuildContext context, districtId, areaId) {}
+  void _addPickupPoint(BuildContext context, districtId, areaId) {
+
+  }
+  final BoxDecoration boxDecoration = BoxDecoration(
+  borderRadius: BorderRadius.circular(6.0),
+  color: Colors.grey.shade50,
+  // shape: BoxShape.rectangle,
+  boxShadow: [
+    BoxShadow(
+        color: Colors.grey.shade300,
+        spreadRadius: 1.5,
+        blurRadius: 1.5,
+        offset: Offset(3.0, 3.0)),
+    BoxShadow(
+        color: Colors.grey.shade400,
+        spreadRadius: 2,
+        blurRadius: 2 / 2.0,
+        offset: Offset(3.0, 3.0)
+        ),
+    BoxShadow(
+        color: Colors.white,
+        spreadRadius: 2.0,
+        blurRadius: 2,
+        offset: Offset(0, -3.0)),
+    BoxShadow(
+        color: Colors.white,
+        spreadRadius: 2.0,
+        blurRadius: 2 / 2,
+        offset: Offset(-3.0, -3.0)),
+  ],);
 }

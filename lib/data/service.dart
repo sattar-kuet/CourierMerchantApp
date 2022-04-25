@@ -73,6 +73,7 @@ class Service {
     var token = await _getToken();
     var data = {'district_id': districtId, 'token': token};
     var response = await CallApi().postData(data, 'upazillaList');
+    print(response);
     return response['data'];
   }
 
@@ -89,6 +90,7 @@ class Service {
       },
     };
     var response = await CallApi().postData(data, 'addPickupPoint');
+    print(response);
     return response['data'];
   }
 
