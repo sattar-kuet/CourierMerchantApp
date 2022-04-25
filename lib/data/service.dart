@@ -56,7 +56,7 @@ class Service {
     return response;
   }
 
-   Future<dynamic> getProductTypes() async {
+  Future<dynamic> getProductTypes() async {
     var token = await _getToken();
     var response = await CallApi().getData('productTypes');
     return response['data'];
@@ -67,28 +67,12 @@ class Service {
     var response = await CallApi().getData('pickupPointDistrictList');
     return response['data'];
   }
- 
- Future getAreaList(districtId)async{
-   EasyLoading.show(status: 'Please wait...');
-    String fullUrl = '$BASE_URL/upazillaList/$districtId';
-    var url = Uri.parse(fullUrl);
-    print(url);
-    var response = await http.post(url, headers: {
-      'Content-type': 'application/json',
-      'Accept': 'application/json',
-    });
-    Map<String, dynamic> responseData = json.decode(response.body);
-    if (responseData != null) {
-      EasyLoading.dismiss();
-    }
-    print(responseData);
-    return responseData;
 
- }
-  Future<dynamic> getAreaList2(districtId) async {
+  Future getAreaList(districtId) async {
+    EasyLoading.show(status: 'Please wait...');
     var token = await _getToken();
-    var data = {'district_id': districtId};
-    var response = await CallApi().postData(data, 'upazillaList/$districtId');
+    var data = {'district_id': districtId, 'token': token};
+    var response = await CallApi().postData(data, 'upazillaList');
     return response['data'];
   }
 
