@@ -1,7 +1,9 @@
 //import 'dart:io';
 //import 'package:flutter_app/model/user.dart';
-
+import 'package:flutter_app/constants.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter_app/utility/helper.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import './api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -66,11 +68,27 @@ class Service {
     return response['data'];
   }
  
+ Future getAreaList(districtId)async{
+   EasyLoading.show(status: 'Please wait...');
+    String fullUrl = '$BASE_URL/upazillaList/$districtId';
+    var url = Uri.parse(fullUrl);
+    print(url);
+    var response = await http.post(url, headers: {
+      'Content-type': 'application/json',
+      'Accept': 'application/json',
+    });
+    Map<String, dynamic> responseData = json.decode(response.body);
+    if (responseData != null) {
+      EasyLoading.dismiss();
+    }
+    print(responseData);
+    return responseData;
 
-  Future<dynamic> getAreaList(districtId) async {
+ }
+  Future<dynamic> getAreaList2(districtId) async {
     var token = await _getToken();
     var data = {'district_id': districtId};
-    var response = await CallApi().postData(data, 'pickupPointAreaList');
+    var response = await CallApi().postData(data, 'upazillaList/$districtId');
     return response['data'];
   }
 

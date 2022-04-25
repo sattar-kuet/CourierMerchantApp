@@ -66,7 +66,8 @@ class _IntroPageState extends State<IntroPage> {
     if (isUserExist == false) {
       Navigator.pushNamed(context, PageRoutes.registration,
       arguments: {"mobile": mobileTxtField.text});
-    } else {
+    } 
+    else {
       String signatureCode = await SmsAutoFill().getAppSignature;
       var sentOtp = await service.sendOtp(mobileTxtField.text, signatureCode);
       Navigator.pushNamed(context, PageRoutes.loginByOtp,

@@ -99,6 +99,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                 selectedValue: districId,
               ),
             ),
+            if(districId!=0)
             Padding(
               padding:
                   const EdgeInsets.symmetric(vertical: 10, horizontal: 30.0),
