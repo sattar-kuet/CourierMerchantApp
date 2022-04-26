@@ -2,6 +2,7 @@
 //import 'package:flutter_app/model/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/constants.dart';
+import 'package:flutter_app/fragments/new_pickup_point.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_app/utility/helper.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -79,10 +80,31 @@ class Service {
   }
 
   Future getPickupAddress()async{
-    var data = {"user_id": 1};
+    var data = {"user_id": Helper.getLoggedInUserId(),};
     var response = await CallApi().postData(data, 'getPickupAddress');
-    return response['data'];
+    print(response);
+    // return response['data']['address'];
 
+  }
+  Future<dynamic> editPickupPoint(
+      String title, int district, int area, String street, context) async {
+    var token = await _getToken();
+    var data = {
+      'user_id': Helper.getLoggedInUserId(),
+      'address': {
+        'title': title,
+        'district': district,
+        'area': area,
+        'street': street
+      },
+    };
+    var response = await CallApi().postData(data, 'updatePickupPoint');
+    Navigator.pushReplacement(context,MaterialPageRoute(builder: (_)=>NewPickupPoint()));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(response['message']),
+      duration: Duration(seconds: 2),
+    ));
+    return response['data'];
   }
 
   Future<dynamic> addPickupPoint(
