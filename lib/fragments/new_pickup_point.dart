@@ -25,7 +25,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
   var districtList = Service().getDistrictList().then((value) => print(value));
   int districId = 0;
   int areaId = 0;
-  
+
   // Boolean for shoing the form as map will only be shown when user press this button
   bool showform = false;
   List<S2Choice<int>> districts = [
@@ -78,7 +78,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
           key: _formKey,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-           UserPickUpAddresses(),
+            UserPickUpAddresses(),
             if (showform)
               Column(
                 children: [
@@ -158,18 +158,18 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                 ],
               ),
             ElevatedButton(
-              onPressed: () async{
+              onPressed: () async {
                 if (showform == false) {
                   setState(() {
                     showform = true;
                   });
                 } else {
                   if (_formKey.currentState!.validate()) {
-                   await Service().addPickupPoint(nameController.text, districId,
-                        areaId, addressController.text, context);
-                        setState(() {
-                          showform = false;
-                        });
+                    await Service().addPickupPoint(nameController.text,
+                        districId, areaId, addressController.text, context);
+                    setState(() {
+                      showform = false;
+                    });
                   }
                 }
               },
@@ -183,13 +183,10 @@ class _NewPickupPointState extends State<NewPickupPoint> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
-
-  
 }
 
-
 class UserPickUpAddresses extends StatefulWidget {
-  const UserPickUpAddresses({ Key? key }) : super(key: key);
+  const UserPickUpAddresses({Key? key}) : super(key: key);
 
   @override
   State<UserPickUpAddresses> createState() => _UserPickUpAddressesState();
@@ -202,71 +199,84 @@ class _UserPickUpAddressesState extends State<UserPickUpAddresses> {
     super.initState();
     Service().getPickupAddress().then((value) {
       print(value);
-      setState(() {
-        userPickupPoint = value;
-      });
+      if (value != null) {
+        setState(() {
+          userPickupPoint = value;
+        });
+      }
     });
   }
+
   @override
   Widget build(BuildContext context) {
-    return  Container(
-                padding: EdgeInsets.only(bottom: 10),
-                constraints: BoxConstraints(
-                    minHeight: MediaQuery.of(context).size.height * 0.2,
-                    maxHeight: MediaQuery.of(context).size.height * 0.25),
-                width: MediaQuery.of(context).size.width,
-                decoration: NeumorphismDecoration().boxDecoration,
-                margin: const EdgeInsets.all(10),
-                alignment: Alignment.bottomCenter,
-                child: Scrollbar(
-                  isAlwaysShown: true,
-                  child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount:userPickupPoint.length==0?1: userPickupPoint.length,
-                      itemBuilder: (context, index) {
-                        if(userPickupPoint.length==0){
-                          return Text("No Pickup Point Added", textAlign:TextAlign.center, style: TextStyle(fontSize: 20),);
-                        }
-                        else{
-                          return Padding(
-                          padding: const EdgeInsets.only(top: 8),
-                          child: ListTile(
-                            title: Text(
-                                '${userPickupPoint[index]['title']}, ${userPickupPoint[index]['district_name']}'),
-                            subtitle:
-                                Text("${userPickupPoint[index]['street']}"),
-                            trailing: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                InkWell(
-                                  onTap: (){
-                                    Navigator.push(context, MaterialPageRoute(builder: (_)=>EditPickupPoint(title:'${userPickupPoint[index]['title']}',
-                                    district: '${userPickupPoint[index]['district_name']}', area:'${userPickupPoint[index]['area_name']}',
-                                    streetAddress: "${userPickupPoint[index]['street']}",
-                                    )));
-                                  },
-                                  child: Icon(
-                                      Icons.edit,
-                                      color: Colors.indigo[900],
-                                    ),
-                                ),
-                                  
-                                IconButton(
-                                  onPressed: () {},
-                                  icon: Icon(
-                                    Icons.delete,
-                                    color: Colors.red,
-                                  ),
-                                  padding: EdgeInsets.all(0),
-                                  constraints: BoxConstraints(),
-                                )
-                              ],
+    return Container(
+        padding: EdgeInsets.only(bottom: 10),
+        constraints: BoxConstraints(
+            minHeight: MediaQuery.of(context).size.height * 0.2,
+            maxHeight: MediaQuery.of(context).size.height * 0.25),
+        width: MediaQuery.of(context).size.width,
+        decoration: NeumorphismDecoration().boxDecoration,
+        margin: const EdgeInsets.all(10),
+        alignment: Alignment.bottomCenter,
+        child: Scrollbar(
+          isAlwaysShown: true,
+          child: ListView.builder(
+              shrinkWrap: true,
+              itemCount:
+                  userPickupPoint.length == 0 ? 1 : userPickupPoint.length,
+              itemBuilder: (context, index) {
+                if (userPickupPoint.length == 0) {
+                  return Text(
+                    "No Pickup Point Added",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 20),
+                  );
+                } else {
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: ListTile(
+                      title: Text(
+                          '${userPickupPoint[index]['title']}, ${userPickupPoint[index]['district_name']}'),
+                      subtitle: Text("${userPickupPoint[index]['street']}"),
+                      trailing: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) => EditPickupPoint(
+                                            title:
+                                                '${userPickupPoint[index]['title']}',
+                                            district:
+                                                '${userPickupPoint[index]['district_name']}',
+                                            area:
+                                                '${userPickupPoint[index]['area_name']}',
+                                            streetAddress:
+                                                "${userPickupPoint[index]['street']}",
+                                          )));
+                            },
+                            child: Icon(
+                              Icons.edit,
+                              color: Colors.indigo[900],
                             ),
                           ),
-                        );
-                          
-                        }
-                      }),
-                ));
+                          IconButton(
+                            onPressed: () {},
+                            icon: Icon(
+                              Icons.delete,
+                              color: Colors.red,
+                            ),
+                            padding: EdgeInsets.all(0),
+                            constraints: BoxConstraints(),
+                          )
+                        ],
+                      ),
+                    ),
+                  );
+                }
+              }),
+        ));
   }
 }

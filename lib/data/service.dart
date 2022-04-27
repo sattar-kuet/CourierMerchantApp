@@ -80,17 +80,17 @@ class Service {
   }
 
   Future getPickupAddress()async{
-    var data = {"user_id": Helper.getLoggedInUserId(),};
+    var data = {"user_id": Helper().getLoggedInUserId()};
     var response = await CallApi().postData(data, 'getPickupAddress');
     print(response);
-    // return response['data']['address'];
+    return response['data']['address'];
 
   }
   Future<dynamic> editPickupPoint(
       String title, int district, int area, String street, context) async {
     var token = await _getToken();
     var data = {
-      'user_id': Helper.getLoggedInUserId(),
+      'user_id': Helper().getLoggedInUserId(),
       'address': {
         'title': title,
         'district': district,
@@ -111,7 +111,7 @@ class Service {
       String title, int district, int area, String street, context) async {
     var token = await _getToken();
     var data = {
-      'user_id': Helper.getLoggedInUserId(),
+      'user_id': Helper().getLoggedInUserId(),
       'address': {
         'title': title,
         'district': district,
