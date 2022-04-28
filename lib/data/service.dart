@@ -79,18 +79,21 @@ class Service {
     return response['data'];
   }
 
-  Future getPickupAddress()async{
-    var data = {"user_id": Helper().getLoggedInUserId()};
+  Future getPickupAddress() async {
+    int userId = await Helper().getLoggedInUserId();
+    var data = {"user_id": userId};
     var response = await CallApi().postData(data, 'getPickupAddress');
     print(response);
-    return response['data']['address'];
-
+    return response['data'];
   }
+
   Future<dynamic> editPickupPoint(
       String title, int district, int area, String street, context) async {
     var token = await _getToken();
+    var userId = await Helper().getLoggedInUserId();
     var data = {
-      'user_id': Helper().getLoggedInUserId(),
+      'user_id': userId,
+      'token': token,
       'address': {
         'title': title,
         'district': district,
@@ -99,7 +102,8 @@ class Service {
       },
     };
     var response = await CallApi().postData(data, 'updatePickupPoint');
-    Navigator.pushReplacement(context,MaterialPageRoute(builder: (_)=>NewPickupPoint()));
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (_) => NewPickupPoint()));
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(response['message']),
       duration: Duration(seconds: 2),
@@ -110,8 +114,10 @@ class Service {
   Future<dynamic> addPickupPoint(
       String title, int district, int area, String street, context) async {
     var token = await _getToken();
+    var userId = await Helper().getLoggedInUserId();
     var data = {
-      'user_id': Helper().getLoggedInUserId(),
+      'user_id': userId,
+      'token': token,
       'address': {
         'title': title,
         'district': district,
