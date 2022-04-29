@@ -28,22 +28,22 @@ class _NewPickupPointState extends State<NewPickupPoint> {
 
   // Boolean for shoing the form as map will only be shown when user press this button
   bool showform = false;
-  List<S2Choice<int>> districts = [
-    // S2Choice<int>(value: 1, title: 'Dhaka'),
-    // S2Choice<int>(value: 2, title: 'Cumilla'),
-    // S2Choice<int>(value: 3, title: 'Rajshahi')
-  ];
+  List<S2Choice<int>> districts = [];
   List<S2Choice<int>> areas = [];
+
+  List userPickupPoint = [];
   @override
   void initState() {
     super.initState();
     returnDistrictValues();
-    // Service().getPickupAddress().then((value) {
-    //   print(value);
-    //   setState(() {
-    //     userPickupPoint = value;
-    //   });
-    // });
+    Service().getPickupAddress().then((value) {
+      print(value);
+      if (value != null) {
+        setState(() {
+          userPickupPoint = value;
+        });
+      }
+    });
   }
 
   returnDistrictValues() async {
@@ -78,103 +78,203 @@ class _NewPickupPointState extends State<NewPickupPoint> {
           key: _formKey,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            UserPickUpAddresses(),
-            if (showform)
-              Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 30.0),
-                    child: TextInput(
-                      inputController: nameController,
-                      label: 'পিকআপ পয়েন্টের নাম',
-                      icon: Icons.edit,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 30.0),
-                    child: SmartSelect<int>.single(
-                      modalFilter: true,
-                      modalFilterAuto: true,
-                      tileBuilder: (context, state) => S2Tile<dynamic>(
-                        //https://github.com/akbarpulatov/flutter_awesome_select/blob/master/example/lib/features_single/single_chips.dart
-                        title: const Text(
-                          'জেলা',
-                        ),
-                        value: state.selected?.toWidget() ?? Container(),
-                        leading: Icon(Icons.list_outlined),
-                        onTap: state.showModal,
-                      ),
-                      title: 'জেলা',
-                      placeholder: 'সিলেক্ট করুন',
-                      choiceItems: districts,
-                      onChange: (state) {
-                        setState(() => districId = state.value!);
-                        updateAreaList();
-                      },
-                      selectedValue: districId,
-                    ),
-                  ),
-                  if (districId != 0)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 30.0),
-                      child: SmartSelect<int>.single(
-                        modalFilter: true,
-                        modalFilterAuto: true,
-                        tileBuilder: (context, state) => S2Tile<dynamic>(
-                          //https://github.com/akbarpulatov/flutter_awesome_select/blob/master/example/lib/features_single/single_chips.dart
-                          title: const Text(
-                            'এলাকা',
-                          ),
-                          value: state.selected?.toWidget() ?? Container(),
-                          leading: Icon(Icons.list_outlined),
-                          onTap: state.showModal,
-                        ),
-                        title: 'এলাকা',
-                        placeholder: 'সিলেক্ট করুন',
-                        choiceItems: areas,
-                        onChange: (state) =>
-                            setState(() => areaId = state.value!),
-                        selectedValue: areaId,
-                      ),
-                    ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 30.0),
-                    child: TextInput(
-                        inputController: addressController,
-                        label: 'বিস্তারিত ঠিকানা',
-                        icon: Icons.map_outlined),
-                  ),
-                  Text(
-                    'যেমনঃ ২য় তলা, বাসা নংঃ ১১৮, ব্লকঃ ডি, রোডঃ ০৫, মহানগর প্রজেক্ট, রামপুরা, ঢাকা',
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 10,
-                    ),
-                  ),
-                ],
-              ),
+            // Card For Showing user pickup addresses
+            Container(
+                padding: EdgeInsets.only(bottom: 10),
+                constraints: BoxConstraints(
+                    minHeight: MediaQuery.of(context).size.height * 0.2,
+                    maxHeight: MediaQuery.of(context).size.height * 0.25),
+                width: MediaQuery.of(context).size.width,
+                decoration: NeumorphismDecoration().boxDecoration,
+                margin: const EdgeInsets.all(10),
+                alignment: Alignment.bottomCenter,
+                child: Scrollbar(
+                  isAlwaysShown: true,
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: userPickupPoint.length == 0
+                          ? 1
+                          : userPickupPoint.length,
+                      itemBuilder: (context, index) {
+                        if (userPickupPoint.length == 0) {
+                          return Text(
+                            "No Pickup Point Added",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 20),
+                          );
+                        } else {
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: ListTile(
+                              title: Text(
+                                  '${userPickupPoint[index]['title']}, ${userPickupPoint[index]['district_name']}'),
+                              subtitle:
+                                  Text("${userPickupPoint[index]['street']}"),
+                              trailing: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (_) => EditPickupPoint(
+                                                    title:
+                                                        '${userPickupPoint[index]['title']}',
+                                                    district:
+                                                        '${userPickupPoint[index]['district_name']}',
+                                                    area:
+                                                        '${userPickupPoint[index]['area_name']}',
+                                                    streetAddress:
+                                                        "${userPickupPoint[index]['street']}",
+                                                    id: "${userPickupPoint[index]['id']}",
+                                                  )));
+                                    },
+                                    child: Icon(
+                                      Icons.edit,
+                                      color: Colors.indigo[900],
+                                    ),
+                                  ),
+                                  IconButton(
+                                    onPressed: () {},
+                                    icon: Icon(
+                                      Icons.delete,
+                                      color: Colors.red,
+                                    ),
+                                    padding: EdgeInsets.all(0),
+                                    constraints: BoxConstraints(),
+                                  )
+                                ],
+                              ),
+                            ),
+                          );
+                        }
+                      }),
+                )),
+            // Model Sheet For adding the new pickup point
             ElevatedButton(
-              onPressed: () async {
-                if (showform == false) {
-                  setState(() {
-                    showform = true;
-                  });
-                } else {
-                  if (_formKey.currentState!.validate()) {
-                    await Service().addPickupPoint(nameController.text,
-                        districId, areaId, addressController.text, context);
-                    setState(() {
-                      showform = false;
-                    });
-                  }
-                }
-              },
-              child: Text('Add Pickup Point'),
-            )
+                onPressed: () {
+                 showModalBottomSheet(
+                      isScrollControlled: true,
+                      context: context,
+                      builder: (context) {
+                        return StatefulBuilder(builder:
+                            (BuildContext context, StateSetter setState) {
+                          return Padding(
+                            padding: MediaQuery.of(context).viewInsets,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 30.0),
+                                  child: TextInput(
+                                    inputController: nameController,
+                                    label: 'পিকআপ পয়েন্টের নাম',
+                                    icon: Icons.edit,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 30.0),
+                                  child: SmartSelect<int>.single(
+                                    modalFilter: true,
+                                    modalFilterAuto: true,
+                                    tileBuilder: (context, state) =>
+                                        S2Tile<dynamic>(
+                                      //https://github.com/akbarpulatov/flutter_awesome_select/blob/master/example/lib/features_single/single_chips.dart
+                                      title: const Text(
+                                        'জেলা',
+                                      ),
+                                      value: state.selected?.toWidget() ??
+                                          Container(),
+                                      leading: Icon(Icons.list_outlined),
+                                      onTap: state.showModal,
+                                    ),
+                                    title: 'জেলা',
+                                    placeholder: 'সিলেক্ট করুন',
+                                    choiceItems: districts,
+                                    onChange: (state) {
+                                      setState(() => districId = state.value!);
+                                      updateAreaList();
+                                    },
+                                    selectedValue: districId,
+                                  ),
+                                ),
+                                if (districId != 0)
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10, horizontal: 30.0),
+                                    child: SmartSelect<int>.single(
+                                      modalFilter: true,
+                                      modalFilterAuto: true,
+                                      tileBuilder: (context, state) =>
+                                          S2Tile<dynamic>(
+                                        //https://github.com/akbarpulatov/flutter_awesome_select/blob/master/example/lib/features_single/single_chips.dart
+                                        title: const Text(
+                                          'এলাকা',
+                                        ),
+                                        value: state.selected?.toWidget() ??
+                                            Container(),
+                                        leading: Icon(Icons.list_outlined),
+                                        onTap: state.showModal,
+                                      ),
+                                      title: 'এলাকা',
+                                      placeholder: 'সিলেক্ট করুন',
+                                      choiceItems: areas,
+                                      onChange: (state) =>
+                                          setState(() => areaId = state.value!),
+                                      selectedValue: areaId,
+                                    ),
+                                  ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 30.0),
+                                  child: TextInput(
+                                      inputController: addressController,
+                                      label: 'বিস্তারিত ঠিকানা',
+                                      icon: Icons.map_outlined),
+                                ),
+                                Text(
+                                  'যেমনঃ ২য় তলা, বাসা নংঃ ১১৮, ব্লকঃ ডি, রোডঃ ০৫, মহানগর প্রজেক্ট, রামপুরা, ঢাকা',
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 10,
+                                  ),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    
+                                      if (_formKey.currentState!.validate()) {
+                                        await Service().addPickupPoint(
+                                            nameController.text,
+                                            districId,
+                                            areaId,
+                                            addressController.text,
+                                            context);
+                                        Service()
+                                            .getPickupAddress()
+                                            .then((value) {
+                                          print(value);
+                                          if (value != null) {
+                                            setState(() {
+                                              userPickupPoint = value;
+                                            });
+                                          }
+                                        });
+                                        // Navigator.pop(context);
+                                      }
+                                   
+                                  },
+                                  child: Text('Add Pickup Point'),
+                                )
+                              ],
+                            ),
+                          );
+                        });
+                      });
+                },
+                child: Text("Add New Pickup Point"))
           ]),
         ),
       ),
@@ -185,98 +285,3 @@ class _NewPickupPointState extends State<NewPickupPoint> {
   }
 }
 
-class UserPickUpAddresses extends StatefulWidget {
-  const UserPickUpAddresses({Key? key}) : super(key: key);
-
-  @override
-  State<UserPickUpAddresses> createState() => _UserPickUpAddressesState();
-}
-
-class _UserPickUpAddressesState extends State<UserPickUpAddresses> {
-  List userPickupPoint = [];
-  @override
-  void initState() {
-    super.initState();
-    Service().getPickupAddress().then((value) {
-      print(value);
-      if (value != null) {
-        setState(() {
-          userPickupPoint = value;
-        });
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        padding: EdgeInsets.only(bottom: 10),
-        constraints: BoxConstraints(
-            minHeight: MediaQuery.of(context).size.height * 0.2,
-            maxHeight: MediaQuery.of(context).size.height * 0.25),
-        width: MediaQuery.of(context).size.width,
-        decoration: NeumorphismDecoration().boxDecoration,
-        margin: const EdgeInsets.all(10),
-        alignment: Alignment.bottomCenter,
-        child: Scrollbar(
-          isAlwaysShown: true,
-          child: ListView.builder(
-              shrinkWrap: true,
-              itemCount:
-                  userPickupPoint.length == 0 ? 1 : userPickupPoint.length,
-              itemBuilder: (context, index) {
-                if (userPickupPoint.length == 0) {
-                  return Text(
-                    "No Pickup Point Added",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 20),
-                  );
-                } else {
-                  return Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: ListTile(
-                      title: Text(
-                          '${userPickupPoint[index]['title']}, ${userPickupPoint[index]['district_name']}'),
-                      subtitle: Text("${userPickupPoint[index]['street']}"),
-                      trailing: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => EditPickupPoint(
-                                            title:
-                                                '${userPickupPoint[index]['title']}',
-                                            district:
-                                                '${userPickupPoint[index]['district_name']}',
-                                            area:
-                                                '${userPickupPoint[index]['area_name']}',
-                                            streetAddress:
-                                                "${userPickupPoint[index]['street']}",
-                                          )));
-                            },
-                            child: Icon(
-                              Icons.edit,
-                              color: Colors.indigo[900],
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: () {},
-                            icon: Icon(
-                              Icons.delete,
-                              color: Colors.red,
-                            ),
-                            padding: EdgeInsets.all(0),
-                            constraints: BoxConstraints(),
-                          )
-                        ],
-                      ),
-                    ),
-                  );
-                }
-              }),
-        ));
-  }
-}

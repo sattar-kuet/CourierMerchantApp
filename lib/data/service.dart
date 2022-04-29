@@ -88,13 +88,14 @@ class Service {
   }
 
   Future<dynamic> editPickupPoint(
-      String title, int district, int area, String street, context) async {
+      String title, int district, int area, String street,id, context) async {
     var token = await _getToken();
     var userId = await Helper().getLoggedInUserId();
     var data = {
       'user_id': userId,
       'token': token,
       'address': {
+        'id': id,
         'title': title,
         'district': district,
         'area': area,

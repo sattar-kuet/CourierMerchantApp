@@ -16,6 +16,11 @@ class CallApi {
       'Accept': 'application/json',
     });
     Map<String, dynamic> responseData = json.decode(response.body);
+    // Also need to dismiss the loader because it makes trouble if the function not works properly due to internet connection etc
+    //  For that rason I am adding one more condition so it can dismiss on any condition
+    if(response.statusCode!=200){
+      EasyLoading.dismiss();
+    }
     if (responseData != null) {
       EasyLoading.dismiss();
     }

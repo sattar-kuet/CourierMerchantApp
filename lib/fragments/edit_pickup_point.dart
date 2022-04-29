@@ -6,11 +6,19 @@ import 'package:flutter_app/widget/TextInput.dart';
 
 class EditPickupPoint extends StatefulWidget {
   static const String routeName = '/editPickupPointPage';
-  const EditPickupPoint({Key? key, required this.title, required this.district,required this.area, required this.streetAddress}) : super(key: key);
+  const EditPickupPoint(
+      {Key? key,
+      required this.title,
+      required this.district,
+      required this.area,
+      required this.streetAddress,
+      required this.id})
+      : super(key: key);
   final String title;
   final String district;
   final String area;
   final String streetAddress;
+  final id;
 
   @override
   State<EditPickupPoint> createState() => _EditPickupPointState();
@@ -23,7 +31,7 @@ class _EditPickupPointState extends State<EditPickupPoint> {
   var districtList = Service().getDistrictList().then((value) => print(value));
   int districId = 0;
   int areaId = 0;
-  
+
   // Boolean for shoing the form as map will only be shown when user press this button
   bool showform = false;
   List<S2Choice<int>> districts = [
@@ -80,107 +88,95 @@ class _EditPickupPointState extends State<EditPickupPoint> {
           key: _formKey,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 30.0),
-                    child: TextInput(
-                      inputController: nameController,
-                      label: 'পিকআপ পয়েন্টের নাম',
-                      icon: Icons.edit,
-                    ),
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 10, horizontal: 30.0),
+                  child: TextInput(
+                    inputController: nameController,
+                    label: 'পিকআপ পয়েন্টের নাম',
+                    icon: Icons.edit,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 30.0),
-                    child: SmartSelect<int>.single(
-                      modalFilter: true,
-                      modalFilterAuto: true,
-                      tileBuilder: (context, state) => S2Tile<dynamic>(
-                        //https://github.com/akbarpulatov/flutter_awesome_select/blob/master/example/lib/features_single/single_chips.dart
-                        title: const Text(
-                          'জেলা',
-                        ),
-                        value: state.selected?.toWidget() ?? Container(),
-                        leading: Icon(Icons.list_outlined),
-                        onTap: state.showModal,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 10, horizontal: 30.0),
+                  child: SmartSelect<int>.single(
+                    modalFilter: true,
+                    modalFilterAuto: true,
+                    tileBuilder: (context, state) => S2Tile<dynamic>(
+                      //https://github.com/akbarpulatov/flutter_awesome_select/blob/master/example/lib/features_single/single_chips.dart
+                      title: const Text(
+                        'জেলা',
                       ),
-                      title: 'জেলা',
-                      placeholder: "${widget.district}",
-                      choiceItems: districts,
-                      onChange: (state) {
-                        setState(() => districId = state.value!);
-                        updateAreaList();
-                      },
-                      selectedValue: districId,
+                      value: state.selected?.toWidget() ?? Container(),
+                      leading: Icon(Icons.list_outlined),
+                      onTap: state.showModal,
                     ),
+                    title: 'জেলা',
+                    placeholder: "${widget.district}",
+                    choiceItems: districts,
+                    onChange: (state) {
+                      setState(() => districId = state.value!);
+                      updateAreaList();
+                    },
+                    selectedValue: districId,
                   ),
-                 
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 30.0),
-                      child: SmartSelect<int>.single(
-                        modalFilter: true,
-                        modalFilterAuto: true,
-                        tileBuilder: (context, state) => S2Tile<dynamic>(
-                          //https://github.com/akbarpulatov/flutter_awesome_select/blob/master/example/lib/features_single/single_chips.dart
-                          title: const Text(
-                            'এলাকা',
-                          ),
-                          value: state.selected?.toWidget() ?? Container(),
-                          leading: Icon(Icons.list_outlined),
-                          onTap: state.showModal,
-                        ),
-                        title: 'এলাকা',
-                        placeholder: '${widget.area}',
-                        choiceItems: areas,
-                        onChange: (state) =>
-                            setState(() => areaId = state.value!),
-                        selectedValue: areaId,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 10, horizontal: 30.0),
+                  child: SmartSelect<int>.single(
+                    modalFilter: true,
+                    modalFilterAuto: true,
+                    tileBuilder: (context, state) => S2Tile<dynamic>(
+                      //https://github.com/akbarpulatov/flutter_awesome_select/blob/master/example/lib/features_single/single_chips.dart
+                      title: const Text(
+                        'এলাকা',
                       ),
+                      value: state.selected?.toWidget() ?? Container(),
+                      leading: Icon(Icons.list_outlined),
+                      onTap: state.showModal,
                     ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 30.0),
-                    child: TextInput(
-                        inputController: addressController,
-                        label: 'বিস্তারিত ঠিকানা',
-                        icon: Icons.map_outlined),
+                    title: 'এলাকা',
+                    placeholder: '${widget.area}',
+                    choiceItems: areas,
+                    onChange: (state) => setState(() => areaId = state.value!),
+                    selectedValue: areaId,
                   ),
-                  Text(
-                    'যেমনঃ ২য় তলা, বাসা নংঃ ১১৮, ব্লকঃ ডি, রোডঃ ০৫, মহানগর প্রজেক্ট, রামপুরা, ঢাকা',
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 10,
-                    ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 10, horizontal: 30.0),
+                  child: TextInput(
+                      inputController: addressController,
+                      label: 'বিস্তারিত ঠিকানা',
+                      icon: Icons.map_outlined),
+                ),
+                Text(
+                  'যেমনঃ ২য় তলা, বাসা নংঃ ১১৮, ব্লকঃ ডি, রোডঃ ০৫, মহানগর প্রজেক্ট, রামপুরা, ঢাকা',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 10,
                   ),
-                ],
-              ),
+                ),
+              ],
+            ),
             ElevatedButton(
-              onPressed: () async{
-                if (showform == false) {
-                  setState(() {
-                    showform = true;
-                  });
-                } else {
+              onPressed: () async {
+                
                   if (_formKey.currentState!.validate()) {
-                   await Service().addPickupPoint(nameController.text, districId,
-                        areaId, addressController.text, context);
-                        setState(() {
-                          showform = false;
-                        });
+                    await Service().editPickupPoint(nameController.text,
+                        districId, areaId, addressController.text,widget.id, context);
                   }
-                }
-              },
+                },
+              
               child: Text('Edit Pickup Point'),
             )
           ]),
         ),
       ),
-      
     );
   }
-
-  
 }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/fragments/new_pickup_point.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Helper {
@@ -20,4 +21,8 @@ class Helper {
     var userId = json.decode(localStorage.getString('user').toString());
     return userId['id'];
   }
+}
+
+class UserPickUpAddressesHelper{
+  List userPickupPoint = [];
 }
