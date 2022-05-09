@@ -89,7 +89,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                 margin: const EdgeInsets.all(10),
                 alignment: Alignment.bottomCenter,
                 child: Scrollbar(
-                  isAlwaysShown: true,
+                  isAlwaysShown: false,
                   child: ListView.builder(
                       shrinkWrap: true,
                       itemCount: userPickupPoint.length == 0
@@ -262,7 +262,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                                             });
                                           }
                                         });
-                                        // Navigator.pop(context);
+                                        Navigator.pop(context);
                                       }
                                    
                                   },
