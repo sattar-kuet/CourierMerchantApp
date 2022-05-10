@@ -37,7 +37,6 @@ class _NewPickupPointState extends State<NewPickupPoint> {
     super.initState();
     returnDistrictValues();
     Service().getPickupAddress().then((value) {
-      print(value);
       if (value != null) {
         setState(() {
           userPickupPoint = value;
@@ -87,7 +86,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                 width: MediaQuery.of(context).size.width,
                 decoration: NeumorphismDecoration().boxDecoration,
                 margin: const EdgeInsets.all(10),
-                alignment: Alignment.bottomCenter,
+                alignment: Alignment.center,
                 child: Scrollbar(
                   isAlwaysShown: false,
                   child: ListView.builder(
@@ -154,7 +153,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
             // Model Sheet For adding the new pickup point
             ElevatedButton(
                 onPressed: () {
-                 showModalBottomSheet(
+                  showModalBottomSheet(
                       isScrollControlled: true,
                       context: context,
                       builder: (context) {
@@ -244,27 +243,33 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                                 ),
                                 ElevatedButton(
                                   onPressed: () async {
-                                    
-                                      if (_formKey.currentState!.validate()) {
-                                        await Service().addPickupPoint(
-                                            nameController.text,
-                                            districId,
-                                            areaId,
-                                            addressController.text,
-                                            context);
-                                        Service()
-                                            .getPickupAddress()
-                                            .then((value) {
-                                          print(value);
-                                          if (value != null) {
-                                            setState(() {
-                                              userPickupPoint = value;
-                                            });
-                                          }
-                                        });
-                                        Navigator.pop(context);
-                                      }
-                                   
+                                    if (_formKey.currentState!.validate()) {
+                                      await Service().addPickupPoint(
+                                          nameController.text,
+                                          districId,
+                                          areaId,
+                                          addressController.text,
+                                          context);
+                                      Service()
+                                          .getPickupAddress()
+                                          .then((value) {
+                                        print(value);
+                                        if (value != null) {
+                                          setState(() {
+                                            // For reseting the state of form
+                                            userPickupPoint = value;
+                                            nameController.clear();
+                                            addressController.clear();
+                                            districId = 0;
+                                            areaId = 0;
+                                            districts.clear();
+                                            areas.clear();
+                                          });
+                                          // For closing model sheet
+                                          Navigator.pop(context);
+                                        }
+                                      });
+                                    }
                                   },
                                   child: Text('Add Pickup Point'),
                                 )
@@ -274,7 +279,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                         });
                       });
                 },
-                child: Text("Add New Pickup Point"))
+                child: Text("Add New Pickup Point")),
           ]),
         ),
       ),
@@ -284,4 +289,3 @@ class _NewPickupPointState extends State<NewPickupPoint> {
     );
   }
 }
-
