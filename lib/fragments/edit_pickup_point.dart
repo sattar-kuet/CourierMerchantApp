@@ -1,7 +1,6 @@
 import 'package:awesome_select/awesome_select.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/data/service.dart';
-import 'package:flutter_app/fragments/new_pickup_point.dart';
 import 'package:flutter_app/widget/TextInput.dart';
 
 class EditPickupPoint extends StatefulWidget {
@@ -9,14 +8,14 @@ class EditPickupPoint extends StatefulWidget {
   const EditPickupPoint(
       {Key? key,
       required this.title,
-      required this.district,
-      required this.area,
+      required this.districtId,
+      required this.areaId,
       required this.streetAddress,
       required this.id})
       : super(key: key);
   final String title;
-  final String district;
-  final String area;
+  final int districtId;
+  final int areaId;
   final String streetAddress;
   final id;
 
@@ -34,19 +33,18 @@ class _EditPickupPointState extends State<EditPickupPoint> {
 
   // Boolean for shoing the form as map will only be shown when user press this button
   bool showform = false;
-  List<S2Choice<int>> districts = [
-    // S2Choice<int>(value: 1, title: 'Dhaka'),
-    // S2Choice<int>(value: 2, title: 'Cumilla'),
-    // S2Choice<int>(value: 3, title: 'Rajshahi')
-  ];
+  List<S2Choice<int>> districts = [];
   List<S2Choice<int>> areas = [];
   @override
   void initState() {
     super.initState();
     returnDistrictValues();
+    updateAreaList();
     setState(() {
       nameController.text = widget.title;
       addressController.text = widget.streetAddress;
+      districId = widget.districtId;
+      areaId = widget.areaId;
     });
     // Service().getPickupAddress().then((value) {
     //   print(value);
@@ -115,7 +113,6 @@ class _EditPickupPointState extends State<EditPickupPoint> {
                       onTap: state.showModal,
                     ),
                     title: 'জেলা',
-                    placeholder: "${widget.district}",
                     choiceItems: districts,
                     onChange: (state) {
                       setState(() => districId = state.value!);
@@ -140,7 +137,6 @@ class _EditPickupPointState extends State<EditPickupPoint> {
                       onTap: state.showModal,
                     ),
                     title: 'এলাকা',
-                    placeholder: '${widget.area}',
                     choiceItems: areas,
                     onChange: (state) => setState(() => areaId = state.value!),
                     selectedValue: areaId,
@@ -165,13 +161,16 @@ class _EditPickupPointState extends State<EditPickupPoint> {
             ),
             ElevatedButton(
               onPressed: () async {
-                
-                  if (_formKey.currentState!.validate()) {
-                    await Service().editPickupPoint(nameController.text,
-                        districId, areaId, addressController.text,widget.id, context);
-                  }
-                },
-              
+                if (_formKey.currentState!.validate()) {
+                  await Service().editPickupPoint(
+                      nameController.text,
+                      districId,
+                      areaId,
+                      addressController.text,
+                      widget.id,
+                      context);
+                }
+              },
               child: Text('Edit Pickup Point'),
             )
           ]),

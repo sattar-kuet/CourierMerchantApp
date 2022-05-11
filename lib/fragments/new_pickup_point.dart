@@ -120,13 +120,16 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                                               builder: (_) => EditPickupPoint(
                                                     title:
                                                         '${userPickupPoint[index]['title']}',
-                                                    district:
-                                                        '${userPickupPoint[index]['district_name']}',
-                                                    area:
-                                                        '${userPickupPoint[index]['area_name']}',
+                                                    districtId:
+                                                        userPickupPoint[index]
+                                                            ['district'],
+                                                    areaId:
+                                                        userPickupPoint[index]
+                                                            ['area'],
                                                     streetAddress:
                                                         "${userPickupPoint[index]['street']}",
-                                                    id: "${userPickupPoint[index]['id']}",
+                                                    id: userPickupPoint[index]
+                                                        ['id'],
                                                   )));
                                     },
                                     child: Icon(

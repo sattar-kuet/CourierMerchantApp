@@ -3,6 +3,7 @@ import 'package:flutter_app/data/service.dart';
 import 'package:flutter_app/fragments/profile_details.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 import '../utility/helper.dart';
+import 'new_pickup_point.dart';
 
 class LoginbyotpPage extends StatefulWidget {
   static const String routeName = '/loginbyotpPage';
@@ -69,8 +70,8 @@ class _LoginPageState extends State<LoginbyotpPage> {
   Future<void> _login(String mobile) async {
     var response = await Service().login(mobile, optInutField.text);
     if (response['status'] == 1) {
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => ProfileDetails(response)));
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => NewPickupPoint()));
     } else {
       Helper.errorSnackbar(context, response['message'].toString());
       optInutField.clear();
