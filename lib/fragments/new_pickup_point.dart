@@ -106,7 +106,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                             padding: const EdgeInsets.only(top: 8),
                             child: ListTile(
                               title: Text(
-                                  '${userPickupPoint[index]['title']}, ${userPickupPoint[index]['district_name']}'),
+                                  '${userPickupPoint[index]['title']}, ${userPickupPoint[index]['area_name']},${userPickupPoint[index]['district_name']}'),
                               subtitle:
                                   Text("${userPickupPoint[index]['street']}"),
                               trailing: Column(
