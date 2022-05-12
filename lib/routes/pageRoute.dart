@@ -10,7 +10,7 @@ class PageRoutes {
   static const String login = IntroPage.routeName;
   static const String loginByOtp = LoginbyotpPage.routeName;
   static const String registration = RegistrationPage.routeName;
-  static const String home = HomePage.routeName;
+  static const String home = Home.routeName;
   static const String newPickupPoint = NewPickupPoint.routeName;
   static const String profile = ProfileDetails.routeName;
 }

@@ -1,12 +1,7 @@
-//import 'dart:io';
-//import 'package:flutter_app/model/user.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/constants.dart';
 import 'package:flutter_app/fragments/new_pickup_point.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter_app/utility/helper.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-
 import './api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -39,6 +34,13 @@ class Service {
       localStorage.setString('user', json.encode(response['user']));
     }
     return response;
+  }
+
+  Future<int> nextStepToFinishProfile() async {
+    var loggedInUserId = await _getLoggedInUser('id');
+    var data = {'user_id': loggedInUserId};
+    var response = await CallApi().postData(data, 'nextStepToFinishProfile');
+    return response['type'];
   }
 
   Future<Map<String, dynamic>> register(String mobile, String name,
@@ -88,7 +90,7 @@ class Service {
   }
 
   Future<dynamic> editPickupPoint(
-      String title, int district, int area, String street,id, context) async {
+      String title, int district, int area, String street, id, context) async {
     var token = await _getToken();
     var userId = await Helper().getLoggedInUserId();
     var data = {
@@ -139,5 +141,10 @@ class Service {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     var token = localStorage.getString('token');
     return token;
+  }
+
+  dynamic _getLoggedInUser(String key) async {
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+    return localStorage.getString(key);
   }
 }

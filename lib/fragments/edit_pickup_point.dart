@@ -112,7 +112,7 @@ class _EditPickupPointState extends State<EditPickupPoint> {
                       setState(() => districId = state.value!);
                       updateAreaList();
                     },
-                    selectedValue: districId,
+                    selectedValue: 1,
                   ),
                 ),
                 Padding(
@@ -133,7 +133,7 @@ class _EditPickupPointState extends State<EditPickupPoint> {
                     title: 'এলাকা',
                     choiceItems: areas,
                     onChange: (state) => setState(() => areaId = state.value!),
-                    selectedValue: areaId,
+                    selectedValue: 276,
                   ),
                 ),
                 Padding(

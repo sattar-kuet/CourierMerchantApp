@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/data/service.dart';
-import 'package:flutter_app/fragments/profile_details.dart';
+import 'bank.dart';
+import 'package:flutter_app/fragments/new_pickup_point.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 import '../utility/helper.dart';
-import 'new_pickup_point.dart';
+import 'home.dart';
 
 class LoginbyotpPage extends StatefulWidget {
   static const String routeName = '/loginbyotpPage';
@@ -70,8 +71,30 @@ class _LoginPageState extends State<LoginbyotpPage> {
   Future<void> _login(String mobile) async {
     var response = await Service().login(mobile, optInutField.text);
     if (response['status'] == 1) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => NewPickupPoint()));
+      int nextStep = await Service().nextStepToFinishProfile();
+      switch (nextStep) {
+        case 1:
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => NewPickupPoint(),
+              ));
+          break;
+        case 2:
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Bank(),
+              ));
+          break;
+        default:
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Home(),
+              ));
+          break;
+      }
     } else {
       Helper.errorSnackbar(context, response['message'].toString());
       optInutField.clear();
