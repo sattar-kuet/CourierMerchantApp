@@ -27,7 +27,9 @@ class _EditPickupPointState extends State<EditPickupPoint> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController nameController = TextEditingController();
   TextEditingController addressController = TextEditingController();
-  var districtList = Service().getDistrictList().then((value) => print(value));
+  var districtList = Service().getDistrictList();
+  int districId = 0;
+  int areaId = 0;
 
   // Boolean for shoing the form as map will only be shown when user press this button
   bool showform = false;
@@ -36,7 +38,7 @@ class _EditPickupPointState extends State<EditPickupPoint> {
   @override
   void initState() {
     super.initState();
-    returnDistrictValues();
+    updateDistrictList();
     updateAreaList();
     setState(() {
       nameController.text = widget.title;
@@ -44,15 +46,9 @@ class _EditPickupPointState extends State<EditPickupPoint> {
       districId = widget.districtId;
       areaId = widget.areaId;
     });
-    // Service().getPickupAddress().then((value) {
-    //   print(value);
-    //   setState(() {
-    //     userPickupPoint = value;
-    //   });
-    // });
   }
 
-  returnDistrictValues() async {
+  updateDistrictList() async {
     var _futureOfList = Service().getDistrictList();
     List list = await _futureOfList;
     for (var i = 0; i < list.length; i++) {
