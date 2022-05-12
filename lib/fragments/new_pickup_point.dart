@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/constants.dart';
 import 'package:flutter_app/data/service.dart';
 import 'package:flutter_app/fragments/edit_pickup_point.dart';
+import 'package:flutter_app/utility/helper.dart';
+import 'package:flutter_app/widget/button.dart';
 import '../common/bottom_navigation.dart';
 import '../common/floating_button.dart';
 import '../common/logo.dart';
@@ -30,8 +32,9 @@ class _NewPickupPointState extends State<NewPickupPoint> {
   bool showform = false;
   List<S2Choice<int>> districts = [];
   List<S2Choice<int>> areas = [];
-
   List userPickupPoint = [];
+
+
   @override
   void initState() {
     super.initState();
@@ -77,7 +80,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
           key: _formKey,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            // Card For Showing user pickup addresses
+            // Card For Showing user pickup addresse
             Container(
                 padding: EdgeInsets.only(bottom: 10),
                 constraints: BoxConstraints(
@@ -96,10 +99,14 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                           : userPickupPoint.length,
                       itemBuilder: (context, index) {
                         if (userPickupPoint.length == 0) {
-                          return Text(
-                            "No Pickup Point Added",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 20),
+                          return Column(
+                            children: [
+                              Text(
+                                "No Pickup Point",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            ],
                           );
                         } else {
                           return Padding(
@@ -154,7 +161,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                       }),
                 )),
             // Model Sheet For adding the new pickup point
-            ElevatedButton(
+            CustumButtom(
                 onPressed: () {
                   showModalBottomSheet(
                       isScrollControlled: true,
@@ -244,7 +251,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                                     fontSize: 10,
                                   ),
                                 ),
-                                ElevatedButton(
+                                CustumButtom(
                                   onPressed: () async {
                                     if (_formKey.currentState!.validate()) {
                                       await Service().addPickupPoint(
@@ -273,8 +280,9 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                                         }
                                       });
                                     }
+                                    print(userPickupPoint);
                                   },
-                                  child: Text('Add Pickup Point'),
+                                  text: 'Add Pickup Point',
                                 )
                               ],
                             ),
@@ -282,7 +290,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                         });
                       });
                 },
-                child: Text("Add New Pickup Point")),
+                text: "Add New Pickup Point"),
           ]),
         ),
       ),

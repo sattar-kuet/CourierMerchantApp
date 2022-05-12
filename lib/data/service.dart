@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/data/user.dart';
 import 'package:flutter_app/fragments/new_pickup_point.dart';
 import 'package:flutter_app/utility/helper.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -25,7 +26,7 @@ class Service {
     return response['otp'].toString();
   }
 
-  Future<Map<String, dynamic>> login(String mobile, String otp) async {
+  Future<User> login(String mobile, String otp) async {
     var data = {'mobile': mobile, 'otp': otp};
     var response = await CallApi().postData(data, 'login');
     if (response['status'] == 1) {
@@ -33,7 +34,9 @@ class Service {
       localStorage.setString('token', response['token']);
       localStorage.setString('user', json.encode(response['user']));
     }
-    return response;
+    User userData= User(response['user']['id'], response['token'], response['user']['name'], response['user']['mobile'],
+     response['user']['company_profile_id'], response['status'], response['message']);
+    return userData;
   }
 
   Future<int> nextStepToFinishProfile() async {
@@ -146,6 +149,7 @@ class Service {
   dynamic _getLoggedInUser(String key) async {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     var userData = localStorage.getString('user');
-    return userData.key;
+    return 1;
+    // return userData!.key;
   }
 }

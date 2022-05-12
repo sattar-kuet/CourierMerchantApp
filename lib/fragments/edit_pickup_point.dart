@@ -1,6 +1,7 @@
 import 'package:awesome_select/awesome_select.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/data/service.dart';
+import 'package:flutter_app/utility/helper.dart';
 import 'package:flutter_app/widget/TextInput.dart';
 
 class EditPickupPoint extends StatefulWidget {
@@ -166,7 +167,7 @@ class _EditPickupPointState extends State<EditPickupPoint> {
                 }
               },
               child: Text('Edit Pickup Point'),
-            )
+            ),
           ]),
         ),
       ),
