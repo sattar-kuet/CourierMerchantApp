@@ -28,8 +28,6 @@ class _EditPickupPointState extends State<EditPickupPoint> {
   TextEditingController nameController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   var districtList = Service().getDistrictList().then((value) => print(value));
-  int districId = 0;
-  int areaId = 0;
 
   // Boolean for shoing the form as map will only be shown when user press this button
   bool showform = false;
