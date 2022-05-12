@@ -145,6 +145,7 @@ class Service {
 
   dynamic _getLoggedInUser(String key) async {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
-    return localStorage.getString(key);
+    var userData = localStorage.getString('user');
+    return userData.key;
   }
 }
