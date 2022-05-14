@@ -34,7 +34,6 @@ class _NewPickupPointState extends State<NewPickupPoint> {
   List<S2Choice<int>> areas = [];
   List userPickupPoint = [];
 
-
   @override
   void initState() {
     super.initState();
@@ -135,6 +134,10 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                                                             ['area'],
                                                     streetAddress:
                                                         "${userPickupPoint[index]['street']}",
+                                                    districtName:
+                                                        '${userPickupPoint[index]['district_name']}',
+                                                    areaName:
+                                                        '${userPickupPoint[index]['area_name']}',
                                                     id: userPickupPoint[index]
                                                         ['id'],
                                                   )));

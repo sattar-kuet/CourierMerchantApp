@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/data/service.dart';
 import 'package:flutter_app/utility/helper.dart';
 import 'package:flutter_app/widget/TextInput.dart';
+import 'package:flutter_app/widget/button.dart';
 
 class EditPickupPoint extends StatefulWidget {
   static const String routeName = '/editPickupPointPage';
@@ -12,12 +13,16 @@ class EditPickupPoint extends StatefulWidget {
       required this.districtId,
       required this.areaId,
       required this.streetAddress,
-      required this.id})
+      required this.districtName,
+      required this.areaName,
+      required this.id,})
       : super(key: key);
   final String title;
   final int districtId;
   final int areaId;
   final String streetAddress;
+  final String districtName;
+  final String areaName;
   final id;
 
   @override
@@ -96,6 +101,7 @@ class _EditPickupPointState extends State<EditPickupPoint> {
                   padding: const EdgeInsets.symmetric(
                       vertical: 10, horizontal: 30.0),
                   child: SmartSelect<int>.single(
+                    placeholder: "${widget.districtName}",
                     modalFilter: true,
                     modalFilterAuto: true,
                     tileBuilder: (context, state) => S2Tile<dynamic>(
@@ -120,6 +126,7 @@ class _EditPickupPointState extends State<EditPickupPoint> {
                   padding: const EdgeInsets.symmetric(
                       vertical: 10, horizontal: 30.0),
                   child: SmartSelect<int>.single(
+                    placeholder: "${widget.areaName}",
                     modalFilter: true,
                     modalFilterAuto: true,
                     tileBuilder: (context, state) => S2Tile<dynamic>(
@@ -154,7 +161,7 @@ class _EditPickupPointState extends State<EditPickupPoint> {
                 ),
               ],
             ),
-            ElevatedButton(
+            CustumButtom(
               onPressed: () async {
                 if (_formKey.currentState!.validate()) {
                   await Service().editPickupPoint(
@@ -166,7 +173,7 @@ class _EditPickupPointState extends State<EditPickupPoint> {
                       context);
                 }
               },
-              child: Text('Edit Pickup Point'),
+              text: 'Edit Pickup Point',
             ),
           ]),
         ),
