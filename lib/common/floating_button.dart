@@ -13,7 +13,7 @@ Widget floating = Padding(
         height: 75,
         width: 75,
         decoration: BoxDecoration(
-            // border: Border.all(color: Colors.white, width: 4),
+            border: Border.all(color: Colors.white, width: 4),
             shape: BoxShape.circle,
             color: Colors.red),
         child: Icon(Icons.add, size: 40),

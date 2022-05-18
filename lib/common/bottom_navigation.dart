@@ -12,12 +12,12 @@ class _BottomNavigationState extends State<BottomNavigation> {
   Widget build(BuildContext context) {
     return Container(
           height: 80.0,
-          color: Colors.white,
+          color: Theme.of(context).scaffoldBackgroundColor,
           padding: new EdgeInsets.only(top: 20.0),
           child: new Theme(
             data: Theme.of(context).copyWith(
                 // sets the background color of the `BottomNavigationBar`
-                canvasColor: Colors.white,
+                canvasColor: Theme.of(context).scaffoldBackgroundColor,
                 // sets the active color of the `BottomNavigationBar` if `Brightness` is light
                 primaryColor: Colors.red,
                 bottomAppBarColor: Colors.green,

@@ -45,7 +45,7 @@ class _EditPickupPointState extends State<EditPickupPoint> {
   void initState() {
     super.initState();
     updateDistrictList();
-    updateAreaList();
+    getInitialAreaList();
     setState(() {
       nameController.text = widget.title;
       addressController.text = widget.streetAddress;
@@ -65,14 +65,30 @@ class _EditPickupPointState extends State<EditPickupPoint> {
     }
   }
 
-  updateAreaList() async {
-    var _futureOfList = Service().getAreaList(districId);
+  getInitialAreaList()async{
+    var _futureOfList = Service().getAreaList(widget.districtId);
     List list = await _futureOfList;
     for (var i = 0; i < list.length; i++) {
       setState(() {
         areas.add(S2Choice<int>(value: list[i]['id'], title: list[i]['name']));
       });
     }
+  }
+
+  updateAreaList() async {
+    var _futureOfList = await Service().getAreaList(districId);
+    List list = await _futureOfList;
+    List<S2Choice<int>> areaList = [];
+     setState(() {
+      list.forEach((element) { 
+        areaList.add(S2Choice<int>(value: element['id'], title: element['name']));
+      });
+      print(areaList);
+
+    });
+    setState(() {
+      areas = areaList;
+    });
   }
 
   @override
@@ -115,9 +131,9 @@ class _EditPickupPointState extends State<EditPickupPoint> {
                     ),
                     title: 'জেলা',
                     choiceItems: districts,
-                    onChange: (state) {
-                      setState(() => districId = state.value!);
-                      updateAreaList();
+                    onChange: (state)async {
+                      setState((){ districId = state.value!;
+                      updateAreaList();});
                     },
                     selectedValue: 1,
                   ),

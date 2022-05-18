@@ -58,18 +58,25 @@ class _NewPickupPointState extends State<NewPickupPoint> {
     }
   }
 
-  updateAreaList() async {
-    var _futureOfList = Service().getAreaList(districId);
+  updateAreaList(districtid) async {
+    var _futureOfList = await Service().getAreaList(districtid);
     List list = await _futureOfList;
-    for (var i = 0; i < list.length; i++) {
-      setState(() {
-        areas.add(S2Choice<int>(value: list[i]['id'], title: list[i]['name']));
+    List<S2Choice<int>> areaList = [];
+     setState(() {
+      list.forEach((element) { 
+        areaList.add(S2Choice<int>(value: element['id'], title: element['name']));
       });
-    }
+      print(areaList);
+
+    });
+    setState(() {
+      areas = areaList;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    bool keyboardIsOpen = MediaQuery.of(context).viewInsets.bottom != 0;
     return Scaffold(
       appBar: AppBar(
         title: Text('Add new pickup point'),
@@ -118,6 +125,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                               trailing: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
+                                  // Edit Button
                                   InkWell(
                                     onTap: () {
                                       Navigator.push(
@@ -163,18 +171,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                         }
                       }),
                 )),
-            // Model Sheet For adding the new pickup point
-            CustumButtom(
-                onPressed: () {
-                  showModalBottomSheet(
-                      isScrollControlled: true,
-                      context: context,
-                      builder: (context) {
-                        return StatefulBuilder(builder:
-                            (BuildContext context, StateSetter setState) {
-                          return Padding(
-                            padding: MediaQuery.of(context).viewInsets,
-                            child: Column(
+            Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Padding(
@@ -207,8 +204,14 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                                     placeholder: 'সিলেক্ট করুন',
                                     choiceItems: districts,
                                     onChange: (state) {
-                                      setState(() => districId = state.value!);
-                                      updateAreaList();
+                                      setState((){
+                                        districId= state.value!;
+                                        updateAreaList(state.value);
+                                      });
+                                      // print(state.value);
+                                      // setState(() => districId = state.value!);
+                                      // updateAreaList();
+                                      // print("V VALUE HAS BEEN CHANGED to $districId");
                                     },
                                     selectedValue: districId,
                                   ),
@@ -249,6 +252,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                                 ),
                                 Text(
                                   'যেমনঃ ২য় তলা, বাসা নংঃ ১১৮, ব্লকঃ ডি, রোডঃ ০৫, মহানগর প্রজেক্ট, রামপুরা, ঢাকা',
+                                  textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: Colors.grey,
                                     fontSize: 10,
@@ -266,7 +270,6 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                                       Service()
                                           .getPickupAddress()
                                           .then((value) {
-                                        print(value);
                                         if (value != null) {
                                           setState(() {
                                             // For reseting the state of form
@@ -277,9 +280,9 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                                             areaId = 0;
                                             districts.clear();
                                             areas.clear();
+                                            _formKey.currentState!.reset();
                                           });
-                                          // For closing model sheet
-                                          Navigator.pop(context);
+                                          
                                         }
                                       });
                                     }
@@ -289,16 +292,14 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                                 )
                               ],
                             ),
-                          );
-                        });
-                      });
-                },
-                text: "Add New Pickup Point"),
+           
           ]),
         ),
       ),
       bottomNavigationBar: BottomNavigation(),
-      floatingActionButton: floating,
+      floatingActionButton: Visibility(
+        visible: !keyboardIsOpen,
+        child: Padding(padding:EdgeInsets.only(top: 45,),child: floating)),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
