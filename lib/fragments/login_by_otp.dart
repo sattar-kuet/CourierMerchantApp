@@ -70,7 +70,7 @@ class _LoginPageState extends State<LoginbyotpPage> {
 
   Future<void> _login(String mobile) async {
     var response = await Service().login(mobile, optInutField.text);
-    if (response.status == 1) {
+    if (response['status'] == 1) {
       int nextStep = await Service().nextStepToFinishProfile();
       switch (nextStep) {
         case 1:
