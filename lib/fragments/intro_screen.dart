@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 import '../routes/pageRoute.dart';
 import '../utility/validatation.dart';
 import '../data/service.dart';
 import '../fragments/home.dart';
+import '../data/user.dart';
 
 class IntroPage extends StatefulWidget {
   static const String routeName = '/IntroPage';
@@ -23,9 +23,8 @@ class _IntroPageState extends State<IntroPage> {
   }
 
   void _checkIsLoggedIn() async {
-    SharedPreferences localStorage = await SharedPreferences.getInstance();
-    var token = localStorage.getString('token');
-    if (token != null) {
+    User user = await User.readSession();
+    if (user.id != 0) {
       setState(() {
         _isLoggedIn = true;
       });

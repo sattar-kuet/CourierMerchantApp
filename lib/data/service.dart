@@ -26,17 +26,21 @@ class Service {
     return response['otp'].toString();
   }
 
-  Future<User> login(String mobile, String otp) async {
+  dynamic login(String mobile, String otp) async {
     var data = {'mobile': mobile, 'otp': otp};
     var response = await CallApi().postData(data, 'login');
     if (response['status'] == 1) {
-      SharedPreferences localStorage = await SharedPreferences.getInstance();
-      localStorage.setString('token', response['token']);
-      localStorage.setString('user', json.encode(response['user']));
+      User user = User(
+          response['user']['id'],
+          response['token'],
+          response['user']['name'],
+          response['user']['mobile'],
+          response['user']['company_profile_id'],
+          response['status'],
+          response['message']);
+      User.writeSession(user);
     }
-    User userData= User(response['user']['id'], response['token'], response['user']['name'], response['user']['mobile'],
-     response['user']['company_profile_id'], response['status'], response['message']);
-    return userData;
+    return response;
   }
 
   Future<int> nextStepToFinishProfile() async {
