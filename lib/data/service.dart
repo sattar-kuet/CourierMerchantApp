@@ -29,7 +29,6 @@ class Service {
   dynamic login(String mobile, String otp) async {
     var data = {'mobile': mobile, 'otp': otp};
     Map response = await CallApi().postData(data, 'login');
-    print(response['status']);
     if (response['status'] == 1) {
       User user = User(
           response['user']['id'],
