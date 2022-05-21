@@ -1,7 +1,6 @@
 import 'package:awesome_select/awesome_select.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/data/service.dart';
-import 'package:flutter_app/utility/helper.dart';
 import 'package:flutter_app/widget/TextInput.dart';
 import 'package:flutter_app/widget/button.dart';
 
@@ -34,7 +33,7 @@ class _EditPickupPointState extends State<EditPickupPoint> {
   TextEditingController nameController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   var districtList = Service().getDistrictList();
-  int districId = 0;
+  int districtId = 0;
   int areaId = 0;
 
   // Boolean for shoing the form as map will only be shown when user press this button
@@ -49,7 +48,7 @@ class _EditPickupPointState extends State<EditPickupPoint> {
     setState(() {
       nameController.text = widget.title;
       addressController.text = widget.streetAddress;
-      districId = widget.districtId;
+      districtId = widget.districtId;
       areaId = widget.areaId;
     });
   }
@@ -76,7 +75,7 @@ class _EditPickupPointState extends State<EditPickupPoint> {
   }
 
   updateAreaList() async {
-    var _futureOfList = await Service().getAreaList(districId);
+    var _futureOfList = await Service().getAreaList(districtId);
     List list = await _futureOfList;
     List<S2Choice<int>> areaList = [];
      setState(() {
@@ -132,10 +131,10 @@ class _EditPickupPointState extends State<EditPickupPoint> {
                     title: 'জেলা',
                     choiceItems: districts,
                     onChange: (state)async {
-                      setState((){ districId = state.value!;
+                      setState((){ districtId = state.value!;
                       updateAreaList();});
                     },
-                    selectedValue: 1,
+                    selectedValue: districtId,
                   ),
                 ),
                 Padding(
@@ -182,7 +181,7 @@ class _EditPickupPointState extends State<EditPickupPoint> {
                 if (_formKey.currentState!.validate()) {
                   await Service().editPickupPoint(
                       nameController.text,
-                      districId,
+                      districtId,
                       areaId,
                       addressController.text,
                       widget.id,

@@ -107,7 +107,7 @@ class Service {
         'id': id,
         'title': title,
         'district': district,
-        'area': area,
+        'upazilla': area,
         'street': street
       },
     };
@@ -131,7 +131,7 @@ class Service {
       'address': {
         'title': title,
         'district': district,
-        'area': area,
+        'upazilla': area,
         'street': street
       },
     };
