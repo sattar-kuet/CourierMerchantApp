@@ -62,12 +62,12 @@ class _NewPickupPointState extends State<NewPickupPoint> {
     var _futureOfList = await Service().getAreaList(districtid, context);
     List list = await _futureOfList;
     List<S2Choice<int>> areaList = [];
-     setState(() {
-      list.forEach((element) { 
-        areaList.add(S2Choice<int>(value: element['id'], title: element['name']));
+    setState(() {
+      list.forEach((element) {
+        areaList
+            .add(S2Choice<int>(value: element['id'], title: element['name']));
       });
       print(areaList);
-
     });
     setState(() {
       areas = areaList;
@@ -171,52 +171,30 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                         }
                       }),
                 )),
-            Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 30.0),
-                                  child: TextInput(
-                                    inputController: nameController,
-                                    label: 'পিকআপ পয়েন্টের নাম',
-                                    icon: Icons.edit,
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 30.0),
-                                  child: SmartSelect<int>.single(
-                                    modalFilter: true,
-                                    modalFilterAuto: true,
-                                    tileBuilder: (context, state) =>
-                                        S2Tile<dynamic>(
-                                      //https://github.com/akbarpulatov/flutter_awesome_select/blob/master/example/lib/features_single/single_chips.dart
-                                      title: const Text(
-                                        'জেলা',
-                                      ),
-                                      value: state.selected?.toWidget() ??
-                                          Container(),
-                                      leading: Icon(Icons.list_outlined),
-                                      onTap: state.showModal,
+            CustumButtom(
+                text: 'Add Pickup Point',
+                onPressed: () {
+                  showModalBottomSheet(
+                      isScrollControlled: true,
+                      context: context,
+                      builder: (context) {
+                        return StatefulBuilder(builder: (BuildContext context,
+                            StateSetter setState /*You can rename this!*/) {
+                          return Padding(
+                            padding: MediaQuery.of(context).viewInsets,
+                            child: SingleChildScrollView(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10, horizontal: 30.0),
+                                    child: TextInput(
+                                      inputController: nameController,
+                                      label: 'পিকআপ পয়েন্টের নাম',
+                                      icon: Icons.edit,
                                     ),
-                                    title: 'জেলা',
-                                    placeholder: 'সিলেক্ট করুন',
-                                    choiceItems: districts,
-                                    onChange: (state) {
-                                      setState((){
-                                        districId= state.value!;
-                                        updateAreaList(state.value);
-                                      });
-                                      // print(state.value);
-                                      // setState(() => districId = state.value!);
-                                      // updateAreaList();
-                                      // print("V VALUE HAS BEEN CHANGED to $districId");
-                                    },
-                                    selectedValue: districId,
                                   ),
-                                ),
-                                if (districId != 0)
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 10, horizontal: 30.0),
@@ -227,79 +205,124 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                                           S2Tile<dynamic>(
                                         //https://github.com/akbarpulatov/flutter_awesome_select/blob/master/example/lib/features_single/single_chips.dart
                                         title: const Text(
-                                          'এলাকা',
+                                          'জেলা',
                                         ),
                                         value: state.selected?.toWidget() ??
                                             Container(),
                                         leading: Icon(Icons.list_outlined),
                                         onTap: state.showModal,
                                       ),
-                                      title: 'এলাকা',
+                                      title: 'জেলা',
                                       placeholder: 'সিলেক্ট করুন',
-                                      choiceItems: areas,
-                                      onChange: (state) =>
-                                          setState(() => areaId = state.value!),
-                                      selectedValue: areaId,
+                                      choiceItems: districts,
+                                      onChange: (state) {
+                                        setState(() {
+                                          districId = state.value!;
+                                          updateAreaList(state.value)
+                                              .then((value) {
+                                            setState(() {});
+                                          });
+                                        });
+                                        // print(state.value);
+                                        // setState(() => districId = state.value!);
+                                        // updateAreaList();
+                                        // print("V VALUE HAS BEEN CHANGED to $districId");
+                                      },
+                                      selectedValue: districId,
                                     ),
                                   ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 30.0),
-                                  child: TextInput(
-                                      inputController: addressController,
-                                      label: 'বিস্তারিত ঠিকানা',
-                                      icon: Icons.map_outlined),
-                                ),
-                                Text(
-                                  'যেমনঃ ২য় তলা, বাসা নংঃ ১১৮, ব্লকঃ ডি, রোডঃ ০৫, মহানগর প্রজেক্ট, রামপুরা, ঢাকা',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 10,
+                                  if (districId != 0)
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 10, horizontal: 30.0),
+                                      child: SmartSelect<int>.single(
+                                        modalFilter: true,
+                                        modalFilterAuto: true,
+                                        tileBuilder: (context, state) =>
+                                            S2Tile<dynamic>(
+                                          //https://github.com/akbarpulatov/flutter_awesome_select/blob/master/example/lib/features_single/single_chips.dart
+                                          title: const Text(
+                                            'এলাকা',
+                                          ),
+                                          value: state.selected?.toWidget() ??
+                                              Container(),
+                                          leading: Icon(Icons.list_outlined),
+                                          onTap: state.showModal,
+                                        ),
+                                        title: 'এলাকা',
+                                        placeholder: 'সিলেক্ট করুন',
+                                        choiceItems: areas,
+                                        onChange: (state) => setState(
+                                            () => areaId = state.value!),
+                                        selectedValue: areaId,
+                                      ),
+                                    ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10, horizontal: 30.0),
+                                    child: TextInput(
+                                        inputController: addressController,
+                                        label: 'বিস্তারিত ঠিকানা',
+                                        icon: Icons.map_outlined),
                                   ),
-                                ),
-                                CustumButtom(
-                                  onPressed: () async {
-                                    if (_formKey.currentState!.validate()) {
-                                      await Service().addPickupPoint(
-                                          nameController.text,
-                                          districId,
-                                          areaId,
-                                          addressController.text,
-                                          context);
-                                      Service()
-                                          .getPickupAddress(context)
-                                          .then((value) {
-                                        if (value != null) {
-                                          setState(() {
-                                            // For reseting the state of form
-                                            userPickupPoint = value;
-                                            nameController.clear();
-                                            addressController.clear();
-                                            districId = 0;
-                                            areaId = 0;
-                                            districts.clear();
-                                            areas.clear();
-                                            _formKey.currentState!.reset();
-                                          });
-                                          
-                                        }
-                                      });
-                                    }
-                                    print(userPickupPoint);
-                                  },
-                                  text: 'Add Pickup Point',
-                                )
-                              ],
+                                  Text(
+                                    'যেমনঃ ২য় তলা, বাসা নংঃ ১১৮, ব্লকঃ ডি, রোডঃ ০৫, মহানগর প্রজেক্ট, রামপুরা, ঢাকা',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 10,
+                                    ),
+                                  ),
+                                  CustumButtom(
+                                    onPressed: () async {
+                                      if (_formKey.currentState!.validate()) {
+                                        await Service().addPickupPoint(
+                                            nameController.text,
+                                            districId,
+                                            areaId,
+                                            addressController.text,
+                                            context);
+                                        Service()
+                                            .getPickupAddress(context)
+                                            .then((value) {
+                                          if (value != null) {
+                                            setState(() {
+                                              // For reseting the state of form
+                                              userPickupPoint = value;
+                                              nameController.clear();
+                                              addressController.clear();
+                                              districId = 0;
+                                              areaId = 0;
+                                              districts.clear();
+                                              areas.clear();
+                                              _formKey.currentState!.reset();
+                                            });
+                                          }
+                                        });
+                                              Navigator.pop(context);
+                                      }
+                                      print(userPickupPoint);
+                                    },
+                                    text: 'Add Pickup Point',
+                                  )
+                                ],
+                              ),
                             ),
-           
+                          );
+                        });
+                      });
+                })
           ]),
         ),
       ),
       bottomNavigationBar: BottomNavigation(),
       floatingActionButton: Visibility(
-        visible: !keyboardIsOpen,
-        child: Padding(padding:EdgeInsets.only(top: 45,),child: floating)),
+          visible: !keyboardIsOpen,
+          child: Padding(
+              padding: EdgeInsets.only(
+                top: 45,
+              ),
+              child: floating)),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
