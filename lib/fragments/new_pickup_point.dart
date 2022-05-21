@@ -38,7 +38,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
   void initState() {
     super.initState();
     returnDistrictValues();
-    Service().getPickupAddress().then((value) {
+    Service().getPickupAddress(context).then((value) {
       if (value != null) {
         setState(() {
           userPickupPoint = value;
@@ -59,7 +59,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
   }
 
   updateAreaList(districtid) async {
-    var _futureOfList = await Service().getAreaList(districtid);
+    var _futureOfList = await Service().getAreaList(districtid, context);
     List list = await _futureOfList;
     List<S2Choice<int>> areaList = [];
      setState(() {
@@ -268,7 +268,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                                           addressController.text,
                                           context);
                                       Service()
-                                          .getPickupAddress()
+                                          .getPickupAddress(context)
                                           .then((value) {
                                         if (value != null) {
                                           setState(() {

@@ -69,9 +69,9 @@ class _LoginPageState extends State<LoginbyotpPage> {
   }
 
   Future<void> _login(String mobile) async {
-    var response = await Service().login(mobile, optInutField.text);
+    var response = await Service().login(mobile, optInutField.text, context);
     if (response['status'] == 1) {
-      int nextStep = await Service().nextStepToFinishProfile();
+      int nextStep = await Service().nextStepToFinishProfile(context);
       switch (nextStep) {
         case 1:
           Navigator.push(

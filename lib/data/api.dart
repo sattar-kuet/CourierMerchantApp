@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_app/widget/loading.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http/http.dart' as http;
 import '../constants.dart' as Constants;
@@ -6,8 +8,8 @@ import '../constants.dart' as Constants;
 class CallApi {
   final String _url = Constants.BASE_URL;
 
-  Future<Map<String, dynamic>> postData(data, apiUrl) async {
-     EasyLoading.show(status: 'Please wait...');
+  Future<Map<String, dynamic>> postData(data, apiUrl, context) async {
+     showloadingDialog(context);
     String fullUrl = '$_url/$apiUrl';
     var url = Uri.parse(fullUrl);
     print(url);
@@ -19,10 +21,10 @@ class CallApi {
     // Also need to dismiss the loader because it makes trouble if the function not works properly due to internet connection etc
     //  For that rason I am adding one more condition so it can dismiss on any condition
     if(response.statusCode!=200){
-      EasyLoading.dismiss();
+      Navigator.pop(context);
     }
     if (responseData != null) {
-      EasyLoading.dismiss();
+      Navigator.pop(context);
     }
     return responseData;
   }

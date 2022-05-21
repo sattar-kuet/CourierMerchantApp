@@ -97,7 +97,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
     
   }
    void _register(BuildContext context, String mobile) async {
-      var response = await Service().register(mobile, nameController.text, businessNameController.text, productTypeId);
+      var response = await Service().register(mobile, nameController.text, businessNameController.text, productTypeId, context);
     if (response['status'] == 1) {
       Navigator.push(context,
           MaterialPageRoute(builder: (context) => NewPickupPoint()));

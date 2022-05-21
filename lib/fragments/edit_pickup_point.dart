@@ -66,7 +66,7 @@ class _EditPickupPointState extends State<EditPickupPoint> {
   }
 
   getInitialAreaList()async{
-    var _futureOfList = Service().getAreaList(widget.districtId);
+    var _futureOfList = Service().getAreaList(widget.districtId, context);
     List list = await _futureOfList;
     for (var i = 0; i < list.length; i++) {
       setState(() {
@@ -76,7 +76,7 @@ class _EditPickupPointState extends State<EditPickupPoint> {
   }
 
   updateAreaList() async {
-    var _futureOfList = await Service().getAreaList(districId);
+    var _futureOfList = await Service().getAreaList(districId, context);
     List list = await _futureOfList;
     List<S2Choice<int>> areaList = [];
      setState(() {
