@@ -8,27 +8,27 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 class Service {
-  Future<bool> isUserExist(String mobile) async {
+  Future<bool> isUserExist(String mobile, context) async {
     var token = await _getToken();
     var data = {'mobile': mobile, 'token': token};
-    var response = await CallApi().postData(data, 'isUserExist');
+    var response = await CallApi().postData(data, 'isUserExist',context);
     return response['user_exist'];
   }
 
-  Future<String> sendOtp(String mobile, String signatureCode) async {
+  Future<String> sendOtp(String mobile, String signatureCode, context) async {
     var token = await _getToken();
     var data = {
       'mobile': mobile,
       'signatureCode': signatureCode,
       'token': token
     };
-    var response = await CallApi().postData(data, 'sendOtp');
+    var response = await CallApi().postData(data, 'sendOtp',context);
     return response['otp'].toString();
   }
 
-  dynamic login(String mobile, String otp) async {
+  dynamic login(String mobile, String otp, context) async {
     var data = {'mobile': mobile, 'otp': otp};
-    Map response = await CallApi().postData(data, 'login');
+    Map response = await CallApi().postData(data, 'login',context);
     if (response['status'] == 1) {
       User user = User(
           response['user']['id'],
@@ -43,22 +43,22 @@ class Service {
     return response;
   }
 
-  Future<int> nextStepToFinishProfile() async {
+  Future<int> nextStepToFinishProfile(context) async {
     var loggedInUserId = await _getLoggedInUser('id');
     var data = {'user_id': loggedInUserId};
-    var response = await CallApi().postData(data, 'nextStepToFinishProfile');
+    var response = await CallApi().postData(data, 'nextStepToFinishProfile',context);
     return response['type'];
   }
 
   Future<Map<String, dynamic>> register(String mobile, String name,
-      String businessName, int productTypeId) async {
+      String businessName, int productTypeId, context) async {
     var data = {
       'mobile': mobile,
       'name': name,
       'businessName': businessName,
       'productTypeId': productTypeId,
     };
-    var response = await CallApi().postData(data, 'register');
+    var response = await CallApi().postData(data, 'register',context);
     if (response['status'] == 1) {
       SharedPreferences localStorage = await SharedPreferences.getInstance();
       localStorage.setString('token', response['token']);
@@ -79,19 +79,18 @@ class Service {
     return response['data'];
   }
 
-  Future getAreaList(districtId) async {
-    EasyLoading.show(status: 'Please wait...');
+  Future getAreaList(districtId, context) async {
     var token = await _getToken();
     var data = {'district_id': districtId, 'token': token};
-    var response = await CallApi().postData(data, 'upazillaList');
+    var response = await CallApi().postData(data, 'upazillaList',context);
     print(response);
     return response['data'];
   }
 
-  Future getPickupAddress() async {
+  Future getPickupAddress(context) async {
     int userId = await Helper().getLoggedInUserId();
     var data = {"user_id": userId};
-    var response = await CallApi().postData(data, 'getPickupAddress');
+    var response = await CallApi().postData(data, 'getPickupAddress',context);
     print(response);
     return response['data'];
   }
@@ -111,7 +110,7 @@ class Service {
         'street': street
       },
     };
-    var response = await CallApi().postData(data, 'updatePickupPoint');
+    var response = await CallApi().postData(data, 'updatePickupPoint',context);
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (_) => NewPickupPoint()));
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -135,7 +134,7 @@ class Service {
         'street': street
       },
     };
-    var response = await CallApi().postData(data, 'addPickupPoint');
+    var response = await CallApi().postData(data, 'addPickupPoint',context);
     print(response);
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(response['message']),
