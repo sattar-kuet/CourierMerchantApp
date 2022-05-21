@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/data/user.dart';
-import 'package:flutter_app/fragments/new_pickup_point.dart';
-import 'package:flutter_app/utility/helper.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
+import '../data/user.dart';
+import '../model/bank.dart';
+import '../fragments/new_pickup_point.dart';
+import '../utility/helper.dart';
 import './api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -77,6 +77,20 @@ class Service {
     var token = await _getToken();
     var response = await CallApi().getData('pickupPointDistrictList');
     return response['data'];
+  }
+  Future<dynamic> getBankList() async {
+    var token = await _getToken();
+    var response = await CallApi().getData('getBankList');
+    var banks = response['data'];
+    // List<Map<int,int>> mobileBanksHashTable = [];
+    // for (var bank in banks){
+    //      int id = bank['id'];
+    //      int type = bank['type'];
+    //       mobileBanksHashTable
+    //         .add(Map(id,type));
+    // }
+    // Bank.writeSession(mobileBanksHashTable);
+    return banks;
   }
 
   Future getAreaList(districtId, context) async {
