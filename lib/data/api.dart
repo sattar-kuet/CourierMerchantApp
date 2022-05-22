@@ -8,7 +8,7 @@ class CallApi {
   final String _url = Constants.BASE_URL;
 
   Future<Map<String, dynamic>> postData(data, apiUrl, context) async {
-     showloadingDialog(context);
+    showloadingDialog(context);
     String fullUrl = '$_url/$apiUrl';
     var url = Uri.parse(fullUrl);
     print(url);
@@ -17,14 +17,13 @@ class CallApi {
       'Accept': 'application/json',
     });
     Map<String, dynamic> responseData = json.decode(response.body);
+    // For dismissing Loading
     Navigator.of(context).pop();
     // Also need to dismiss the loader because it makes trouble if the function not works properly due to internet connection etc
     //  For that rason I am adding one more condition so it can dismiss on any condition
-    if(response.statusCode!=200){
-    if (responseData != null) {
-    }
-    }else{
-    }
+    if (response.statusCode != 200) {
+      if (responseData != null) {}
+    } else {}
     return responseData;
   }
 

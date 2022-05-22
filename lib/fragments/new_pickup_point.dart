@@ -289,8 +289,6 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                                             areas.clear();
                                           });
                                         });
-
-                                        
                                       }
                                       print(userPickupPoint);
                                     },
