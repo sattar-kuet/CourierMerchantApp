@@ -290,6 +290,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                                           });
                                         });
                                       }
+                                      
                                       print(userPickupPoint);
                                     },
                                     text: 'Add Pickup Point',

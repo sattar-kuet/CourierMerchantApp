@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/widget/loading.dart';
 import '../data/user.dart';
 import '../model/bank.dart';
 import '../fragments/new_pickup_point.dart';
@@ -6,7 +7,7 @@ import '../utility/helper.dart';
 import './api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-
+import 'package:http/http.dart' as http;
 class Service {
   Future<bool> isUserExist(String mobile, context) async {
     var token = await _getToken();
@@ -135,11 +136,13 @@ class Service {
     ));
     return response['data'];
   }
-
-  Future<dynamic> addPickupPoint(
-      String title, int district, int area, String street, context) async {
+  // Here I need to merge the post api finction with the addPickupPoint function because of the model sheet issue so I have full control of this function
+  Future<dynamic> addPickupPoint(String title, int district, int area, String street, context) async {
+    showloadingDialog(context);
     var token = await _getToken();
     var userId = await Helper().getLoggedInUserId();
+    String fullUrl = 'https://courierdemo.itscholarbd.com/api/v2/addPickupPoint';
+    var url = Uri.parse(fullUrl);
     var data = {
       'user_id': userId,
       'token': token,
@@ -151,16 +154,24 @@ class Service {
       },
     };
 
-    var response = await CallApi().postData(data, 'addPickupPoint', context);
-    print(response);
-    // This Navigator.pop() is for closing model sheet
-    Navigator.pop(context);
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(response['message']),
-      duration: Duration(seconds: 2),
-    ));
-    return response['data'];
+    print(url);
+    var response = await http.post(url, body: jsonEncode(data), headers: {
+      'Content-type': 'application/json',
+      'Accept': 'application/json',
+    });
+    Map<String, dynamic> responseData = json.decode(response.body);
+    // For dismissing Loading
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>NewPickupPoint()));
+    // Also need to dismiss the loader because it makes trouble if the function not works properly due to internet connection etc
+    //  For that rason I am adding one more condition so it can dismiss on any condition
+    if (response.statusCode != 200) {
+      if (responseData != null) {}
+    } else {}
+    return responseData['data'];
   }
+
+
+
 
   dynamic _getToken() async {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
