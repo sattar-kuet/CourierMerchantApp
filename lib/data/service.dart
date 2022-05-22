@@ -11,7 +11,7 @@ class Service {
   Future<bool> isUserExist(String mobile, context) async {
     var token = await _getToken();
     var data = {'mobile': mobile, 'token': token};
-    var response = await CallApi().postData(data, 'isUserExist',context);
+    var response = await CallApi().postData(data, 'isUserExist', context);
     return response['user_exist'];
   }
 
@@ -22,13 +22,13 @@ class Service {
       'signatureCode': signatureCode,
       'token': token
     };
-    var response = await CallApi().postData(data, 'sendOtp',context);
+    var response = await CallApi().postData(data, 'sendOtp', context);
     return response['otp'].toString();
   }
 
   dynamic login(String mobile, String otp, context) async {
     var data = {'mobile': mobile, 'otp': otp};
-    Map response = await CallApi().postData(data, 'login',context);
+    Map response = await CallApi().postData(data, 'login', context);
     if (response['status'] == 1) {
       User user = User(
           response['user']['id'],
@@ -46,7 +46,8 @@ class Service {
   Future<int> nextStepToFinishProfile(context) async {
     var loggedInUserId = await _getLoggedInUser('id');
     var data = {'user_id': loggedInUserId};
-    var response = await CallApi().postData(data, 'nextStepToFinishProfile',context);
+    var response =
+        await CallApi().postData(data, 'nextStepToFinishProfile', context);
     return response['type'];
   }
 
@@ -58,7 +59,7 @@ class Service {
       'businessName': businessName,
       'productTypeId': productTypeId,
     };
-    var response = await CallApi().postData(data, 'register',context);
+    var response = await CallApi().postData(data, 'register', context);
     if (response['status'] == 1) {
       SharedPreferences localStorage = await SharedPreferences.getInstance();
       localStorage.setString('token', response['token']);
@@ -78,6 +79,7 @@ class Service {
     var response = await CallApi().getData('pickupPointDistrictList');
     return response['data'];
   }
+
   Future<dynamic> getBankList() async {
     var token = await _getToken();
     var response = await CallApi().getData('getBankList');
@@ -96,7 +98,7 @@ class Service {
   Future getAreaList(districtId, context) async {
     var token = await _getToken();
     var data = {'district_id': districtId, 'token': token};
-    var response = await CallApi().postData(data, 'upazillaList',context);
+    var response = await CallApi().postData(data, 'upazillaList', context);
     print(response);
     return response['data'];
   }
@@ -104,7 +106,7 @@ class Service {
   Future getPickupAddress(context) async {
     int userId = await Helper().getLoggedInUserId();
     var data = {"user_id": userId};
-    var response = await CallApi().postData(data, 'getPickupAddress',context);
+    var response = await CallApi().postData(data, 'getPickupAddress', context);
     print(response);
     return response['data'];
   }
@@ -124,7 +126,7 @@ class Service {
         'street': street
       },
     };
-    var response = await CallApi().postData(data, 'updatePickupPoint',context);
+    var response = await CallApi().postData(data, 'updatePickupPoint', context);
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (_) => NewPickupPoint()));
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -148,8 +150,11 @@ class Service {
         'street': street
       },
     };
-    var response = await CallApi().postData(data, 'addPickupPoint',context);
+
+    var response = await CallApi().postData(data, 'addPickupPoint', context);
     print(response);
+    // This Navigator.pop() is for closing model sheet
+    Navigator.pop(context);
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(response['message']),
       duration: Duration(seconds: 2),
