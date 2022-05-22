@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/fragments/new_pickup_point.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../fragments/intro_screen.dart';
 import '../widget/drawerHeader.dart';
@@ -13,10 +14,14 @@ class MenuDrawer extends StatelessWidget {
         children: <Widget>[
           drawerHeader(),
           drawerItem(
-            icon: Icons.home,
-            text: 'Login',
-            onTap: () =>
-                Navigator.pushReplacementNamed(context, PageRoutes.login),
+            icon: Icons.map_sharp,
+            text: 'Pickup Point',
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => NewPickupPoint(),
+              ),
+            ),
           ),
           drawerItem(
             icon: Icons.account_circle,

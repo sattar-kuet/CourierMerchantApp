@@ -1,15 +1,11 @@
-import 'dart:ui';
-
 import 'package:awesome_select/awesome_select.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/constants.dart';
 import 'package:flutter_app/data/service.dart';
 import 'package:flutter_app/fragments/edit_pickup_point.dart';
-import 'package:flutter_app/utility/helper.dart';
 import 'package:flutter_app/widget/button.dart';
 import '../common/bottom_navigation.dart';
 import '../common/floating_button.dart';
-import '../common/logo.dart';
 import '../widget/TextInput.dart';
 
 class NewPickupPoint extends StatefulWidget {
@@ -299,7 +295,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                                             });
                                           }
                                         });
-                                              Navigator.pop(context);
+                                        Navigator.pop(context);
                                       }
                                       print(userPickupPoint);
                                     },
