@@ -17,7 +17,12 @@ class _BankState extends State<Bank> {
   int bankTypeId = 0;
   List<S2Choice<int>> banks = [];
   Map<int, int> mobileBanksHashTable = {};
-  updateDistrictList() async {
+    void initState() {
+    super.initState();
+    updateBankList();
+  }
+
+  updateBankList() async {
     var _bankList = await Service().getBankList();
     for (var i = 0; i < _bankList.length; i++) {
       int id = _bankList[i]['id'];

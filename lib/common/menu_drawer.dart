@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/fragments/bank.dart';
 import 'package:flutter_app/fragments/new_pickup_point.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../fragments/intro_screen.dart';
@@ -24,10 +25,14 @@ class MenuDrawer extends StatelessWidget {
             ),
           ),
           drawerItem(
-            icon: Icons.account_circle,
-            text: 'Registration',
-            onTap: () => Navigator.pushReplacementNamed(
-                context, PageRoutes.registration),
+            icon: Icons.cases_sharp,
+            text: 'Bank Account',
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Bank(),
+              ),
+            ),
           ),
           Divider(),
 
