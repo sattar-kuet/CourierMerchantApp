@@ -16,7 +16,7 @@ class _BankState extends State<Bank> {
   final _formKey = GlobalKey<FormState>();
   int bankTypeId = 0;
   List<S2Choice<int>> banks = [];
-  List<Map<int,int>> mobileBanksHashTable = [];
+  Map<int, int> mobileBanksHashTable = {};
   updateDistrictList() async {
     var _bankList = await Service().getBankList();
     for (var i = 0; i < _bankList.length; i++) {
@@ -24,12 +24,12 @@ class _BankState extends State<Bank> {
       String name = _bankList[i]['name'];
       int type = _bankList[i]['type'];
       setState(() {
-        banks
-            .add(S2Choice<int>(value: id, title: name));
-        mobileBanksHashTable.add(Map<id:id,type:type>);
+        banks.add(S2Choice<int>(value: id, title: name));
+        mobileBanksHashTable[id] = type;
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -40,38 +40,43 @@ class _BankState extends State<Bank> {
       body: SingleChildScrollView(
         child: new Form(
           key: _formKey,
-          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Column(
-              children: [
-                Padding(padding: const EdgeInsets.symmetric(
-                  vertical: 10, horizontal: 20.0),
-                  child:  SmartSelect<int>.single(
-                    placeholder: "নির্বাচন করুন",
-                    modalFilter: true,
-                    modalFilterAuto: true,
-                    tileBuilder: (context, state) => S2Tile<dynamic>(
-                      //https://github.com/akbarpulatov/flutter_awesome_select/blob/master/example/lib/features_single/single_chips.dart
-                      title: const Text(
-                        'কোন ব্যাংক এ টাকা নিতে চান?',
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 20.0),
+                    child: SmartSelect<int>.single(
+                      placeholder: "নির্বাচন করুন",
+                      modalFilter: true,
+                      modalFilterAuto: true,
+                      tileBuilder: (context, state) => S2Tile<dynamic>(
+                        //https://github.com/akbarpulatov/flutter_awesome_select/blob/master/example/lib/features_single/single_chips.dart
+                        title: const Text(
+                          'কোন ব্যাংক এ টাকা নিতে চান?',
+                        ),
+                        value: state.selected?.toWidget() ?? Container(),
+                        onTap: state.showModal,
                       ),
-                      value: state.selected?.toWidget() ?? Container(),
-                      onTap: state.showModal,
+                      title: 'কোন ব্যাংক এ টাকা নিতে চান?',
+                      choiceItems: banks,
+                      onChange: (state) async {
+                        setState(() {
+                          bankTypeId = state.value!;
+                          //updateAreaList();
+                        });
+                      },
+                      selectedValue: bankTypeId,
                     ),
-                    title: 'কোন ব্যাংক এ টাকা নিতে চান?',
-                    choiceItems: banks,
-                    onChange: (state)async {
-                      setState((){ bankTypeId = state.value!;
-                      //updateAreaList();
-                      });
-                    },
-                    selectedValue: bankTypeId,
                   ),
-                ),
-              ],
-            )
-          ],),
+                ],
+              )
+            ],
+          ),
         ),
-        ),
+      ),
       bottomNavigationBar: BottomNavigation(),
       floatingActionButton: floating,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -79,5 +84,4 @@ class _BankState extends State<Bank> {
   }
 }
 
-class id {
-}
+class id {}
