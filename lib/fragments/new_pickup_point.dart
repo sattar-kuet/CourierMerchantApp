@@ -270,7 +270,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                                   CustumButtom(
                                     onPressed: () async {
                                       if (_formKey.currentState!.validate()) {
-                                        var updatedPickupPoint = await Service()
+                                        Service()
                                             .addPickupPoint(
                                                 nameController.text,
                                                 districId,
@@ -278,12 +278,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                                                 addressController.text,
                                                 context)
                                             .then((updatedPickupPoint) {
-                                          setState(() {});
-                                        });
-                                        ;
-                                        if (updatedPickupPoint != null) {
                                           setState(() {
-                                            // For reseting the state of form
                                             userPickupPoint =
                                                 updatedPickupPoint;
                                             nameController.clear();
@@ -292,9 +287,10 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                                             areaId = 0;
                                             districts.clear();
                                             areas.clear();
-                                            _formKey.currentState!.reset();
+                                            //_formKey.currentState!.reset();
                                           });
-                                        }
+                                        });
+
                                         Navigator.pop(context);
                                       }
                                       print(userPickupPoint);
