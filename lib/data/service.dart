@@ -148,8 +148,11 @@ class Service {
         'street': street
       },
     };
+    
     var response = await CallApi().postData(data, 'addPickupPoint',context);
     print(response);
+    // This Navigator.pop() is for closing model sheet
+    Navigator.pop(context);
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(response['message']),
       duration: Duration(seconds: 2),

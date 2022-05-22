@@ -287,11 +287,10 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                                             areaId = 0;
                                             districts.clear();
                                             areas.clear();
-                                            //_formKey.currentState!.reset();
                                           });
                                         });
 
-                                        Navigator.pop(context);
+                                        
                                       }
                                       print(userPickupPoint);
                                     },
