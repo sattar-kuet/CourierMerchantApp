@@ -34,12 +34,10 @@ class _NewPickupPointState extends State<NewPickupPoint> {
   void initState() {
     super.initState();
     returnDistrictValues();
-    Service().getPickupAddress(context).then((value) {
-      if (value != null) {
-        setState(() {
-          userPickupPoint = value;
-        });
-      }
+    Service().getPickupAddress(context).then((pickupPoints) {
+      setState(() {
+        userPickupPoint = pickupPoints;
+      });
     });
   }
 
@@ -135,7 +133,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                                                             ['district'],
                                                     areaId:
                                                         userPickupPoint[index]
-                                                            ['area'],
+                                                            ['upazilla'],
                                                     streetAddress:
                                                         "${userPickupPoint[index]['street']}",
                                                     districtName:
@@ -272,29 +270,31 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                                   CustumButtom(
                                     onPressed: () async {
                                       if (_formKey.currentState!.validate()) {
-                                        await Service().addPickupPoint(
-                                            nameController.text,
-                                            districId,
-                                            areaId,
-                                            addressController.text,
-                                            context);
-                                        Service()
-                                            .getPickupAddress(context)
-                                            .then((value) {
-                                          if (value != null) {
-                                            setState(() {
-                                              // For reseting the state of form
-                                              userPickupPoint = value;
-                                              nameController.clear();
-                                              addressController.clear();
-                                              districId = 0;
-                                              areaId = 0;
-                                              districts.clear();
-                                              areas.clear();
-                                              _formKey.currentState!.reset();
-                                            });
-                                          }
+                                        var updatedPickupPoint = await Service()
+                                            .addPickupPoint(
+                                                nameController.text,
+                                                districId,
+                                                areaId,
+                                                addressController.text,
+                                                context)
+                                            .then((updatedPickupPoint) {
+                                          setState(() {});
                                         });
+                                        ;
+                                        if (updatedPickupPoint != null) {
+                                          setState(() {
+                                            // For reseting the state of form
+                                            userPickupPoint =
+                                                updatedPickupPoint;
+                                            nameController.clear();
+                                            addressController.clear();
+                                            districId = 0;
+                                            areaId = 0;
+                                            districts.clear();
+                                            areas.clear();
+                                            _formKey.currentState!.reset();
+                                          });
+                                        }
                                         Navigator.pop(context);
                                       }
                                       print(userPickupPoint);
