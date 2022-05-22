@@ -270,7 +270,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                                   CustumButtom(
                                     onPressed: () async {
                                       if (_formKey.currentState!.validate()) {
-                                        Service()
+                                       await Service()
                                             .addPickupPoint(
                                                 nameController.text,
                                                 districId,
