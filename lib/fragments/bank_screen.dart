@@ -95,7 +95,6 @@ class _BankScreenState extends State<BankScreen> {
                   CustumButtom(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        // print("This is input from mobileNumberController.text ${mobileNumberController.text}");
                         _saveBank(context);
                       }
                     },
@@ -224,25 +223,24 @@ class _BankScreenState extends State<BankScreen> {
 
   void _saveBank(BuildContext context) {
     var data = {};
-    print("This is input from mobileNumberController.text ${mobileNumberController.text}");
     switch (bankType) {
       case Bank.MOBILE_BANK:
-        data = {
+        data['bank']= {
           'bank_id': bankId,
           'mobile_number': mobileNumberController.text,
           'account_type': mobileBankAccountType,
         };
         break;
       case Bank.BANK:
-        data = {
+        data['bank'] = {
           'bank_id': bankId,
-          'account_name': mobileNumberController.text,
-          'account_number': mobileBankAccountType,
+          'account_name': accountNameController.text,
+          'account_number': accountNumberController.text,
           'branch_name': accountBranchController.text,
         };
         break;
     }
-    print(data);
+    //print(data);
     Service().saveBank(data, context);
   }
 }
