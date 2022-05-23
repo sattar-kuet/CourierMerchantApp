@@ -86,9 +86,10 @@ class _BankScreenState extends State<BankScreen> {
                       selectedValue: bankId,
                     ),
                   ),
-                  bankType == Bank.MOBILE_BANK
-                      ? mobileBanking()
-                      : normalBanking(),
+                  
+                  bankType != -1? showDetail() : Container(),
+                  
+                  bankType != -1?
                   ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
@@ -96,7 +97,7 @@ class _BankScreenState extends State<BankScreen> {
                       }
                     },
                     child: Text('Save'),
-                  )
+                  ) : Container()
                 ],
               )
             ],
@@ -108,7 +109,12 @@ class _BankScreenState extends State<BankScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
-
+ 
+ dynamic showDetail(){
+   return bankType == Bank.MOBILE_BANK
+                      ? mobileBanking()
+                      : normalBanking();
+ }
   Container mobileBanking() {
     return Container(
       child: Column(
@@ -178,27 +184,7 @@ class _BankScreenState extends State<BankScreen> {
     );
   }
 
-  void _saveBank(BuildContext context) {
-    var data = {};
-    switch (bankType) {
-      case Bank.MOBILE_BANK:
-        data = {
-          'bank_id': bankId,
-          'mobile_number': mobileNumberController,
-          'account_type': mobileBankAccountType,
-        };
-        break;
-      case Bank.BANK:
-        data = {
-          'bank_id': bankId,
-          'account_name': mobileNumberController,
-          'account_number': mobileBankAccountType,
-          'branch_name': mobileBankAccountType,
-        };
-        break;
-    }
-    Service().saveBank(data, context);
-  }
+  
 
   Container normalBanking() {
     return Container(
@@ -231,5 +217,27 @@ class _BankScreenState extends State<BankScreen> {
         ],
       ),
     );
+  }
+
+  void _saveBank(BuildContext context) {
+    var data = {};
+    switch (bankType) {
+      case Bank.MOBILE_BANK:
+        data = {
+          'bank_id': bankId,
+          'mobile_number': mobileNumberController.text,
+          'account_type': mobileBankAccountType,
+        };
+        break;
+      case Bank.BANK:
+        data = {
+          'bank_id': bankId,
+          'account_name': mobileNumberController.text,
+          'account_number': mobileBankAccountType,
+          'branch_name': accountBranchController.text,
+        };
+        break;
+    }
+    Service().saveBank(data, context);
   }
 }
