@@ -242,6 +242,7 @@ class _BankScreenState extends State<BankScreen> {
         };
         break;
     }
+    print(data);
     Service().saveBank(data, context);
   }
 }
