@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/data/service.dart';
-import 'bank.dart';
+import 'bank_screen.dart';
 import 'package:flutter_app/fragments/new_pickup_point.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 import '../utility/helper.dart';
@@ -84,7 +84,7 @@ class _LoginPageState extends State<LoginbyotpPage> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Bank(),
+                builder: (context) => BankScreen(),
               ));
           break;
         default:

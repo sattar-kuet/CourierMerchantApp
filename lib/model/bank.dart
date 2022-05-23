@@ -1,6 +1,8 @@
 class Bank {
   static const int MOBILE_BANK = 1;
   static const int BANK = 0;
+  static const int PEROSANL = 1;
+  static const int MERCHANT = 2;
   int id = 0;
   String name = '';
   int type = 0;

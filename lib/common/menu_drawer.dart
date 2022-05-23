@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/fragments/bank.dart';
+import 'package:flutter_app/fragments/bank_screen.dart';
 import 'package:flutter_app/fragments/new_pickup_point.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../fragments/intro_screen.dart';
 import '../widget/drawerHeader.dart';
 import '../widget/drawerItem.dart';
-import '../routes/pageRoute.dart';
 
 class MenuDrawer extends StatelessWidget {
   @override
@@ -30,7 +29,7 @@ class MenuDrawer extends StatelessWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Bank(),
+                builder: (context) => BankScreen(),
               ),
             ),
           ),
