@@ -15,14 +15,7 @@ class Home extends StatelessWidget {
         title: Text("Home"),
       ),
       drawer: MenuDrawer(),
-      body: Column(
-        children: [
-          Center(child: Text("This is Home")),
-          ElevatedButton(onPressed: (){
-            Navigator.of(context).push(MaterialPageRoute(builder: (_)=>NewPickupPoint()));
-          }, child: Text("HELLO"))
-        ],
-      ),
+      body: Center(child: Text("This is Home")),
       bottomNavigationBar: BottomNavigation(),
       floatingActionButton: floating,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
