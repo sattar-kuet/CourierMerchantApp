@@ -1,5 +1,6 @@
 import 'package:awesome_select/awesome_select.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/widget/button.dart';
 import '../common/menu_drawer.dart';
 import '../common/bottom_navigation.dart';
 import '../common/floating_button.dart';
@@ -46,6 +47,7 @@ class _BankScreenState extends State<BankScreen> {
 
   @override
   Widget build(BuildContext context) {
+    bool keyboardIsOpen = MediaQuery.of(context).viewInsets.bottom != 0;
     return new Scaffold(
       appBar: AppBar(
         title: Text("Bank"),
@@ -90,13 +92,14 @@ class _BankScreenState extends State<BankScreen> {
                   bankType != -1? showDetail() : Container(),
                   
                   bankType != -1?
-                  ElevatedButton(
+                  CustumButtom(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
+                        // print("This is input from mobileNumberController.text ${mobileNumberController.text}");
                         _saveBank(context);
                       }
                     },
-                    child: Text('Save'),
+                    text: 'Save',
                   ) : Container()
                 ],
               )
@@ -105,7 +108,7 @@ class _BankScreenState extends State<BankScreen> {
         ),
       ),
       bottomNavigationBar: BottomNavigation(),
-      floatingActionButton: floating,
+      floatingActionButton: Visibility(visible: !keyboardIsOpen ,child: floating),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
