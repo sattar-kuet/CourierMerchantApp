@@ -8,6 +8,7 @@ import './api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+
 class Service {
   Future<bool> isUserExist(String mobile, context) async {
     var token = await _getToken();
@@ -85,14 +86,6 @@ class Service {
     var token = await _getToken();
     var response = await CallApi().getData('getBankList');
     var banks = response['data'];
-    // List<Map<int,int>> mobileBanksHashTable = [];
-    // for (var bank in banks){
-    //      int id = bank['id'];
-    //      int type = bank['type'];
-    //       mobileBanksHashTable
-    //         .add(Map(id,type));
-    // }
-    // Bank.writeSession(mobileBanksHashTable);
     return banks;
   }
 
@@ -136,12 +129,15 @@ class Service {
     ));
     return response['data'];
   }
+
   // Here I need to merge the post api finction with the addPickupPoint function because of the model sheet issue so I have full control of this function
-  Future<dynamic> addPickupPoint(String title, int district, int area, String street, context) async {
+  Future<dynamic> addPickupPoint(
+      String title, int district, int area, String street, context) async {
     showloadingDialog(context);
     var token = await _getToken();
     var userId = await Helper().getLoggedInUserId();
-    String fullUrl = 'https://courierdemo.itscholarbd.com/api/v2/addPickupPoint';
+    String fullUrl =
+        'https://courierdemo.itscholarbd.com/api/v2/addPickupPoint';
     var url = Uri.parse(fullUrl);
     var data = {
       'user_id': userId,
@@ -161,7 +157,8 @@ class Service {
     });
     Map<String, dynamic> responseData = json.decode(response.body);
     // For dismissing Loading
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>NewPickupPoint()));
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (_) => NewPickupPoint()));
     // Also need to dismiss the loader because it makes trouble if the function not works properly due to internet connection etc
     //  For that rason I am adding one more condition so it can dismiss on any condition
     if (response.statusCode != 200) {
@@ -170,8 +167,15 @@ class Service {
     return responseData['data'];
   }
 
-
-
+  Future saveBank(dynamic data, BuildContext context) async {
+    var token = await _getToken();
+    var userId = await Helper().getLoggedInUserId();
+    data['token'] = token;
+    data['userId'] = userId;
+    var response = await CallApi().postData(data, 'saveBank', context);
+    print(response);
+    return response['data'];
+  }
 
   dynamic _getToken() async {
     SharedPreferences localStorage = await SharedPreferences.getInstance();

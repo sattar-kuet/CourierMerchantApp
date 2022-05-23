@@ -179,9 +179,25 @@ class _BankScreenState extends State<BankScreen> {
   }
 
   void _saveBank(BuildContext context) {
-    print('bankId {$bankId}');
-
-    print('type {$bankType}');
+    var data = {};
+    switch (bankType) {
+      case Bank.MOBILE_BANK:
+        data = {
+          'bank_id': bankId,
+          'mobile_number': mobileNumberController,
+          'account_type': mobileBankAccountType,
+        };
+        break;
+      case Bank.BANK:
+        data = {
+          'bank_id': bankId,
+          'account_name': mobileNumberController,
+          'account_number': mobileBankAccountType,
+          'branch_name': mobileBankAccountType,
+        };
+        break;
+    }
+    Service().saveBank(data, context);
   }
 
   Container normalBanking() {
