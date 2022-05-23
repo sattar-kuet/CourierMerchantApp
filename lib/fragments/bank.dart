@@ -14,7 +14,7 @@ class Bank extends StatefulWidget {
 
 class _BankState extends State<Bank> {
   final _formKey = GlobalKey<FormState>();
-  int bankTypeId = 0;
+  int bankId = 0;
   List<S2Choice<int>> banks = [];
   Map<int, int> mobileBanksHashTable = {};
     void initState() {
@@ -69,11 +69,11 @@ class _BankState extends State<Bank> {
                       choiceItems: banks,
                       onChange: (state) async {
                         setState(() {
-                          bankTypeId = state.value!;
+                          bankId = state.value!;
                           //updateAreaList();
                         });
                       },
-                      selectedValue: bankTypeId,
+                      selectedValue: bankId,
                     ),
                   ),
                 ],
