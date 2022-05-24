@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/widget/loading.dart';
 import '../data/user.dart';
-import '../model/bank.dart';
 import '../fragments/new_pickup_point.dart';
 import '../utility/helper.dart';
 import './api.dart';
@@ -70,7 +69,7 @@ class Service {
     return response;
   }
 
-  Future<dynamic> getProductTypes() async {
+  Future<dynamic> getParcelTypes() async {
     var token = await _getToken();
     var response = await CallApi().getData('productTypes');
     return response['data'];

@@ -88,18 +88,17 @@ class _BankScreenState extends State<BankScreen> {
                       selectedValue: bankId,
                     ),
                   ),
-                  
-                  bankType != -1? showDetail() : Container(),
-                  
-                  bankType != -1?
-                  CustumButtom(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        _saveBank(context);
-                      }
-                    },
-                    text: 'Save',
-                  ) : Container()
+                  bankType != -1 ? showDetail() : Container(),
+                  bankType != -1
+                      ? CustumButtom(
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              _saveBank(context);
+                            }
+                          },
+                          text: 'Save',
+                        )
+                      : Container()
                 ],
               )
             ],
@@ -107,16 +106,18 @@ class _BankScreenState extends State<BankScreen> {
         ),
       ),
       bottomNavigationBar: BottomNavigation(),
-      floatingActionButton: Visibility(visible: !keyboardIsOpen ,child: floating),
+      floatingActionButton: Visibility(
+        visible: !keyboardIsOpen,
+        child: floating(context),
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
- 
- dynamic showDetail(){
-   return bankType == Bank.MOBILE_BANK
-                      ? mobileBanking()
-                      : normalBanking();
- }
+
+  dynamic showDetail() {
+    return bankType == Bank.MOBILE_BANK ? mobileBanking() : normalBanking();
+  }
+
   Container mobileBanking() {
     return Container(
       child: Column(
@@ -186,8 +187,6 @@ class _BankScreenState extends State<BankScreen> {
     );
   }
 
-  
-
   Container normalBanking() {
     return Container(
       child: Column(
@@ -225,7 +224,7 @@ class _BankScreenState extends State<BankScreen> {
     var data = {};
     switch (bankType) {
       case Bank.MOBILE_BANK:
-        data['bank']= {
+        data['bank'] = {
           'bank_id': bankId,
           'mobile_number': mobileNumberController.text,
           'account_type': mobileBankAccountType,

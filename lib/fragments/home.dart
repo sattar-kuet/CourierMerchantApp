@@ -17,7 +17,7 @@ class Home extends StatelessWidget {
       drawer: MenuDrawer(),
       body: Center(child: Text("This is Home")),
       bottomNavigationBar: BottomNavigation(),
-      floatingActionButton: floating,
+      floatingActionButton: floating(context),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }

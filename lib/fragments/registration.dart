@@ -25,7 +25,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   }
 
   void setProductList() async {
-    var _futureOfList = Service().getProductTypes();
+    var _futureOfList = Service().getParcelTypes();
     List list = await _futureOfList;
     for (var i = 0; i < list.length; i++) {
       setState(() {
@@ -37,7 +37,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
   @override
   Widget build(BuildContext context) {
-     final Map arguments = ModalRoute.of(context)?.settings.arguments as Map;
+    final Map arguments = ModalRoute.of(context)?.settings.arguments as Map;
     String mobile = '';
     // ignore: unnecessary_null_comparison
     if (arguments != null) {
@@ -71,12 +71,14 @@ class _RegistrationPageState extends State<RegistrationPage> {
               modalFilterAuto: true,
               tileBuilder: (context, state) => S2Tile<dynamic>(
                 //https://github.com/akbarpulatov/flutter_awesome_select/blob/master/example/lib/features_single/single_chips.dart
-                title: const Text('প্রোডাক্ট এর ধরন',),
+                title: const Text(
+                  'প্রোডাক্ট এর ধরন',
+                ),
                 value: state.selected?.toWidget() ?? Container(),
                 leading: Icon(Icons.list_outlined),
                 onTap: state.showModal,
               ),
-              title: 'প্রোডাক্ট এর ধরন',  
+              title: 'প্রোডাক্ট এর ধরন',
               placeholder: 'সিলেক্ট করুন',
               choiceItems: productTypes,
               onChange: (state) => setState(() => productTypeId = state.value!),
@@ -94,18 +96,17 @@ class _RegistrationPageState extends State<RegistrationPage> {
         ]),
       ),
     );
-    
   }
-   void _register(BuildContext context, String mobile) async {
-      var response = await Service().register(mobile, nameController.text, businessNameController.text, productTypeId, context);
+
+  void _register(BuildContext context, String mobile) async {
+    var response = await Service().register(mobile, nameController.text,
+        businessNameController.text, productTypeId, context);
     if (response['status'] == 1) {
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => NewPickupPoint()));
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => NewPickupPoint()));
     } else {
       Helper.errorSnackbar(context, response['message'].toString());
       //print(response);
     }
-
-    
   }
 }
