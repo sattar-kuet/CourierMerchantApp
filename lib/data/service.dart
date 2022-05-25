@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/widget/loading.dart';
 import '../data/user.dart';
 import '../fragments/new_pickup_point.dart';
+import '../model/bank.dart';
 import '../utility/helper.dart';
 import './api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -81,7 +82,7 @@ class Service {
     return response['data'];
   }
 
-  Future<dynamic> getBankList() async {
+  Future<dynamic> getBankList(context) async {
     var token = await _getToken();
     var response = await CallApi().getData('getBankList');
     var banks = response['data'];
@@ -174,6 +175,19 @@ class Service {
     var response = await CallApi().postData(data, 'saveBank', context);
     print(response);
     return response['data'];
+  }
+
+  Future getBank(BuildContext context) async {
+    var token = await _getToken();
+    var userId = await Helper().getLoggedInUserId();
+    dynamic data = {};
+    data['token'] = token;
+    data['userId'] = userId;
+    var response = await CallApi().postData(data, 'getBank', context);
+    print(response);
+    response = response['data'];
+    return Bank(response['bankId'], response['accountName'],
+        response['accountNumber'], response['branchName']);
   }
 
   dynamic _getToken() async {

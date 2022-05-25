@@ -8,6 +8,7 @@ import '../data/service.dart';
 import '../form_components/numberInput.dart';
 import '../form_components/textInput.dart';
 import '../model/bank.dart';
+import '../model/mobile_bank.dart';
 
 class BankScreen extends StatefulWidget {
   static const String routeName = '/bankPage';
@@ -22,27 +23,40 @@ class _BankScreenState extends State<BankScreen> {
   TextEditingController accountNameController = TextEditingController();
   TextEditingController accountNumberController = TextEditingController();
   TextEditingController accountBranchController = TextEditingController();
+  static const MOBILE_BANK = 1;
+  static const BANK = 0;
   int bankId = 0;
   int bankType = -1;
+  bool bankListLoadingDone = false;
   List<S2Choice<int>> banks = [];
   Map<int, int> mobileBanksHashTable = {};
   int mobileBankAccountType = 0;
+  Bank bank = new Bank(0, '', '', '');
+  MobileBank mobileBank = new MobileBank(0, '', 0);
   void initState() {
     super.initState();
-    updateBankList();
-  }
-
-  updateBankList() async {
-    var _bankList = await Service().getBankList();
-    for (var i = 0; i < _bankList.length; i++) {
-      int id = _bankList[i]['id'];
-      String name = _bankList[i]['name'];
-      int type = _bankList[i]['type'];
+    Service().getBankList(context).then((_bankList) {
+      for (var i = 0; i < _bankList.length; i++) {
+        int id = _bankList[i]['id'];
+        String name = _bankList[i]['name'];
+        int type = _bankList[i]['type'];
+        setState(() {
+          banks.add(S2Choice<int>(value: id, title: name));
+          mobileBanksHashTable[id] = type;
+        });
+      }
+    });
+    Service().getBank(context).then((response) {
       setState(() {
-        banks.add(S2Choice<int>(value: id, title: name));
-        mobileBanksHashTable[id] = type;
+        bank = response;
+        accountNameController.text = bank.accountName;
+        accountNumberController.text = bank.accountNumber;
+        accountBranchController.text = bank.branch;
+        bankType = 0;
+        bankId = bank.bankId;
+        bankListLoadingDone = true;
       });
-    }
+    });
   }
 
   @override
@@ -61,33 +75,7 @@ class _BankScreenState extends State<BankScreen> {
             children: [
               Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 20.0),
-                    child: SmartSelect<int>.single(
-                      placeholder: "নির্বাচন করুন",
-                      modalFilter: true,
-                      modalFilterAuto: true,
-                      tileBuilder: (context, state) => S2Tile<dynamic>(
-                        //https://github.com/akbarpulatov/flutter_awesome_select/blob/master/example/lib/features_single/single_chips.dart
-                        title: const Text(
-                          'কোন ব্যাংক এ টাকা নিতে চান?',
-                        ),
-                        value: state.selected?.toWidget() ?? Container(),
-                        onTap: state.showModal,
-                      ),
-                      title: 'কোন ব্যাংক এ টাকা নিতে চান?',
-                      choiceItems: banks,
-                      onChange: (state) async {
-                        setState(() {
-                          bankId = state.value!;
-                          bankType = mobileBanksHashTable[bankId] as int;
-                          //updateAreaList();
-                        });
-                      },
-                      selectedValue: bankId,
-                    ),
-                  ),
+                  bankListLoadingDone ? selectMethod() : Container(),
                   bankType != -1 ? showDetail() : Container(),
                   bankType != -1
                       ? CustumButtom(
@@ -114,8 +102,36 @@ class _BankScreenState extends State<BankScreen> {
     );
   }
 
+  Padding selectMethod() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20.0),
+      child: SmartSelect<int>.single(
+        placeholder: "নির্বাচন করুন",
+        modalFilter: true,
+        modalFilterAuto: true,
+        tileBuilder: (context, state) => S2Tile<dynamic>(
+          //https://github.com/akbarpulatov/flutter_awesome_select/blob/master/example/lib/features_single/single_chips.dart
+          title: const Text(
+            'কোন ব্যাংক এ টাকা নিতে চান?',
+          ),
+          value: state.selected?.toWidget() ?? Container(),
+          onTap: state.showModal,
+        ),
+        title: 'কোন ব্যাংক এ টাকা নিতে চান?',
+        choiceItems: banks,
+        onChange: (state) async {
+          setState(() {
+            bankId = state.value!;
+            bankType = mobileBanksHashTable[bankId] as int;
+          });
+        },
+        selectedValue: bankId,
+      ),
+    );
+  }
+
   dynamic showDetail() {
-    return bankType == Bank.MOBILE_BANK ? mobileBanking() : normalBanking();
+    return bankType == MOBILE_BANK ? mobileBanking() : normalBanking();
   }
 
   Container mobileBanking() {
@@ -145,7 +161,7 @@ class _BankScreenState extends State<BankScreen> {
                   child: Row(
                     children: [
                       Radio(
-                        value: Bank.PEROSANL,
+                        value: MobileBank.PEROSANL,
                         groupValue: mobileBankAccountType,
                         onChanged: (value) {
                           setState(() {
@@ -164,7 +180,7 @@ class _BankScreenState extends State<BankScreen> {
                   child: Row(
                     children: [
                       Radio(
-                        value: Bank.MERCHANT,
+                        value: MobileBank.MERCHANT,
                         groupValue: mobileBankAccountType,
                         onChanged: (value) {
                           setState(() {
@@ -223,14 +239,14 @@ class _BankScreenState extends State<BankScreen> {
   void _saveBank(BuildContext context) {
     var data = {};
     switch (bankType) {
-      case Bank.MOBILE_BANK:
+      case MOBILE_BANK:
         data['bank'] = {
           'bank_id': bankId,
           'mobile_number': mobileNumberController.text,
           'account_type': mobileBankAccountType,
         };
         break;
-      case Bank.BANK:
+      case BANK:
         data['bank'] = {
           'bank_id': bankId,
           'account_name': accountNameController.text,
