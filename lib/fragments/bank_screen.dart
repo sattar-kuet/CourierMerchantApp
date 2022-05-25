@@ -25,7 +25,6 @@ class _BankScreenState extends State<BankScreen> {
   TextEditingController accountBranchController = TextEditingController();
   static const MOBILE_BANK = 1;
   static const BANK = 0;
-  int bankId = 0;
   int bankType = -1;
   bool bankListLoadingDone = false;
   List<S2Choice<int>> banks = [];
@@ -33,6 +32,7 @@ class _BankScreenState extends State<BankScreen> {
   int mobileBankAccountType = 0;
   Bank bank = new Bank(0, '', '', '');
   MobileBank mobileBank = new MobileBank(0, '', 0);
+
   void initState() {
     super.initState();
     Service().getBankList(context).then((_bankList) {
@@ -43,18 +43,24 @@ class _BankScreenState extends State<BankScreen> {
         setState(() {
           banks.add(S2Choice<int>(value: id, title: name));
           mobileBanksHashTable[id] = type;
+          bankListLoadingDone = true;
         });
       }
     });
     Service().getBank(context).then((response) {
       setState(() {
-        bank = response;
-        accountNameController.text = bank.accountName;
-        accountNumberController.text = bank.accountNumber;
-        accountBranchController.text = bank.branch;
-        bankType = 0;
-        bankId = bank.bankId;
-        bankListLoadingDone = true;
+        if (response.mobileNumber) {
+          mobileBank = response;
+          mobileNumberController.text = mobileBank.mobileNumber;
+          mobileBankAccountType = mobileBank.accountType;
+        } else {
+          bank = response;
+          accountNameController.text = bank.accountName;
+          accountNumberController.text = bank.accountNumber;
+          accountBranchController.text = bank.branch;
+        }
+
+        // bankType = 0;
       });
     });
   }
@@ -121,11 +127,11 @@ class _BankScreenState extends State<BankScreen> {
         choiceItems: banks,
         onChange: (state) async {
           setState(() {
-            bankId = state.value!;
-            bankType = mobileBanksHashTable[bankId] as int;
+            bank.bankId = state.value!;
+            bankType = mobileBanksHashTable[bank.bankId] as int;
           });
         },
-        selectedValue: bankId,
+        selectedValue: bank.bankId,
       ),
     );
   }
@@ -241,14 +247,14 @@ class _BankScreenState extends State<BankScreen> {
     switch (bankType) {
       case MOBILE_BANK:
         data['bank'] = {
-          'bank_id': bankId,
+          'bank_id': mobileBank.bankId,
           'mobile_number': mobileNumberController.text,
           'account_type': mobileBankAccountType,
         };
         break;
       case BANK:
         data['bank'] = {
-          'bank_id': bankId,
+          'bank_id': bank.bankId,
           'account_name': accountNameController.text,
           'account_number': accountNumberController.text,
           'branch_name': accountBranchController.text,

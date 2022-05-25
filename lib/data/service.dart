@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/model/mobile_bank.dart';
 import 'package:flutter_app/widget/loading.dart';
 import '../data/user.dart';
 import '../fragments/new_pickup_point.dart';
@@ -186,6 +187,10 @@ class Service {
     var response = await CallApi().postData(data, 'getBank', context);
     print(response);
     response = response['data'];
+    if (response['mobileNumber']) {
+      return MobileBank(response['bankId'], response['mobileNumber'],
+          response['accountType']);
+    }
     return Bank(response['bankId'], response['accountName'],
         response['accountNumber'], response['branchName']);
   }
