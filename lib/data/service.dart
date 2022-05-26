@@ -187,7 +187,7 @@ class Service {
     var response = await CallApi().postData(data, 'getBank', context);
     print(response);
     response = response['data'];
-    if (response['mobileNumber']) {
+    if (response['mobileNumber'] != null) {
       return MobileBank(response['bankId'], response['mobileNumber'],
           response['accountType']);
     }
