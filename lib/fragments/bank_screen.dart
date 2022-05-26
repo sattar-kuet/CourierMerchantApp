@@ -70,7 +70,38 @@ class _BankScreenState extends State<BankScreen> {
   @override
   Widget build(BuildContext context) {
     bool keyboardIsOpen = MediaQuery.of(context).viewInsets.bottom != 0;
-    return new Scaffold(
+    if (banks.length == 0) {
+      return Scaffold(
+        drawer: MenuDrawer(),
+        appBar: AppBar(
+          title: Text("Bank"),
+        ),
+        body: Center(
+          // Aligns the container to center
+          child: Container(
+              // A simplified version of dialog.
+              width: 100.0,
+              height: 56.0,
+              color: Colors.transparent,
+              child: SpinKitThreeInOut(
+                itemBuilder: (BuildContext context, int index) {
+                  return Container(
+                    margin: EdgeInsets.only(right: 3),
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        color: index.isEven
+                            ? Color.fromARGB(255, 20, 17, 17)
+                            : Colors.green,
+                      ),
+                    ),
+                  );
+                },
+              )),
+        ),
+      );
+    } else{
+      return new Scaffold(
       appBar: AppBar(
         title: Text("Bank"),
       ),
@@ -108,6 +139,7 @@ class _BankScreenState extends State<BankScreen> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
+    }
   }
 
   Padding selectMethod() {
