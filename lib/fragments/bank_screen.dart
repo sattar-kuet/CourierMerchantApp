@@ -246,11 +246,6 @@ class _BankScreenState extends State<BankScreen> {
 
   void _saveBank(BuildContext context) {
     var data = {};
-<<<<<<< HEAD
-    print(
-        "This is input from mobileNumberController.text ${mobileNumberController.text}");
-=======
->>>>>>> 380dd82684000c9eac0d5ea569f0b59467fe050c
     switch (bankType) {
       case MOBILE_BANK:
         data['bank'] = {
