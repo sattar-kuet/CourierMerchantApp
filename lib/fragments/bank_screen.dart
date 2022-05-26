@@ -1,6 +1,8 @@
 import 'package:awesome_select/awesome_select.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/widget/button.dart';
+import 'package:flutter_app/widget/loading.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../common/menu_drawer.dart';
 import '../common/bottom_navigation.dart';
 import '../common/floating_button.dart';
@@ -48,76 +50,107 @@ class _BankScreenState extends State<BankScreen> {
   @override
   Widget build(BuildContext context) {
     bool keyboardIsOpen = MediaQuery.of(context).viewInsets.bottom != 0;
-    return new Scaffold(
-      appBar: AppBar(
-        title: Text("Bank"),
-      ),
-      drawer: MenuDrawer(),
-      body: SingleChildScrollView(
-        child: new Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 20.0),
-                    child: SmartSelect<int>.single(
-                      placeholder: "নির্বাচন করুন",
-                      modalFilter: true,
-                      modalFilterAuto: true,
-                      tileBuilder: (context, state) => S2Tile<dynamic>(
-                        //https://github.com/akbarpulatov/flutter_awesome_select/blob/master/example/lib/features_single/single_chips.dart
-                        title: const Text(
-                          'কোন ব্যাংক এ টাকা নিতে চান?',
-                        ),
-                        value: state.selected?.toWidget() ?? Container(),
-                        onTap: state.showModal,
+    if (banks.length == 0) {
+      return Scaffold(
+        drawer: MenuDrawer(),
+        appBar: AppBar(
+          title: Text("Bank"),
+        ),
+        body: Center(
+          // Aligns the container to center
+          child: Container(
+              // A simplified version of dialog.
+              width: 100.0,
+              height: 56.0,
+              color: Colors.transparent,
+              child: SpinKitThreeInOut(
+                itemBuilder: (BuildContext context, int index) {
+                  return Container(
+                    margin: EdgeInsets.only(right: 3),
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        color: index.isEven
+                            ? Color.fromARGB(255, 20, 17, 17)
+                            : Colors.green,
                       ),
-                      title: 'কোন ব্যাংক এ টাকা নিতে চান?',
-                      choiceItems: banks,
-                      onChange: (state) async {
-                        setState(() {
-                          bankId = state.value!;
-                          bankType = mobileBanksHashTable[bankId] as int;
-                          //updateAreaList();
-                        });
-                      },
-                      selectedValue: bankId,
                     ),
-                  ),
-                  
-                  bankType != -1? showDetail() : Container(),
-                  
-                  bankType != -1?
-                  CustumButtom(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        // print("This is input from mobileNumberController.text ${mobileNumberController.text}");
-                        _saveBank(context);
-                      }
-                    },
-                    text: 'Save',
-                  ) : Container()
-                ],
-              )
-            ],
+                  );
+                },
+              )),
+        ),
+      );
+    } else {
+      return new Scaffold(
+        appBar: AppBar(
+          title: Text("Bank"),
+        ),
+        drawer: MenuDrawer(),
+        body: SingleChildScrollView(
+          child: new Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 20.0),
+                      child: SmartSelect<int>.single(
+                        placeholder: "নির্বাচন করুন",
+                        modalFilter: true,
+                        modalFilterAuto: true,
+                        tileBuilder: (context, state) => S2Tile<dynamic>(
+                          //https://github.com/akbarpulatov/flutter_awesome_select/blob/master/example/lib/features_single/single_chips.dart
+                          title: const Text(
+                            'কোন ব্যাংক এ টাকা নিতে চান?',
+                          ),
+                          value: state.selected?.toWidget() ?? Container(),
+                          onTap: state.showModal,
+                        ),
+                        title: 'কোন ব্যাংক এ টাকা নিতে চান?',
+                        choiceItems: banks,
+                        onChange: (state) async {
+                          setState(() {
+                            bankId = state.value!;
+                            bankType = mobileBanksHashTable[bankId] as int;
+                            //updateAreaList();
+                          });
+                        },
+                        selectedValue: bankId,
+                      ),
+                    ),
+                    bankType != -1 ? showDetail() : Container(),
+                    bankType != -1
+                        ? CustumButtom(
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                // print("This is input from mobileNumberController.text ${mobileNumberController.text}");
+                                _saveBank(context);
+                              }
+                            },
+                            text: 'Save',
+                          )
+                        : Container()
+                  ],
+                )
+              ],
+            ),
           ),
         ),
-      ),
-      bottomNavigationBar: BottomNavigation(),
-      floatingActionButton: Visibility(visible: !keyboardIsOpen ,child: floating),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-    );
+        bottomNavigationBar: BottomNavigation(),
+        floatingActionButton:
+            Visibility(visible: !keyboardIsOpen, child: floating),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      );
+    }
   }
- 
- dynamic showDetail(){
-   return bankType == Bank.MOBILE_BANK
-                      ? mobileBanking()
-                      : normalBanking();
- }
+
+  dynamic showDetail() {
+    return bankType == Bank.MOBILE_BANK ? mobileBanking() : normalBanking();
+  }
+
   Container mobileBanking() {
     return Container(
       child: Column(
@@ -187,8 +220,6 @@ class _BankScreenState extends State<BankScreen> {
     );
   }
 
-  
-
   Container normalBanking() {
     return Container(
       child: Column(
@@ -224,7 +255,8 @@ class _BankScreenState extends State<BankScreen> {
 
   void _saveBank(BuildContext context) {
     var data = {};
-    print("This is input from mobileNumberController.text ${mobileNumberController.text}");
+    print(
+        "This is input from mobileNumberController.text ${mobileNumberController.text}");
     switch (bankType) {
       case Bank.MOBILE_BANK:
         data = {
