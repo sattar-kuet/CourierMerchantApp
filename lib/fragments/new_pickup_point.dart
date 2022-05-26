@@ -33,7 +33,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
   @override
   void initState() {
     super.initState();
-    returnDistrictValues();
+    setDistrictList();
     Service().getPickupAddress(context).then((pickupPoints) {
       setState(() {
         userPickupPoint = pickupPoints;
@@ -41,7 +41,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
     });
   }
 
-  returnDistrictValues() async {
+  setDistrictList() async {
     var _futureOfList = Service().getDistrictList();
     List list = await _futureOfList;
     for (var i = 0; i < list.length; i++) {
@@ -270,7 +270,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                                   CustumButtom(
                                     onPressed: () async {
                                       if (_formKey.currentState!.validate()) {
-                                       await Service()
+                                        await Service()
                                             .addPickupPoint(
                                                 nameController.text,
                                                 districId,
@@ -290,7 +290,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                                           });
                                         });
                                       }
-                                      
+
                                       print(userPickupPoint);
                                     },
                                     text: 'Add Pickup Point',
@@ -307,12 +307,14 @@ class _NewPickupPointState extends State<NewPickupPoint> {
       ),
       bottomNavigationBar: BottomNavigation(),
       floatingActionButton: Visibility(
-          visible: !keyboardIsOpen,
-          child: Padding(
-              padding: EdgeInsets.only(
-                top: 45,
-              ),
-              child: floating)),
+        visible: !keyboardIsOpen,
+        child: Padding(
+          padding: EdgeInsets.only(
+            top: 45,
+          ),
+          child: floating(context),
+        ),
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }

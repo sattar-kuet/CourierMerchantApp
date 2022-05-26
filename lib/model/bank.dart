@@ -1,23 +1,22 @@
 class Bank {
-  static const int MOBILE_BANK = 1;
-  static const int BANK = 0;
-  static const int PEROSANL = 1;
-  static const int MERCHANT = 2;
-  int id = 0;
-  String name = '';
-  int type = 0;
-  Bank(this.id, this.name, this.type);
+  int bankId = 0;
+  String accountName = '';
+  String accountNumber = '';
+  String branch = '';
+  Bank(this.bankId, this.accountName, this.accountNumber, this.branch);
   Bank.fromJson(Map<String, dynamic> bankMap) {
-    id = bankMap['id'] ?? 0;
-    name = bankMap['name'] ?? '';
-    type = bankMap['type'] ?? '';
+    bankId = bankMap['id'] ?? 0;
+    accountName = bankMap['accountName'] ?? '';
+    accountNumber = bankMap['accountNumber'] ?? '';
+    branch = bankMap['branch'] ?? '';
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'name': name,
-      'type': type,
+      'bankId': bankId,
+      'accountName': accountName,
+      'accountNumber': accountNumber,
+      'branch': branch
     };
   }
 }

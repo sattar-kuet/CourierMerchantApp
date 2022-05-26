@@ -6,16 +6,16 @@ import 'package:flutter_app/widget/button.dart';
 
 class EditPickupPoint extends StatefulWidget {
   static const String routeName = '/editPickupPointPage';
-  const EditPickupPoint(
-      {Key? key,
-      required this.title,
-      required this.districtId,
-      required this.areaId,
-      required this.streetAddress,
-      required this.districtName,
-      required this.areaName,
-      required this.id,})
-      : super(key: key);
+  const EditPickupPoint({
+    Key? key,
+    required this.title,
+    required this.districtId,
+    required this.areaId,
+    required this.streetAddress,
+    required this.districtName,
+    required this.areaName,
+    required this.id,
+  }) : super(key: key);
   final String title;
   final int districtId;
   final int areaId;
@@ -64,7 +64,7 @@ class _EditPickupPointState extends State<EditPickupPoint> {
     }
   }
 
-  getInitialAreaList()async{
+  getInitialAreaList() async {
     var _futureOfList = Service().getAreaList(widget.districtId, context);
     List list = await _futureOfList;
     for (var i = 0; i < list.length; i++) {
@@ -78,12 +78,12 @@ class _EditPickupPointState extends State<EditPickupPoint> {
     var _futureOfList = await Service().getAreaList(districtId, context);
     List list = await _futureOfList;
     List<S2Choice<int>> areaList = [];
-     setState(() {
-      list.forEach((element) { 
-        areaList.add(S2Choice<int>(value: element['id'], title: element['name']));
+    setState(() {
+      list.forEach((element) {
+        areaList
+            .add(S2Choice<int>(value: element['id'], title: element['name']));
       });
       print(areaList);
-
     });
     setState(() {
       areas = areaList;
@@ -130,9 +130,11 @@ class _EditPickupPointState extends State<EditPickupPoint> {
                     ),
                     title: 'জেলা',
                     choiceItems: districts,
-                    onChange: (state)async {
-                      setState((){ districtId = state.value!;
-                      updateAreaList();});
+                    onChange: (state) async {
+                      setState(() {
+                        districtId = state.value!;
+                        updateAreaList();
+                      });
                     },
                     selectedValue: districtId,
                   ),
