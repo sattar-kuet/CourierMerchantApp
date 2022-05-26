@@ -1,7 +1,6 @@
 import 'package:awesome_select/awesome_select.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/widget/button.dart';
-import 'package:flutter_app/widget/loading.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../common/menu_drawer.dart';
 import '../common/bottom_navigation.dart';
@@ -100,45 +99,45 @@ class _BankScreenState extends State<BankScreen> {
               )),
         ),
       );
-    } else{
+    } else {
       return new Scaffold(
-      appBar: AppBar(
-        title: Text("Bank"),
-      ),
-      drawer: MenuDrawer(),
-      body: SingleChildScrollView(
-        child: new Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Column(
-                children: [
-                  bankListLoadingDone ? selectMethod() : Container(),
-                  bankType != -1 ? showDetail() : Container(),
-                  bankType != -1
-                      ? CustumButtom(
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              _saveBank(context);
-                            }
-                          },
-                          text: 'Save',
-                        )
-                      : Container()
-                ],
-              )
-            ],
+        appBar: AppBar(
+          title: Text("Bank"),
+        ),
+        drawer: MenuDrawer(),
+        body: SingleChildScrollView(
+          child: new Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Column(
+                  children: [
+                    bankListLoadingDone ? selectMethod() : Container(),
+                    bankType != -1 ? showDetail() : Container(),
+                    bankType != -1
+                        ? CustumButtom(
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                _saveBank(context);
+                              }
+                            },
+                            text: 'Save',
+                          )
+                        : Container()
+                  ],
+                )
+              ],
+            ),
           ),
         ),
-      ),
-      bottomNavigationBar: BottomNavigation(),
-      floatingActionButton: Visibility(
-        visible: !keyboardIsOpen,
-        child: floating(context),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-    );
+        bottomNavigationBar: BottomNavigation(),
+        floatingActionButton: Visibility(
+          visible: !keyboardIsOpen,
+          child: floating(context),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      );
     }
   }
 
@@ -281,17 +280,17 @@ class _BankScreenState extends State<BankScreen> {
     switch (bankType) {
       case MOBILE_BANK:
         data['bank'] = {
-          'bank_id': mobileBank.bankId,
-          'mobile_number': mobileNumberController.text,
-          'account_type': mobileBankAccountType,
+          'bankId': mobileBank.bankId,
+          'mobileNumber': mobileNumberController.text,
+          'accountType': mobileBankAccountType,
         };
         break;
       case BANK:
         data['bank'] = {
-          'bank_id': bank.bankId,
-          'account_name': accountNameController.text,
-          'account_number': accountNumberController.text,
-          'branch_name': accountBranchController.text,
+          'bankId': bank.bankId,
+          'accountName': accountNameController.text,
+          'accountNumber': accountNumberController.text,
+          'branchName': accountBranchController.text,
         };
         break;
     }
