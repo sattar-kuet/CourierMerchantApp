@@ -9,6 +9,7 @@ import './api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import '../constants.dart' as Constents;
 
 class Service {
   Future<bool> isUserExist(String mobile, context) async {
@@ -185,14 +186,21 @@ class Service {
     data['token'] = token;
     data['userId'] = userId;
     var response = await CallApi().postData(data, 'getBank', context);
-    print(response);
-    response = response['data'];
-    if (response['mobileNumber'] != null) {
-      return MobileBank(response['bankId'], response['mobileNumber'],
-          response['accountType']);
+    //print(response);
+    var bankData = response['data'];
+    if (bankData.length == 0) {
+      return null;
     }
-    return Bank(response['bankId'], response['accountName'],
-        response['accountNumber'], response['branchName']);
+    if (bankData['bankType'] == Constents.BankAccountType.MOBILE) {
+      return MobileBank(bankData['bankId'], bankData['mobileNumber'],
+          bankData['accountType'], bankData['bankType']);
+    }
+    return Bank(
+        bankData['bankId'],
+        bankData['accountName'],
+        bankData['accountNumber'],
+        bankData['branchName'],
+        bankData['bankType']);
   }
 
   dynamic _getToken() async {
@@ -204,7 +212,7 @@ class Service {
   dynamic _getLoggedInUser(String key) async {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     var userData = localStorage.getString('user');
-    return 1;
+    return userData;
     // return userData!.key;
   }
 }

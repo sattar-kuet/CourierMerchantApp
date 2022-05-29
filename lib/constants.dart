@@ -7,7 +7,12 @@ class Color {
   static const BRAND = '#aad';
 }
 
-class NeumorphismDecoration{
+class BankAccountType {
+  static const MOBILE = 1;
+  static const NORMAL = 0;
+}
+
+class NeumorphismDecoration {
   final BoxDecoration boxDecoration = BoxDecoration(
     borderRadius: BorderRadius.circular(6.0),
     color: Colors.grey.shade50,

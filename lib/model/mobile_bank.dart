@@ -1,3 +1,5 @@
+import '../constants.dart' as Constents;
+
 class MobileBank {
   static const int PEROSANL = 1;
   static const int MERCHANT = 2;
@@ -5,8 +7,8 @@ class MobileBank {
   int bankId = 0;
   String mobileNumber = '';
   int accountType = 0;
-
-  MobileBank(this.bankId, this.mobileNumber, this.accountType);
+  int bankType = Constents.BankAccountType.MOBILE;
+  MobileBank(this.bankId, this.mobileNumber, this.accountType, this.bankType);
   MobileBank.fromJson(Map<String, dynamic> bankMap) {
     bankId = bankMap['bankId'] ?? 0;
     mobileNumber = bankMap['mobileNumber'] ?? '';

@@ -10,6 +10,7 @@ import '../form_components/numberInput.dart';
 import '../form_components/textInput.dart';
 import '../model/bank.dart';
 import '../model/mobile_bank.dart';
+import '../constants.dart' as Constents;
 
 class BankScreen extends StatefulWidget {
   static const String routeName = '/bankPage';
@@ -24,15 +25,16 @@ class _BankScreenState extends State<BankScreen> {
   TextEditingController accountNameController = TextEditingController();
   TextEditingController accountNumberController = TextEditingController();
   TextEditingController accountBranchController = TextEditingController();
-  static const MOBILE_BANK = 1;
-  static const BANK = 0;
+  static const MOBILE_BANK = Constents.BankAccountType.MOBILE;
+  static const BANK = Constents.BankAccountType.NORMAL;
   int bankType = -1;
+  int bankId = -1;
   bool bankListLoadingDone = false;
   List<S2Choice<int>> banks = [];
   Map<int, int> mobileBanksHashTable = {};
   int mobileBankAccountType = 0;
-  Bank bank = new Bank(0, '', '', '');
-  MobileBank mobileBank = new MobileBank(0, '', 0);
+  Bank bank = new Bank(0, '', '', '', BANK);
+  MobileBank mobileBank = new MobileBank(0, '', 0, MOBILE_BANK);
 
   void initState() {
     super.initState();
@@ -50,17 +52,25 @@ class _BankScreenState extends State<BankScreen> {
     });
     Service().getBank(context).then((response) {
       setState(() {
-        if (response.mobileNumber) {
-          mobileBank = response;
-          mobileNumberController.text = mobileBank.mobileNumber;
-          mobileBankAccountType = mobileBank.accountType;
+        if (response != null) {
+          bankId = response.bankId;
+          bankType = response.bankType;
+          switch (bankType) {
+            case MOBILE_BANK:
+              mobileBank = response;
+              mobileNumberController.text = mobileBank.mobileNumber;
+              mobileBankAccountType = mobileBank.accountType;
+              break;
+            case BANK:
+              bank = response;
+              accountNameController.text = bank.accountName;
+              accountNumberController.text = bank.accountNumber;
+              accountBranchController.text = bank.branch;
+              break;
+          }
         } else {
-          bank = response;
-          accountNameController.text = bank.accountName;
-          accountNumberController.text = bank.accountNumber;
-          accountBranchController.text = bank.branch;
+          bankId = 0;
         }
-
         // bankType = 0;
       });
     });
@@ -113,7 +123,9 @@ class _BankScreenState extends State<BankScreen> {
               children: [
                 Column(
                   children: [
-                    bankListLoadingDone ? selectMethod() : Container(),
+                    bankListLoadingDone && bankId >= 0
+                        ? selectBank()
+                        : Container(),
                     bankType != -1 ? showDetail() : Container(),
                     bankType != -1
                         ? CustumButtom(
@@ -141,7 +153,7 @@ class _BankScreenState extends State<BankScreen> {
     }
   }
 
-  Padding selectMethod() {
+  Padding selectBank() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20.0),
       child: SmartSelect<int>.single(
@@ -160,11 +172,11 @@ class _BankScreenState extends State<BankScreen> {
         choiceItems: banks,
         onChange: (state) async {
           setState(() {
-            bank.bankId = state.value!;
-            bankType = mobileBanksHashTable[bank.bankId] as int;
+            bankId = state.value!;
+            bankType = mobileBanksHashTable[bankId] as int;
           });
         },
-        selectedValue: bank.bankId,
+        selectedValue: bankId,
       ),
     );
   }
@@ -280,14 +292,16 @@ class _BankScreenState extends State<BankScreen> {
     switch (bankType) {
       case MOBILE_BANK:
         data['bank'] = {
-          'bankId': mobileBank.bankId,
+          'bankId': bankId,
+          'bankType': bankType,
           'mobileNumber': mobileNumberController.text,
           'accountType': mobileBankAccountType,
         };
         break;
       case BANK:
         data['bank'] = {
-          'bankId': bank.bankId,
+          'bankId': bankId,
+          'bankType': bankType,
           'accountName': accountNameController.text,
           'accountNumber': accountNumberController.text,
           'branchName': accountBranchController.text,
