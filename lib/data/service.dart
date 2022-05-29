@@ -103,7 +103,6 @@ class Service {
     int userId = await Helper().getLoggedInUserId();
     var data = {"user_id": userId};
     var response = await CallApi().postData(data, 'getPickupAddress', context);
-    print(response);
     return response['data'];
   }
 
