@@ -1,11 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_app/fragments/new_pickup_point.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Helper {
-    List userPickupPoint = [];
+  List userPickupPoint = [];
   static void errorSnackbar(BuildContext context, String message) {
     final errorSnackbar = SnackBar(
       backgroundColor: Colors.deepOrange,
@@ -24,6 +23,6 @@ class Helper {
   }
 }
 
-class UserPickUpAddressesHelper{
+class UserPickUpAddressesHelper {
   List userPickupPoint = [];
 }

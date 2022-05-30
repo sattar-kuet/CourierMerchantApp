@@ -17,17 +17,16 @@ class _NewPickupPointState extends State<NewPickupPoint> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController nameController = TextEditingController();
   TextEditingController addressController = TextEditingController();
-  bool showform = false;
   List<S2Choice<int>> districts = [];
   List<S2Choice<int>> areas = [];
-  List userPickupPoint = [];
-
   int districtId = 0;
   int areaId = 0;
   void initState() {
     super.initState();
     updateDistrictList();
-    getInitialAreaList();
+
+    updateAreaList(districtId);
+
     Service().getPickupAddress(context).then((response) {
       setState(() {
         nameController.text = response['title'];
@@ -49,29 +48,14 @@ class _NewPickupPointState extends State<NewPickupPoint> {
     }
   }
 
-  getInitialAreaList() async {
-    var _futureOfList = Service().getAreaList(districtId, context);
-    List list = await _futureOfList;
-    for (var i = 0; i < list.length; i++) {
-      setState(() {
-        areas.add(S2Choice<int>(value: list[i]['id'], title: list[i]['name']));
-      });
-    }
-  }
-
   updateAreaList(int? value) async {
     var _futureOfList = await Service().getAreaList(districtId, context);
     List list = await _futureOfList;
     List<S2Choice<int>> areaList = [];
     setState(() {
       list.forEach((element) {
-        areaList
-            .add(S2Choice<int>(value: element['id'], title: element['name']));
+        areas.add(S2Choice<int>(value: element['id'], title: element['name']));
       });
-      print(areaList);
-    });
-    setState(() {
-      areas = areaList;
     });
   }
 
@@ -134,6 +118,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                         onChange: (state) {
                           setState(() {
                             districtId = state.value!;
+                            areaId = 0;
                             updateAreaList(state.value).then((value) {
                               setState(() {});
                             });
@@ -142,30 +127,29 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                         selectedValue: districtId,
                       ),
                     ),
-                    if (districtId != 0)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 30.0),
-                        child: SmartSelect<int>.single(
-                          modalFilter: true,
-                          modalFilterAuto: true,
-                          tileBuilder: (context, state) => S2Tile<dynamic>(
-                            //https://github.com/akbarpulatov/flutter_awesome_select/blob/master/example/lib/features_single/single_chips.dart
-                            title: const Text(
-                              'এলাকা',
-                            ),
-                            value: state.selected?.toWidget() ?? Container(),
-                            leading: Icon(Icons.list_outlined),
-                            onTap: state.showModal,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 30.0),
+                      child: SmartSelect<int>.single(
+                        modalFilter: true,
+                        modalFilterAuto: true,
+                        tileBuilder: (context, state) => S2Tile<dynamic>(
+                          //https://github.com/akbarpulatov/flutter_awesome_select/blob/master/example/lib/features_single/single_chips.dart
+                          title: const Text(
+                            'এলাকা',
                           ),
-                          title: 'এলাকা',
-                          placeholder: 'সিলেক্ট করুন',
-                          choiceItems: areas,
-                          onChange: (state) =>
-                              setState(() => areaId = state.value!),
-                          selectedValue: areaId,
+                          value: state.selected?.toWidget() ?? Container(),
+                          leading: Icon(Icons.list_outlined),
+                          onTap: state.showModal,
                         ),
+                        title: 'এলাকা',
+                        placeholder: 'সিলেক্ট করুন',
+                        choiceItems: areas,
+                        onChange: (state) =>
+                            setState(() => areaId = state.value!),
+                        selectedValue: areaId,
                       ),
+                    ),
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 10, horizontal: 30.0),
