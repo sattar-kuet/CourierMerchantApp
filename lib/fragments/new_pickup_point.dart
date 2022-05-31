@@ -19,56 +19,62 @@ class _NewPickupPointState extends State<NewPickupPoint> {
   TextEditingController addressController = TextEditingController();
   List<S2Choice<int>> districts = [];
   List<S2Choice<int>> areas = [];
-  int districtId = 0;
+  int districtId = 47;
   int areaId = 0;
+  bool districtListLoadingDone = false;
+  bool areaListLoadingDone = false;
+  bool existingDataLoded = false;
   void initState() {
     super.initState();
-    updateDistrictList();
-
-    updateAreaList(districtId);
-
     Service().getPickupAddress(context).then((response) {
-      setState(() {
-        nameController.text = response['title'];
-        addressController.text = response['street'];
-        districtId = response['district'];
-        areaId = response['upazilla'];
-      });
+      if(response.length > 0 ){
+          setState(() {
+          nameController.text = response['title'];
+          addressController.text = response['street'];
+          districtId = response['district'];
+          areaId = response['upazilla'];
+          existingDataLoded = true;
+        });
+      }  
+      else{
+        setState(() {
+          existingDataLoded = true;
+        });
+      } 
+    });
+      updateDistrictList();
+      updateAreaList();
+  }
+
+  updateDistrictList()  {
+     Service().getDistrictList().then((_districtList) {
+      for (var i = 0; i < _districtList.length; i++) {
+        int id = _districtList[i]['id'];
+        String name = _districtList[i]['name'];
+        setState(() {
+          districts.add(S2Choice<int>(value: id, title: name));
+          districtListLoadingDone = true;
+        });
+      }
+    });
+  }
+  updateAreaList()  {
+     Service().getAreaList(districtId, context).then((_areaList) {
+       List<S2Choice<int>> areaList = [];
+      for (var i = 0; i < _areaList.length; i++) {
+        int id = _areaList[i]['id'];
+        String name = _areaList[i]['name'];
+        areaList.add(S2Choice<int>(value: id, title: name));
+      }
+       setState(() {
+          areas = areaList;
+          areaListLoadingDone = true;
+          areaId = 0;
+          print("here...");
+        });
     });
   }
 
-  updateDistrictList() async {
-    var _futureOfList = Service().getDistrictList();
-    List list = await _futureOfList;
-    for (var i = 0; i < list.length; i++) {
-      setState(() {
-        districts
-            .add(S2Choice<int>(value: list[i]['id'], title: list[i]['name']));
-      });
-    }
-  }
-
-  updateAreaList(int? value) async {
-    var _futureOfList = await Service().getAreaList(districtId, context);
-    List list = await _futureOfList;
-    List<S2Choice<int>> areaList = [];
-    setState(() {
-      list.forEach((element) {
-        areas.add(S2Choice<int>(value: element['id'], title: element['name']));
-      });
-    });
-  }
-
-  setDistrictList() async {
-    var _futureOfList = Service().getDistrictList();
-    List list = await _futureOfList;
-    for (var i = 0; i < list.length; i++) {
-      setState(() {
-        districts
-            .add(S2Choice<int>(value: list[i]['id'], title: list[i]['name']));
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,6 +103,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                         icon: Icons.edit,
                       ),
                     ),
+                    if(districtListLoadingDone && existingDataLoded)
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 10, horizontal: 30.0),
@@ -118,15 +125,14 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                         onChange: (state) {
                           setState(() {
                             districtId = state.value!;
-                            areaId = 0;
-                            updateAreaList(state.value).then((value) {
-                              setState(() {});
-                            });
+                            areaListLoadingDone = false;
                           });
+                          updateAreaList();
                         },
                         selectedValue: districtId,
                       ),
                     ),
+                    if(areaListLoadingDone && existingDataLoded)
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 10, horizontal: 30.0),

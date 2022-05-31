@@ -48,8 +48,8 @@ class Service {
   }
 
   Future<int> nextStepToFinishProfile(context) async {
-    var loggedInUserId = await _getLoggedInUser('id');
-    var data = {'user_id': loggedInUserId};
+    User loggedInUser = await User.readSession();
+    var data = {'user_id': loggedInUser.id};
     var response =
         await CallApi().postData(data, 'nextStepToFinishProfile', context);
     return response['type'];
@@ -208,10 +208,5 @@ class Service {
     return token;
   }
 
-  dynamic _getLoggedInUser(String key) async {
-    SharedPreferences localStorage = await SharedPreferences.getInstance();
-    var userData = localStorage.getString('user');
-    return userData;
-    // return userData!.key;
-  }
+ 
 }
