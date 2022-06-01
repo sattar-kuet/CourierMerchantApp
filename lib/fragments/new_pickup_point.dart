@@ -1,6 +1,7 @@
 import 'package:awesome_select/awesome_select.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/data/service.dart';
+import '../model/pickup_point.dart';
 import '../common/bottom_navigation.dart';
 import '../common/floating_button.dart';
 import '../widget/TextInput.dart';
@@ -19,35 +20,29 @@ class _NewPickupPointState extends State<NewPickupPoint> {
   TextEditingController addressController = TextEditingController();
   List<S2Choice<int>> districts = [];
   List<S2Choice<int>> areas = [];
-  int districtId = 47;
-  int areaId = 0;
+
+  int districtId = 0;
+  int upazillaId = 0;
   bool districtListLoadingDone = false;
   bool areaListLoadingDone = false;
   bool existingDataLoded = false;
   void initState() {
     super.initState();
-    Service().getPickupAddress(context).then((response) {
-      if(response.length > 0 ){
-          setState(() {
-          nameController.text = response['title'];
-          addressController.text = response['street'];
-          districtId = response['district'];
-          areaId = response['upazilla'];
-          existingDataLoded = true;
-        });
-      }  
-      else{
-        setState(() {
-          existingDataLoded = true;
-        });
-      } 
+    PickupPoint.readSession().then((StoredPickupPoint) {
+      setState(() {
+        nameController.text = StoredPickupPoint.title;
+        districtId = StoredPickupPoint.districtId;
+        upazillaId = StoredPickupPoint.upazillaId;
+        addressController.text = StoredPickupPoint.street;
+        existingDataLoded = true;
+      });
     });
-      updateDistrictList();
-      updateAreaList();
+    updateDistrictList();
+    updateAreaList();
   }
 
-  updateDistrictList()  {
-     Service().getDistrictList().then((_districtList) {
+  updateDistrictList() {
+    Service().getDistrictList().then((_districtList) {
       for (var i = 0; i < _districtList.length; i++) {
         int id = _districtList[i]['id'];
         String name = _districtList[i]['name'];
@@ -58,23 +53,21 @@ class _NewPickupPointState extends State<NewPickupPoint> {
       }
     });
   }
-  updateAreaList()  {
-     Service().getAreaList(districtId, context).then((_areaList) {
-       List<S2Choice<int>> areaList = [];
+
+  updateAreaList() {
+    Service().getAreaList(districtId, context).then((_areaList) {
+      List<S2Choice<int>> areaList = [];
       for (var i = 0; i < _areaList.length; i++) {
         int id = _areaList[i]['id'];
         String name = _areaList[i]['name'];
         areaList.add(S2Choice<int>(value: id, title: name));
       }
-       setState(() {
-          areas = areaList;
-          areaListLoadingDone = true;
-          areaId = 0;
-          print("here...");
-        });
+      setState(() {
+        areas = areaList;
+        areaListLoadingDone = true;
+      });
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -103,59 +96,59 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                         icon: Icons.edit,
                       ),
                     ),
-                    if(districtListLoadingDone && existingDataLoded)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 30.0),
-                      child: SmartSelect<int>.single(
-                        modalFilter: true,
-                        modalFilterAuto: true,
-                        tileBuilder: (context, state) => S2Tile<dynamic>(
-                          //https://github.com/akbarpulatov/flutter_awesome_select/blob/master/example/lib/features_single/single_chips.dart
-                          title: const Text(
-                            'জেলা',
+                    if (districtListLoadingDone && existingDataLoded)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 30.0),
+                        child: SmartSelect<int>.single(
+                          modalFilter: true,
+                          modalFilterAuto: true,
+                          tileBuilder: (context, state) => S2Tile<dynamic>(
+                            //https://github.com/akbarpulatov/flutter_awesome_select/blob/master/example/lib/features_single/single_chips.dart
+                            title: const Text(
+                              'জেলা',
+                            ),
+                            value: state.selected?.toWidget() ?? Container(),
+                            leading: Icon(Icons.list_outlined),
+                            onTap: state.showModal,
                           ),
-                          value: state.selected?.toWidget() ?? Container(),
-                          leading: Icon(Icons.list_outlined),
-                          onTap: state.showModal,
+                          title: 'জেলা',
+                          placeholder: 'সিলেক্ট করুন',
+                          choiceItems: districts,
+                          onChange: (state) {
+                            setState(() {
+                              districtId = state.value!;
+                              areaListLoadingDone = false;
+                            });
+                            updateAreaList();
+                          },
+                          selectedValue: districtId,
                         ),
-                        title: 'জেলা',
-                        placeholder: 'সিলেক্ট করুন',
-                        choiceItems: districts,
-                        onChange: (state) {
-                          setState(() {
-                            districtId = state.value!;
-                            areaListLoadingDone = false;
-                          });
-                          updateAreaList();
-                        },
-                        selectedValue: districtId,
                       ),
-                    ),
-                    if(areaListLoadingDone && existingDataLoded)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 30.0),
-                      child: SmartSelect<int>.single(
-                        modalFilter: true,
-                        modalFilterAuto: true,
-                        tileBuilder: (context, state) => S2Tile<dynamic>(
-                          //https://github.com/akbarpulatov/flutter_awesome_select/blob/master/example/lib/features_single/single_chips.dart
-                          title: const Text(
-                            'এলাকা',
+                    if (areaListLoadingDone && existingDataLoded)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 30.0),
+                        child: SmartSelect<int>.single(
+                          modalFilter: true,
+                          modalFilterAuto: true,
+                          tileBuilder: (context, state) => S2Tile<dynamic>(
+                            //https://github.com/akbarpulatov/flutter_awesome_select/blob/master/example/lib/features_single/single_chips.dart
+                            title: const Text(
+                              'এলাকা',
+                            ),
+                            value: state.selected?.toWidget() ?? Container(),
+                            leading: Icon(Icons.list_outlined),
+                            onTap: state.showModal,
                           ),
-                          value: state.selected?.toWidget() ?? Container(),
-                          leading: Icon(Icons.list_outlined),
-                          onTap: state.showModal,
+                          title: 'এলাকা',
+                          placeholder: 'সিলেক্ট করুন',
+                          choiceItems: areas,
+                          onChange: (state) =>
+                              setState(() => upazillaId = state.value!),
+                          selectedValue: upazillaId,
                         ),
-                        title: 'এলাকা',
-                        placeholder: 'সিলেক্ট করুন',
-                        choiceItems: areas,
-                        onChange: (state) =>
-                            setState(() => areaId = state.value!),
-                        selectedValue: areaId,
                       ),
-                    ),
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 10, horizontal: 30.0),
@@ -202,7 +195,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
   }
 
   void _savePickupPoint(BuildContext context) {
-    Service().addPickupPoint(nameController.text, districtId, areaId,
+    Service().savePickupPoint(nameController.text, districtId, upazillaId,
         addressController.text, context);
   }
 }

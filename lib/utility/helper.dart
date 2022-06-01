@@ -15,12 +15,6 @@ class Helper {
     );
     ScaffoldMessenger.of(context).showSnackBar(errorSnackbar);
   }
-
-  Future<int> getLoggedInUserId() async {
-    SharedPreferences localStorage = await SharedPreferences.getInstance();
-    var userId = json.decode(localStorage.getString('user').toString());
-    return userId['id'];
-  }
 }
 
 class UserPickUpAddressesHelper {

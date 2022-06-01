@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/model/mobile_bank.dart';
-import 'package:flutter_app/widget/loading.dart';
-import '../data/user.dart';
+import 'package:flutter_app/model/pickup_point.dart';
+import '../model/user.dart';
 import '../fragments/new_pickup_point.dart';
 import '../model/bank.dart';
 import '../utility/helper.dart';
 import './api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 import '../constants.dart' as Constents;
 
 class Service {
@@ -43,8 +42,25 @@ class Service {
           response['status'],
           response['message']);
       User.writeSession(user);
+
+      if (response['pickupPoint'].length > 0) {
+        PickupPoint pickupPoint =
+            await getPickupPointObjectFromJson(response['pickupPoint']);
+
+        PickupPoint.writeSession(pickupPoint);
+      }
     }
     return response;
+  }
+
+  Future<PickupPoint> getPickupPointObjectFromJson(pickupPointJson) async {
+    PickupPoint pickupPoint = PickupPoint(
+        pickupPointJson['id'],
+        pickupPointJson['districtId'],
+        pickupPointJson['upazillaId'],
+        pickupPointJson['title'],
+        pickupPointJson['street']);
+    return pickupPoint;
   }
 
   Future<int> nextStepToFinishProfile(context) async {
@@ -100,28 +116,30 @@ class Service {
   }
 
   Future getPickupAddress(context) async {
-    int userId = await Helper().getLoggedInUserId();
-    var data = {"user_id": userId};
+    User sessionUser = await User.readSession();
+    var data = {"user_id": sessionUser.id};
     var response = await CallApi().postData(data, 'getPickupAddress', context);
     return response['data'];
   }
 
-  Future<dynamic> editPickupPoint(
-      String title, int district, int area, String street, id, context) async {
-    var token = await _getToken();
-    var userId = await Helper().getLoggedInUserId();
+  Future<dynamic> savePickupPoint(
+      String title, int district, int area, String street, context) async {
+    User sessionUser = await User.readSession();
     var data = {
-      'user_id': userId,
-      'token': token,
-      'address': {
-        'id': id,
+      'user_id': sessionUser.id,
+      'token': sessionUser.token,
+      'pickupPoint': {
         'title': title,
-        'district': district,
-        'upazilla': area,
+        'districtId': district,
+        'upazillaId': area,
         'street': street
       },
     };
-    var response = await CallApi().postData(data, 'updatePickupPoint', context);
+    var response = await CallApi().postData(data, 'savePickupPoint', context);
+    PickupPoint pickupPoint =
+        await getPickupPointObjectFromJson(response['pickupPoint']);
+    PickupPoint.writeSession(pickupPoint);
+
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (_) => NewPickupPoint()));
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -131,59 +149,20 @@ class Service {
     return response['data'];
   }
 
-  // Here I need to merge the post api finction with the addPickupPoint function because of the model sheet issue so I have full control of this function
-  Future<dynamic> addPickupPoint(
-      String title, int district, int area, String street, context) async {
-    showloadingDialog(context);
-    var token = await _getToken();
-    var userId = await Helper().getLoggedInUserId();
-    String fullUrl =
-        'https://courierdemo.itscholarbd.com/api/v2/addPickupPoint';
-    var url = Uri.parse(fullUrl);
-    var data = {
-      'user_id': userId,
-      'token': token,
-      'address': {
-        'title': title,
-        'district': district,
-        'upazilla': area,
-        'street': street
-      },
-    };
-
-    print(url);
-    var response = await http.post(url, body: jsonEncode(data), headers: {
-      'Content-type': 'application/json',
-      'Accept': 'application/json',
-    });
-    Map<String, dynamic> responseData = json.decode(response.body);
-    // For dismissing Loading
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (_) => NewPickupPoint()));
-    // Also need to dismiss the loader because it makes trouble if the function not works properly due to internet connection etc
-    //  For that rason I am adding one more condition so it can dismiss on any condition
-    if (response.statusCode != 200) {
-      if (responseData != null) {}
-    } else {}
-    return responseData['data'];
-  }
-
   Future saveBank(dynamic data, BuildContext context) async {
-    var token = await _getToken();
-    var userId = await Helper().getLoggedInUserId();
-    data['token'] = token;
-    data['userId'] = userId;
+    User sessionUser = await User.readSession();
+    data['token'] = sessionUser.id;
+    data['userId'] = sessionUser.id;
     var response = await CallApi().postData(data, 'saveBank', context);
     print(response);
     return response['data'];
   }
 
   Future getBank(BuildContext context) async {
-    var token = await _getToken();
-    var userId = await Helper().getLoggedInUserId();
+    User sessionUser = await User.readSession();
     dynamic data = {};
-    data['token'] = token;
-    data['userId'] = userId;
+    data['token'] = sessionUser.token;
+    data['userId'] = sessionUser.id;
     var response = await CallApi().postData(data, 'getBank', context);
     //print(response);
     var bankData = response['data'];
@@ -207,6 +186,4 @@ class Service {
     var token = localStorage.getString('token');
     return token;
   }
-
- 
 }

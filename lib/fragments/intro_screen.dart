@@ -4,7 +4,7 @@ import '../routes/pageRoute.dart';
 import '../utility/validatation.dart';
 import '../data/service.dart';
 import '../fragments/home.dart';
-import '../data/user.dart';
+import '../model/user.dart';
 
 class IntroPage extends StatefulWidget {
   static const String routeName = '/IntroPage';
@@ -88,7 +88,8 @@ class _IntroPageState extends State<IntroPage> {
           arguments: {"mobile": mobileTxtField.text});
     } else {
       String signatureCode = await SmsAutoFill().getAppSignature;
-      var sentOtp = await service.sendOtp(mobileTxtField.text, signatureCode, context);
+      var sentOtp =
+          await service.sendOtp(mobileTxtField.text, signatureCode, context);
       Navigator.pushNamed(context, PageRoutes.loginByOtp,
           arguments: {"otp": sentOtp, "mobile": mobileTxtField.text});
     }
