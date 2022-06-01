@@ -19,12 +19,12 @@ class _NewPickupPointState extends State<NewPickupPoint> {
   TextEditingController nameController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   List<S2Choice<int>> districts = [];
-  List<S2Choice<int>> upazillas = [];
+  List<S2Choice<int>> areas = [];
 
   int districtId = 0;
   int upazillaId = 0;
   bool districtListLoadingDone = false;
-  bool upazillaListLoadingDone = false;
+  bool areaListLoadingDone = false;
   bool existingDataLoded = false;
   void initState() {
     super.initState();
@@ -35,10 +35,9 @@ class _NewPickupPointState extends State<NewPickupPoint> {
         upazillaId = StoredPickupPoint.upazillaId;
         addressController.text = StoredPickupPoint.street;
         existingDataLoded = true;
-          updateDistrictList();
-         updateUpazillaList();
       });
-     
+       updateDistrictList();
+       updateAreaList();
     });
    
   }
@@ -56,17 +55,17 @@ class _NewPickupPointState extends State<NewPickupPoint> {
     });
   }
 
-  updateUpazillaList() {
-    Service().getUpazillaList(districtId, context).then((_upazillaList) {
-      List<S2Choice<int>> upazillaList = [];
-      for (var i = 0; i < _upazillaList.length; i++) {
-        int id = _upazillaList[i]['id'];
-        String name = _upazillaList[i]['name'];
-        upazillaList.add(S2Choice<int>(value: id, title: name));
+  updateAreaList() {
+    Service().getUpazillaList(districtId, context).then((_areaList) {
+      List<S2Choice<int>> areaList = [];
+      for (var i = 0; i < _areaList.length; i++) {
+        int id = _areaList[i]['id'];
+        String name = _areaList[i]['name'];
+        areaList.add(S2Choice<int>(value: id, title: name));
       }
       setState(() {
-        upazillas = upazillaList;
-        upazillaListLoadingDone = true;
+        areas = areaList;
+        areaListLoadingDone = true;
       });
     });
   }
@@ -120,14 +119,14 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                           onChange: (state) {
                             setState(() {
                               districtId = state.value!;
-                              upazillaListLoadingDone = false;
+                              areaListLoadingDone = false;
                             });
-                            updateUpazillaList();
+                            updateAreaList();
                           },
                           selectedValue: districtId,
                         ),
                       ),
-                    if (upazillaListLoadingDone && existingDataLoded)
+                    if (areaListLoadingDone && existingDataLoded)
                       Padding(
                         padding: const EdgeInsets.symmetric(
                             vertical: 10, horizontal: 30.0),
@@ -145,7 +144,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                           ),
                           title: 'এলাকা',
                           placeholder: 'সিলেক্ট করুন',
-                          choiceItems: upazillas,
+                          choiceItems: areas,
                           onChange: (state) =>
                               setState(() => upazillaId = state.value!),
                           selectedValue: upazillaId,

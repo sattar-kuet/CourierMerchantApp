@@ -24,7 +24,7 @@ class _NewParcelPageState extends State<NewParcelPage> {
   final mobileTxtField = TextEditingController();
   final customerNameController = TextEditingController();
   int districId = 0;
-  int areaId = 0;
+  int upazillaId = 0;
   int productTypeId = 0;
   final upazillaIdController = TextEditingController();
   final addressController = TextEditingController();
@@ -36,56 +36,67 @@ class _NewParcelPageState extends State<NewParcelPage> {
   final clientReference = TextEditingController();
   final note = TextEditingController();
 
+  bool districtListLoadingDone = false;
+  bool upazillaListLoadingDone = false;
+
   List<S2Choice<int>> districts = [];
-  List<S2Choice<int>> areas = [];
+  List<S2Choice<int>> upazillas = [];
   List<S2Choice<int>> pacerlTypes = [];
+  setDistrictList()  {   
+    Service().getDistrictList().then((districtList){
+      List<S2Choice<int>> formattedDistrictList = [];
+      for (var i = 0; i < districtList.length; i++) {
+          formattedDistrictList
+              .add(S2Choice<int>(value: districtList[i]['id'], title: districtList[i]['name']));
+      }
+      setState(() {
+        districts = formattedDistrictList;
+        districtListLoadingDone = true;
+      });
+    });
+  }
+  setpacerlTypeList()  {   
+    Service().getParcelTypes().then((pacerlTypeList){
+      List<S2Choice<int>> formattedpacerlTypeList = [];
+      for (var i = 0; i < pacerlTypeList.length; i++) {
+          formattedpacerlTypeList
+              .add(S2Choice<int>(value: pacerlTypeList[i]['id'], title: pacerlTypeList[i]['name']));
+      }
+      setState(() {
+        pacerlTypes = formattedpacerlTypeList;
+      });
+    });
+  }
+  updateUpazillaList(districId)  {   
+    Service().getUpazillaList(districId, context).then((upazillaList){
+      List<S2Choice<int>> formattedupazillaList = [];
+      for (var i = 0; i < upazillaList.length; i++) {
+          formattedupazillaList
+              .add(S2Choice<int>(value: upazillaList[i]['id'], title: upazillaList[i]['name']));
+      }
+      setState(() {
+        upazillas = formattedupazillaList;
+        upazillaListLoadingDone = true;
+      });
+    });
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
+     bool keyboardIsOpen = MediaQuery.of(context).viewInsets.bottom != 0;
     return Scaffold(
+       appBar: AppBar(
+        title: Text('Add new parcel'),
+      ),
       body: SingleChildScrollView(
         child: introForm(context),
       ),
     );
   }
 
-  setDistrictList() async {
-    var _futureOfList = Service().getDistrictList();
-    List list = await _futureOfList;
-    for (var i = 0; i < list.length; i++) {
-      setState(() {
-        districts
-            .add(S2Choice<int>(value: list[i]['id'], title: list[i]['name']));
-      });
-    }
-  }
-
-  setpacerlTypeList() async {
-    var _futureOfList = Service().getParcelTypes();
-    List list = await _futureOfList;
-    for (var i = 0; i < list.length; i++) {
-      setState(() {
-        pacerlTypes
-            .add(S2Choice<int>(value: list[i]['id'], title: list[i]['name']));
-      });
-    }
-  }
-
-  updateAreaList(districtid) async {
-    var _futureOfList = await Service().getAreaList(districtid, context);
-    List list = await _futureOfList;
-    List<S2Choice<int>> areaList = [];
-    setState(() {
-      list.forEach((element) {
-        areaList
-            .add(S2Choice<int>(value: element['id'], title: element['name']));
-      });
-      print(areaList);
-    });
-    setState(() {
-      areas = areaList;
-    });
-  }
+  
 
   Form introForm(BuildContext context) {
     return new Form(
@@ -164,19 +175,15 @@ class _NewParcelPageState extends State<NewParcelPage> {
           onChange: (state) {
             setState(() {
               districId = state.value!;
-              updateAreaList(state.value).then((value) {
-                setState(() {});
-              });
+              upazillaListLoadingDone = false;
             });
-            // print(state.value);
-            // setState(() => districId = state.value!);
-            // updateAreaList();
-            // print("V VALUE HAS BEEN CHANGED to $districId");
+            updateUpazillaList(state.value);
+            
           },
           selectedValue: districId,
         ),
       ),
-      if (districId != 0)
+      if (districId != 0 && upazillaListLoadingDone)
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15.0),
           child: SmartSelect<int>.single(
@@ -193,9 +200,9 @@ class _NewParcelPageState extends State<NewParcelPage> {
             ),
             title: 'এলাকা',
             placeholder: 'সিলেক্ট করুন',
-            choiceItems: areas,
-            onChange: (state) => setState(() => areaId = state.value!),
-            selectedValue: areaId,
+            choiceItems: upazillas,
+            onChange: (state) => setState(() => upazillaId = state.value!),
+            selectedValue: upazillaId,
           ),
         ),
       Padding(
@@ -234,15 +241,8 @@ class _NewParcelPageState extends State<NewParcelPage> {
           choiceItems: pacerlTypes,
           onChange: (state) {
             setState(() {
-              districId = state.value!;
-              updateAreaList(state.value).then((value) {
-                setState(() {});
-              });
+              productTypeId = state.value!;
             });
-            // print(state.value);
-            // setState(() => districId = state.value!);
-            // updateAreaList();
-            // print("V VALUE HAS BEEN CHANGED to $districId");
           },
           selectedValue: productTypeId,
         ),
@@ -264,9 +264,9 @@ class _NewParcelPageState extends State<NewParcelPage> {
             ),
             title: 'এলাকা',
             placeholder: 'সিলেক্ট করুন',
-            choiceItems: areas,
-            onChange: (state) => setState(() => areaId = state.value!),
-            selectedValue: areaId,
+            choiceItems: upazillas,
+            onChange: (state) => setState(() => upazillaId = state.value!),
+            selectedValue: upazillaId,
           ),
         ),
       Padding(

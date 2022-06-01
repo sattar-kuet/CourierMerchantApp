@@ -107,7 +107,7 @@ class Service {
     return banks;
   }
 
-  Future getAreaList(districtId, context) async {
+  Future getUpazillaList(districtId, context) async {
     var token = await _getToken();
     var data = {'district_id': districtId, 'token': token};
     var response = await CallApi().postData(data, 'upazillaList', context);
@@ -123,7 +123,7 @@ class Service {
   }
 
   Future<dynamic> savePickupPoint(
-      String title, int district, int area, String street, context) async {
+      String title, int district, int upazilla, String street, context) async {
     User sessionUser = await User.readSession();
     var data = {
       'user_id': sessionUser.id,
@@ -131,7 +131,7 @@ class Service {
       'pickupPoint': {
         'title': title,
         'districtId': district,
-        'upazillaId': area,
+        'upazillaId': upazilla,
         'street': street
       },
     };
