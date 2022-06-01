@@ -36,9 +36,10 @@ class _NewPickupPointState extends State<NewPickupPoint> {
         addressController.text = StoredPickupPoint.street;
         existingDataLoded = true;
       });
+       updateDistrictList();
+       updateAreaList();
     });
-    updateDistrictList();
-    updateAreaList();
+   
   }
 
   updateDistrictList() {

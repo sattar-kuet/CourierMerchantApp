@@ -11,7 +11,7 @@ Widget drawerHeader() {
           alignment: Alignment.centerLeft,
           child: CircleAvatar(
             backgroundImage: NetworkImage(
-                'http://www.bbk.ac.uk/mce/wp-content/uploads/2015/03/8327142885_9b447935ff.jpg'),
+                'https://courierdemo.itscholarbd.com/storage/app/uploads/public/629/775/4bc/6297754bceb2a921797616.png'),
             radius: 50.0,
           ),
         ),
