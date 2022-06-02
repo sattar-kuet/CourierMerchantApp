@@ -1,7 +1,10 @@
 import 'package:awesome_select/awesome_select.dart';
 import 'package:flutter/material.dart';
+import '../common/bottom_navigation.dart';
+import '../common/floating_button.dart';
 import '../data/service.dart';
 import '../form_components/textInput.dart';
+import '../model/pickup_point.dart';
 import '../utility/validatation.dart';
 
 class NewParcelPage extends StatefulWidget {
@@ -14,22 +17,17 @@ class NewParcelPage extends StatefulWidget {
 class _NewParcelPageState extends State<NewParcelPage> {
   final _formKey = GlobalKey<FormState>();
   bool showCustomerInfo = false;
-  @override
-  void initState() {
-    super.initState();
-    setDistrictList();
-    setpacerlTypeList();
-  }
-
   final mobileTxtField = TextEditingController();
   final customerNameController = TextEditingController();
+  int fromUpazillaId = 0;
+  int reRednderDeliverySpeed = 0;
   int districId = 0;
   int upazillaId = 0;
   int productTypeId = 0;
+  int deliverySpeed = 0;
   final upazillaIdController = TextEditingController();
   final addressController = TextEditingController();
   final parcelTypeId = TextEditingController();
-  final deliverySpeed = TextEditingController();
   final parcelValue = TextEditingController();
   final cashCollection = TextEditingController();
   final productWeight = TextEditingController();
@@ -38,16 +36,30 @@ class _NewParcelPageState extends State<NewParcelPage> {
 
   bool districtListLoadingDone = false;
   bool upazillaListLoadingDone = false;
+  bool deliverySpeedListLoadingDone = false;
 
   List<S2Choice<int>> districts = [];
   List<S2Choice<int>> upazillas = [];
   List<S2Choice<int>> pacerlTypes = [];
-  setDistrictList()  {   
-    Service().getDistrictList().then((districtList){
+  List<S2Choice<int>> deliverySpeeds = [];
+  @override
+  void initState() {
+    super.initState();
+    PickupPoint.readSession().then((StoredPickupPoint) {
+      setState(() {
+        fromUpazillaId = StoredPickupPoint.upazillaId;
+      });
+    });
+    setDistrictList();
+    setpacerlTypeList();
+  }
+
+  setDistrictList() {
+    Service().getDistrictList().then((districtList) {
       List<S2Choice<int>> formattedDistrictList = [];
       for (var i = 0; i < districtList.length; i++) {
-          formattedDistrictList
-              .add(S2Choice<int>(value: districtList[i]['id'], title: districtList[i]['name']));
+        formattedDistrictList.add(S2Choice<int>(
+            value: districtList[i]['id'], title: districtList[i]['name']));
       }
       setState(() {
         districts = formattedDistrictList;
@@ -55,48 +67,76 @@ class _NewParcelPageState extends State<NewParcelPage> {
       });
     });
   }
-  setpacerlTypeList()  {   
-    Service().getParcelTypes().then((pacerlTypeList){
+
+  setpacerlTypeList() {
+    Service().getParcelTypes().then((pacerlTypeList) {
       List<S2Choice<int>> formattedpacerlTypeList = [];
       for (var i = 0; i < pacerlTypeList.length; i++) {
-          formattedpacerlTypeList
-              .add(S2Choice<int>(value: pacerlTypeList[i]['id'], title: pacerlTypeList[i]['name']));
+        formattedpacerlTypeList.add(S2Choice<int>(
+            value: pacerlTypeList[i]['id'], title: pacerlTypeList[i]['name']));
       }
       setState(() {
         pacerlTypes = formattedpacerlTypeList;
+        reRednderDeliverySpeed++;
       });
     });
   }
-  updateUpazillaList(districId)  {   
-    Service().getUpazillaList(districId, context).then((upazillaList){
+
+  updateUpazillaList(districId) {
+    Service().getUpazillaList(districId, context).then((upazillaList) {
       List<S2Choice<int>> formattedupazillaList = [];
       for (var i = 0; i < upazillaList.length; i++) {
-          formattedupazillaList
-              .add(S2Choice<int>(value: upazillaList[i]['id'], title: upazillaList[i]['name']));
+        formattedupazillaList.add(S2Choice<int>(
+            value: upazillaList[i]['id'], title: upazillaList[i]['name']));
       }
       setState(() {
         upazillas = formattedupazillaList;
         upazillaListLoadingDone = true;
+        reRednderDeliverySpeed++;
       });
     });
   }
 
-
+  updateDeliverySpeedList() {
+    Service()
+        .getDeliverySpeedList(districId, context)
+        .then((deliverySpeedList) {
+      List<S2Choice<int>> formattedDeliverySpeedList = [];
+      for (var i = 0; i < deliverySpeedList.length; i++) {
+        formattedDeliverySpeedList.add(S2Choice<int>(
+            value: deliverySpeedList[i]['value'],
+            title: deliverySpeedList[i]['label']));
+      }
+      setState(() {
+        deliverySpeeds = formattedDeliverySpeedList;
+        deliverySpeedListLoadingDone = true;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-     bool keyboardIsOpen = MediaQuery.of(context).viewInsets.bottom != 0;
+    bool keyboardIsOpen = MediaQuery.of(context).viewInsets.bottom != 0;
     return Scaffold(
-       appBar: AppBar(
+      appBar: AppBar(
         title: Text('Add new parcel'),
       ),
       body: SingleChildScrollView(
         child: introForm(context),
       ),
+      bottomNavigationBar: BottomNavigation(),
+      floatingActionButton: Visibility(
+        visible: !keyboardIsOpen,
+        child: Padding(
+          padding: EdgeInsets.only(
+            top: 45,
+          ),
+          child: floating(context),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
-
-  
 
   Form introForm(BuildContext context) {
     return new Form(
@@ -178,7 +218,6 @@ class _NewParcelPageState extends State<NewParcelPage> {
               upazillaListLoadingDone = false;
             });
             updateUpazillaList(state.value);
-            
           },
           selectedValue: districId,
         ),
@@ -201,7 +240,13 @@ class _NewParcelPageState extends State<NewParcelPage> {
             title: 'এলাকা',
             placeholder: 'সিলেক্ট করুন',
             choiceItems: upazillas,
-            onChange: (state) => setState(() => upazillaId = state.value!),
+            onChange: (state) {
+              setState(() {
+                upazillaId = state.value!;
+                upazillaListLoadingDone = true;
+              });
+              // updateDeliverySpeedList();
+            },
             selectedValue: upazillaId,
           ),
         ),
@@ -243,11 +288,12 @@ class _NewParcelPageState extends State<NewParcelPage> {
             setState(() {
               productTypeId = state.value!;
             });
+            updateDeliverySpeedList();
           },
           selectedValue: productTypeId,
         ),
       ),
-      if (districId != 0)
+      if (reRednderDeliverySpeed > 0)
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15.0),
           child: SmartSelect<int>.single(
@@ -256,17 +302,17 @@ class _NewParcelPageState extends State<NewParcelPage> {
             tileBuilder: (context, state) => S2Tile<dynamic>(
               //https://github.com/akbarpulatov/flutter_awesome_select/blob/master/example/lib/features_single/single_chips.dart
               title: const Text(
-                'এলাকা',
+                'ডেলিভারি স্পিড',
               ),
               value: state.selected?.toWidget() ?? Container(),
               leading: Icon(Icons.map_outlined),
               onTap: state.showModal,
             ),
-            title: 'এলাকা',
+            title: 'ডেলিভারি স্পিড',
             placeholder: 'সিলেক্ট করুন',
-            choiceItems: upazillas,
-            onChange: (state) => setState(() => upazillaId = state.value!),
-            selectedValue: upazillaId,
+            choiceItems: deliverySpeeds,
+            onChange: (state) => setState(() => deliverySpeed = state.value!),
+            selectedValue: deliverySpeed,
           ),
         ),
       Padding(

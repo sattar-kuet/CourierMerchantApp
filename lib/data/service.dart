@@ -181,6 +181,28 @@ class Service {
         bankData['bankType']);
   }
 
+  Future getDeliverySpeedList(data, context) async {
+    User sessionUser = await User.readSession();
+    data['token'] = sessionUser.token;
+    data['userId'] = sessionUser.id;
+    var response = await CallApi().postData(data, 'getDeliverySpeeds', context);
+    //print(response);
+    var bankData = response['data'];
+    if (bankData.length == 0) {
+      return null;
+    }
+    if (bankData['bankType'] == Constents.BankAccountType.MOBILE) {
+      return MobileBank(bankData['bankId'], bankData['mobileNumber'],
+          bankData['accountType'], bankData['bankType']);
+    }
+    return Bank(
+        bankData['bankId'],
+        bankData['accountName'],
+        bankData['accountNumber'],
+        bankData['branchName'],
+        bankData['bankType']);
+  }
+
   dynamic _getToken() async {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     var token = localStorage.getString('token');
