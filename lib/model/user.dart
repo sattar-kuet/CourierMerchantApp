@@ -19,7 +19,7 @@ class User {
     token = sessionMap['token'] ?? '';
     name = sessionMap['name'] ?? '';
     mobile = sessionMap['mobile'] ?? '';
-    companyProfileId = sessionMap['companyProfileId'] ?? '';
+    companyProfileId = sessionMap['companyProfileId'] ?? 0;
     status = sessionMap['status'] ?? 0;
     message = sessionMap['message'] ?? '';
   }

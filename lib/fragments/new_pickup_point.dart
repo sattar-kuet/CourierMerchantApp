@@ -98,7 +98,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                         icon: Icons.edit,
                       ),
                     ),
-                    if (districtListLoadingDone && existingDataLoded)
+                    if (existingDataLoded)
                       Padding(
                         padding: const EdgeInsets.symmetric(
                             vertical: 10, horizontal: 30.0),
