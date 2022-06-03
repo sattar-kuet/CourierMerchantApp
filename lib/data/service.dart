@@ -4,7 +4,6 @@ import 'package:flutter_app/model/pickup_point.dart';
 import '../model/user.dart';
 import '../fragments/new_pickup_point.dart';
 import '../model/bank.dart';
-import '../utility/helper.dart';
 import './api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -94,6 +93,14 @@ class Service {
     return response['data'];
   }
 
+  Future<double> getDeliveryCharge(data, context) async {
+    User loggedInUser = await User.readSession();
+    data['userId'] = loggedInUser.id;
+    var response = await CallApi().postData(data, 'getDeliveryCharge', context);
+    double deliveryCharge = double.parse(response['data'].toString());
+    return deliveryCharge;
+  }
+
   Future<dynamic> getDistrictList() async {
     var token = await _getToken();
     var response = await CallApi().getData('pickupPointDistrictList');
@@ -181,26 +188,19 @@ class Service {
         bankData['bankType']);
   }
 
-  Future getDeliverySpeedList(data, context) async {
+  Future getDeliverySpeedList(
+      fromUpazillaId, toUpazillaId, parcelTypeId, context) async {
     User sessionUser = await User.readSession();
+    var data = {};
+    data['fromUpazillaId'] = fromUpazillaId;
+    data['toUpazillaId'] = toUpazillaId;
+    data['parcelTypeId'] = parcelTypeId;
+
     data['token'] = sessionUser.token;
     data['userId'] = sessionUser.id;
     var response = await CallApi().postData(data, 'getDeliverySpeeds', context);
     //print(response);
-    var bankData = response['data'];
-    if (bankData.length == 0) {
-      return null;
-    }
-    if (bankData['bankType'] == Constents.BankAccountType.MOBILE) {
-      return MobileBank(bankData['bankId'], bankData['mobileNumber'],
-          bankData['accountType'], bankData['bankType']);
-    }
-    return Bank(
-        bankData['bankId'],
-        bankData['accountName'],
-        bankData['accountNumber'],
-        bankData['branchName'],
-        bankData['bankType']);
+    return response['data'];
   }
 
   dynamic _getToken() async {

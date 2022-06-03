@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 const String BASE_URL = 'https://portal.gofirstbd.com/api/v2';
 
 class Color {
-  static const BUTTON_BG = '#dda';
-  static const BRAND = '#aad';
+  static const BUTTON_BG =
+      0xff123456; // where 123456 is your hex color code and 0xff is the opacity value and can be changed.
+  static const BUTTON_TEXT = 0xffffffff;
+  static const BRAND = 0xffA5A4A4;
 }
 
 class BankAccountType {

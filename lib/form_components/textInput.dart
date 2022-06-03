@@ -7,11 +7,15 @@ class textInput extends StatelessWidget {
     required this.label,
     required this.inputController,
     required this.inputIcon,
+    this.helperText,
+    this.suffixHelpText,
   }) : super(key: key);
 
   final String label;
   final TextEditingController inputController;
   final Icon inputIcon;
+  final Widget? suffixHelpText;
+  final String? helperText;
 
   @override
   Widget build(BuildContext context) {
@@ -19,8 +23,9 @@ class textInput extends StatelessWidget {
       controller: inputController,
       decoration: InputDecoration(
         labelText: label,
-        hintText: label,
+        helperText: helperText != null ? helperText : '',
         icon: inputIcon,
+        suffixIcon: suffixHelpText,
       ),
     );
   }
