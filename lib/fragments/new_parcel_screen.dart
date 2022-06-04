@@ -50,7 +50,7 @@ class _NewParcelPageState extends State<NewParcelPage> {
         fromUpazillaId = StoredPickupPoint.upazillaId;
       });
     });
-    parcelWeight.addListener(updateDeliveryCharge);
+    //parcelWeight.addListener(updateDeliveryCharge);
     setDistrictList();
     setpacerlTypeList();
   }
@@ -246,15 +246,16 @@ class _NewParcelPageState extends State<NewParcelPage> {
         ),
         ..._customerForm(context),
         ..._parcelForm(context),
-        InkWell(
-          onTap: () {
-            if (_formKey.currentState!.validate()) {
-              _saveParcel(context);
-            }
-            print("Pressed");
-          }, // Handle your callback
-          child: FormButton(text: 'Save'),
-        ),
+        if (districId > 0)
+          InkWell(
+            onTap: () {
+              if (_formKey.currentState!.validate()) {
+                _saveParcel(context);
+              }
+              print("Pressed");
+            }, // Handle your callback
+            child: FormButton(text: 'Save'),
+          ),
       ]),
     );
   }
@@ -402,6 +403,9 @@ class _NewParcelPageState extends State<NewParcelPage> {
         child: textInput(
           label: 'পার্সের ওজন',
           inputController: parcelWeight,
+          onChangeEvent: () {
+            updateDeliveryCharge();
+          },
           inputIcon: Icon(Icons.monitor_weight_sharp),
           helperText: "যেমনঃ 100 গ্রাম হলে 0.1",
           suffixHelpText:

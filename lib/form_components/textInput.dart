@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class textInput extends StatelessWidget {
   const textInput({
@@ -9,6 +8,7 @@ class textInput extends StatelessWidget {
     required this.inputIcon,
     this.helperText,
     this.suffixHelpText,
+    this.onChangeEvent,
   }) : super(key: key);
 
   final String label;
@@ -16,11 +16,12 @@ class textInput extends StatelessWidget {
   final Icon inputIcon;
   final Widget? suffixHelpText;
   final String? helperText;
-
+  final Function? onChangeEvent;
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: inputController,
+      onChanged: onChangeEvent != null ? (_) => onChangeEvent!() : null,
       decoration: InputDecoration(
         labelText: label,
         helperText: helperText != null ? helperText : '',

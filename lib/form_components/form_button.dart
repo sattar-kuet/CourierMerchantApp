@@ -10,7 +10,8 @@ class FormButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 40,
+      height: 60,
+      padding: EdgeInsets.all(10),
       child: Center(
         child: Text(
           text,
