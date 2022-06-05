@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 import '../routes/pageRoute.dart';
+import '../service/user_service.dart';
 import '../utility/validatation.dart';
-import '../data/service.dart';
+import '../service/register_login_service.dart';
 import '../fragments/home.dart';
 import '../model/user.dart';
 
@@ -81,15 +82,15 @@ class _IntroPageState extends State<IntroPage> {
   }
 
   void _loginORregister(BuildContext context) async {
-    Service service = Service();
-    bool isUserExist = await service.isUserExist(mobileTxtField.text, context);
+    bool isUserExist =
+        await UserService().isUserExist(mobileTxtField.text, context);
     if (isUserExist == false) {
       Navigator.pushNamed(context, PageRoutes.registration,
           arguments: {"mobile": mobileTxtField.text});
     } else {
       String signatureCode = await SmsAutoFill().getAppSignature;
-      var sentOtp =
-          await service.sendOtp(mobileTxtField.text, signatureCode, context);
+      var sentOtp = await RegisterLoginService()
+          .sendOtp(mobileTxtField.text, signatureCode, context);
       Navigator.pushNamed(context, PageRoutes.loginByOtp,
           arguments: {"otp": sentOtp, "mobile": mobileTxtField.text});
     }

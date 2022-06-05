@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../data/service.dart';
+import '../service/parcel_service.dart';
+import '../service/register_login_service.dart';
 import 'new_pickup_point.dart';
 import '../utility/helper.dart';
 import '../widget/TextInput.dart';
@@ -25,7 +26,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   }
 
   void setProductList() async {
-    var _futureOfList = Service().getParcelTypes();
+    var _futureOfList = ParcelService().getParcelTypes();
     List list = await _futureOfList;
     for (var i = 0; i < list.length; i++) {
       setState(() {
@@ -99,8 +100,12 @@ class _RegistrationPageState extends State<RegistrationPage> {
   }
 
   void _register(BuildContext context, String mobile) async {
-    var response = await Service().register(mobile, nameController.text,
-        businessNameController.text, productTypeId, context);
+    var response = await RegisterLoginService().register(
+        mobile,
+        nameController.text,
+        businessNameController.text,
+        productTypeId,
+        context);
     if (response['status'] == 1) {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => NewPickupPoint()));

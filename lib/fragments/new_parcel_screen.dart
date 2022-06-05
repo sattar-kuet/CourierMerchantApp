@@ -2,7 +2,9 @@ import 'package:awesome_select/awesome_select.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/form_components/numberInput.dart';
 import '../form_components/app_button.dart';
-import '../data/service.dart';
+import '../service/charge_service.dart';
+import '../service/location_service.dart';
+import '../service/parcel_service.dart';
 import '../form_components/textInput.dart';
 import '../model/pickup_point.dart';
 import '../utility/validatation.dart';
@@ -69,7 +71,7 @@ class _NewParcelPageState extends State<NewParcelPage> {
   }
 
   setDistrictList() {
-    Service().getDistrictList().then((districtList) {
+    LocationService().getDistrictList().then((districtList) {
       List<S2Choice<int>> formattedDistrictList = [];
       for (var i = 0; i < districtList.length; i++) {
         formattedDistrictList.add(S2Choice<int>(
@@ -83,7 +85,7 @@ class _NewParcelPageState extends State<NewParcelPage> {
   }
 
   setpacerlTypeList() {
-    Service().getParcelTypes().then((pacerlTypeList) {
+    ParcelService().getParcelTypes().then((pacerlTypeList) {
       List<S2Choice<int>> formattedpacerlTypeList = [];
       for (var i = 0; i < pacerlTypeList.length; i++) {
         formattedpacerlTypeList.add(S2Choice<int>(
@@ -96,7 +98,7 @@ class _NewParcelPageState extends State<NewParcelPage> {
   }
 
   updateUpazillaList(districId) {
-    Service().getUpazillaList(districId, context).then((upazillaList) {
+    LocationService().getUpazillaList(districId, context).then((upazillaList) {
       List<S2Choice<int>> formattedupazillaList = [];
       for (var i = 0; i < upazillaList.length; i++) {
         formattedupazillaList.add(S2Choice<int>(
@@ -110,7 +112,7 @@ class _NewParcelPageState extends State<NewParcelPage> {
   }
 
   updateDeliverySpeedList() {
-    Service()
+    ChargeService()
         .getDeliverySpeedList(fromUpazillaId, upazillaId, parcelTypeId, context)
         .then((deliverySpeedList) {
       List<S2Choice<int>> formattedDeliverySpeedList = [];
@@ -137,7 +139,7 @@ class _NewParcelPageState extends State<NewParcelPage> {
       data['parcelWeight'] = double.parse(parcelWeight.text);
       data['parcelTypeId'] = parcelTypeId;
       data['deliverySpeed'] = deliverySpeed;
-      Service().getDeliveryCharge(data, context).then((responseValue) {
+      ChargeService().getDeliveryCharge(data, context).then((responseValue) {
         setState(() {
           deliveryChange = responseValue;
           totalChange = deliveryChange + codChange;

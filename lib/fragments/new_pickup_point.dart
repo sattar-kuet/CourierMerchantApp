@@ -1,9 +1,10 @@
 import 'package:awesome_select/awesome_select.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/data/service.dart';
+import '../service/location_service.dart';
 import '../model/pickup_point.dart';
 import '../common/bottom_navigation.dart';
 import '../common/floating_button.dart';
+import '../service/pickup_point_service.dart';
 import '../widget/TextInput.dart';
 
 class NewPickupPoint extends StatefulWidget {
@@ -35,16 +36,14 @@ class _NewPickupPointState extends State<NewPickupPoint> {
         upazillaId = StoredPickupPoint.upazillaId;
         addressController.text = StoredPickupPoint.street;
         existingDataLoded = true;
-          updateDistrictList();
-         updateUpazillaList();
+        updateDistrictList();
+        updateUpazillaList();
       });
-     
     });
-   
   }
 
   updateDistrictList() {
-    Service().getDistrictList().then((_districtList) {
+    LocationService().getDistrictList().then((_districtList) {
       for (var i = 0; i < _districtList.length; i++) {
         int id = _districtList[i]['id'];
         String name = _districtList[i]['name'];
@@ -57,7 +56,9 @@ class _NewPickupPointState extends State<NewPickupPoint> {
   }
 
   updateUpazillaList() {
-    Service().getUpazillaList(districtId, context).then((_upazillaList) {
+    LocationService()
+        .getUpazillaList(districtId, context)
+        .then((_upazillaList) {
       List<S2Choice<int>> upazillaList = [];
       for (var i = 0; i < _upazillaList.length; i++) {
         int id = _upazillaList[i]['id'];
@@ -197,7 +198,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
   }
 
   void _savePickupPoint(BuildContext context) {
-    Service().savePickupPoint(nameController.text, districtId, upazillaId,
-        addressController.text, context);
+    PickupPointService().savePickupPoint(nameController.text, districtId,
+        upazillaId, addressController.text, context);
   }
 }

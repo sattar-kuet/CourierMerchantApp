@@ -5,7 +5,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../common/menu_drawer.dart';
 import '../common/bottom_navigation.dart';
 import '../common/floating_button.dart';
-import '../data/service.dart';
+import '../service/bank_service.dart';
 import '../form_components/numberInput.dart';
 import '../form_components/textInput.dart';
 import '../model/bank.dart';
@@ -38,7 +38,7 @@ class _BankScreenState extends State<BankScreen> {
 
   void initState() {
     super.initState();
-    Service().getBankList(context).then((_bankList) {
+    BankService().getBankList(context).then((_bankList) {
       for (var i = 0; i < _bankList.length; i++) {
         int id = _bankList[i]['id'];
         String name = _bankList[i]['name'];
@@ -50,7 +50,7 @@ class _BankScreenState extends State<BankScreen> {
         });
       }
     });
-    Service().getBank(context).then((response) {
+    BankService().getBank(context).then((response) {
       setState(() {
         if (response != null) {
           bankId = response.bankId;
@@ -309,6 +309,6 @@ class _BankScreenState extends State<BankScreen> {
         break;
     }
     //print(data);
-    Service().saveBank(data, context);
+    BankService().saveBank(data, context);
   }
 }

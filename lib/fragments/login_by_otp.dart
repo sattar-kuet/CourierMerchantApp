@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/data/service.dart';
+import '../service/register_login_service.dart';
 import 'bank_screen.dart';
-import 'package:flutter_app/fragments/new_pickup_point.dart';
+import '../fragments/new_pickup_point.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 import '../utility/helper.dart';
 import 'home.dart';
@@ -69,9 +69,11 @@ class _LoginPageState extends State<LoginbyotpPage> {
   }
 
   Future<void> _login(String mobile) async {
-    var response = await Service().login(mobile, optInutField.text, context);
+    var response =
+        await RegisterLoginService().login(mobile, optInutField.text, context);
     if (response['status'] == 1) {
-      int nextStep = await Service().nextStepToFinishProfile(context);
+      int nextStep =
+          await RegisterLoginService().nextStepToFinishProfile(context);
       switch (nextStep) {
         case 1:
           Navigator.push(
