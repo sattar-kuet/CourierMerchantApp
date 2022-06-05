@@ -140,6 +140,12 @@ class _NewParcelPageState extends State<NewParcelPage> {
       body: SingleChildScrollView(
         child: ParcelForm(context),
       ),
+      bottomSheet: BottomSheet(
+        builder: (context) {
+          return FormButton(text: 'Save');
+        },
+        onClosing: () {},
+      ),
     );
   }
 
@@ -246,16 +252,6 @@ class _NewParcelPageState extends State<NewParcelPage> {
         ),
         ..._customerForm(context),
         ..._parcelForm(context),
-        if (districId > 0)
-          InkWell(
-            onTap: () {
-              if (_formKey.currentState!.validate()) {
-                _saveParcel(context);
-              }
-              print("Pressed");
-            }, // Handle your callback
-            child: FormButton(text: 'Save'),
-          ),
       ]),
     );
   }
@@ -439,6 +435,10 @@ class _NewParcelPageState extends State<NewParcelPage> {
           inputController: note,
           inputIcon: Icon(Icons.edit_note),
         ),
+      ),
+      Container(
+        height: 40,
+        width: double.infinity,
       ),
     ];
   }
