@@ -1,6 +1,7 @@
 import 'package:awesome_select/awesome_select.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/form_components/form_button.dart';
+import 'package:flutter_app/form_components/numberInput.dart';
+import '../form_components/app_button.dart';
 import '../data/service.dart';
 import '../form_components/textInput.dart';
 import '../model/pickup_point.dart';
@@ -27,17 +28,18 @@ class _NewParcelPageState extends State<NewParcelPage> {
   double codChange = 0;
   double totalChange = 0;
   final upazillaIdController = TextEditingController();
-  final addressController = TextEditingController();
+  final customerAddressController = TextEditingController();
   final parcelValue = TextEditingController();
   final cashCollection = TextEditingController();
   final parcelWeight = TextEditingController();
   final clientReference = TextEditingController();
   final note = TextEditingController();
 
-  bool districtListLoadingDone = false;
-  bool upazillaListLoadingDone = false;
-  bool deliverySpeedListLoadingDone = false;
-
+  bool districtListLoaded = false;
+  bool upazillaListLoaded = false;
+  bool deliverySpeedListLoaded = false;
+  bool showSaveButton = false;
+  bool customerDataLoaded = false;
   List<S2Choice<int>> districts = [];
   List<S2Choice<int>> upazillas = [];
   List<S2Choice<int>> pacerlTypes = [];
@@ -55,6 +57,17 @@ class _NewParcelPageState extends State<NewParcelPage> {
     setpacerlTypeList();
   }
 
+  updateCustomer() {
+    setState(() {
+      districId = 47;
+      upazillaId = 272;
+      customerNameController.text = "Abdus Sattar Bhuiyan";
+      customerAddressController.text = "Rampura, Dhaka";
+      customerDataLoaded = true;
+    });
+    updateUpazillaList(districId);
+  }
+
   setDistrictList() {
     Service().getDistrictList().then((districtList) {
       List<S2Choice<int>> formattedDistrictList = [];
@@ -64,7 +77,7 @@ class _NewParcelPageState extends State<NewParcelPage> {
       }
       setState(() {
         districts = formattedDistrictList;
-        districtListLoadingDone = true;
+        districtListLoaded = true;
       });
     });
   }
@@ -91,7 +104,7 @@ class _NewParcelPageState extends State<NewParcelPage> {
       }
       setState(() {
         upazillas = formattedupazillaList;
-        upazillaListLoadingDone = true;
+        upazillaListLoaded = true;
       });
     });
   }
@@ -108,7 +121,7 @@ class _NewParcelPageState extends State<NewParcelPage> {
       }
       setState(() {
         deliverySpeeds = formattedDeliverySpeedList;
-        deliverySpeedListLoadingDone = true;
+        deliverySpeedListLoaded = true;
       });
     });
   }
@@ -140,12 +153,16 @@ class _NewParcelPageState extends State<NewParcelPage> {
       body: SingleChildScrollView(
         child: ParcelForm(context),
       ),
-      bottomSheet: BottomSheet(
-        builder: (context) {
-          return FormButton(text: 'Save');
-        },
-        onClosing: () {},
-      ),
+      bottomSheet: showSaveButton
+          ? BottomSheet(
+              builder: (context) {
+                return AppButton(
+                  text: 'Save',
+                );
+              },
+              onClosing: () {},
+            )
+          : null,
     );
   }
 
@@ -238,6 +255,8 @@ class _NewParcelPageState extends State<NewParcelPage> {
                     if (_formKey.currentState!.validate()) {
                       setState(() {
                         showCustomerInfo = true;
+                        showSaveButton = true;
+                        updateCustomer();
                       });
                       Center(child: CircularProgressIndicator());
                     }
@@ -262,42 +281,44 @@ class _NewParcelPageState extends State<NewParcelPage> {
       return [];
     }
     return [
-      Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30.0),
-        child: textInput(
-          label: "কাস্টমার এর নাম",
-          inputController: customerNameController,
-          inputIcon: Icon(Icons.supervised_user_circle_sharp),
-        ),
-      ),
-      Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15.0),
-        child: SmartSelect<int>.single(
-          modalFilter: true,
-          modalFilterAuto: true,
-          tileBuilder: (context, state) => S2Tile<dynamic>(
-            //https://github.com/akbarpulatov/flutter_awesome_select/blob/master/example/lib/features_single/single_chips.dart
-            title: const Text(
-              'জেলা',
-            ),
-            value: state.selected?.toWidget() ?? Container(),
-            leading: Icon(Icons.map_sharp),
-            onTap: state.showModal,
+      if (customerDataLoaded)
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30.0),
+          child: textInput(
+            label: "কাস্টমার এর নাম",
+            inputController: customerNameController,
+            inputIcon: Icon(Icons.supervised_user_circle_sharp),
           ),
-          title: 'জেলা',
-          placeholder: 'সিলেক্ট করুন',
-          choiceItems: districts,
-          onChange: (state) {
-            setState(() {
-              districId = state.value!;
-              upazillaListLoadingDone = false;
-            });
-            updateUpazillaList(state.value);
-          },
-          selectedValue: districId,
         ),
-      ),
-      if (districId != 0 && upazillaListLoadingDone)
+      if (customerDataLoaded)
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15.0),
+          child: SmartSelect<int>.single(
+            modalFilter: true,
+            modalFilterAuto: true,
+            tileBuilder: (context, state) => S2Tile<dynamic>(
+              //https://github.com/akbarpulatov/flutter_awesome_select/blob/master/example/lib/features_single/single_chips.dart
+              title: const Text(
+                'জেলা',
+              ),
+              value: state.selected?.toWidget() ?? Container(),
+              leading: Icon(Icons.map_sharp),
+              onTap: state.showModal,
+            ),
+            title: 'জেলা',
+            placeholder: 'সিলেক্ট করুন',
+            choiceItems: districts,
+            onChange: (state) {
+              setState(() {
+                districId = state.value!;
+                upazillaListLoaded = false;
+              });
+              updateUpazillaList(state.value);
+            },
+            selectedValue: districId,
+          ),
+        ),
+      if (districId != 0 && upazillaListLoaded && customerDataLoaded)
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15.0),
           child: SmartSelect<int>.single(
@@ -318,7 +339,7 @@ class _NewParcelPageState extends State<NewParcelPage> {
             onChange: (state) {
               setState(() {
                 upazillaId = state.value!;
-                upazillaListLoadingDone = true;
+                upazillaListLoaded = true;
               });
               // updateDeliverySpeedList();
             },
@@ -329,7 +350,7 @@ class _NewParcelPageState extends State<NewParcelPage> {
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30.0),
         child: textInput(
           label: 'বিস্তারিত ঠিকানা',
-          inputController: addressController,
+          inputController: customerAddressController,
           inputIcon: Icon(Icons.house_sharp),
         ),
       ),
@@ -372,7 +393,7 @@ class _NewParcelPageState extends State<NewParcelPage> {
       if (fromUpazillaId > 0 &&
           upazillaId > 0 &&
           parcelTypeId > 0 &&
-          deliverySpeedListLoadingDone)
+          deliverySpeedListLoaded)
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15.0),
           child: SmartSelect<int>.single(
@@ -396,7 +417,7 @@ class _NewParcelPageState extends State<NewParcelPage> {
         ),
       Padding(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30.0),
-        child: textInput(
+        child: numberInput(
           label: 'পার্সের ওজন',
           inputController: parcelWeight,
           onChangeEvent: () {
@@ -410,7 +431,7 @@ class _NewParcelPageState extends State<NewParcelPage> {
       ),
       Padding(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30.0),
-        child: textInput(
+        child: numberInput(
           label: 'পন্যের বিক্রয় মূল্য',
           inputController: parcelValue,
           inputIcon: Icon(Icons.verified_sharp),
@@ -420,7 +441,7 @@ class _NewParcelPageState extends State<NewParcelPage> {
       ),
       Padding(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30.0),
-        child: textInput(
+        child: numberInput(
           label: 'ক্যাশ কালেশন',
           inputController: cashCollection,
           inputIcon: Icon(Icons.collections_sharp),
