@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/form_components/numberInput.dart';
 import '../form_components/app_button.dart';
 import '../service/charge_service.dart';
+import '../service/customer_service.dart';
 import '../service/location_service.dart';
 import '../service/parcel_service.dart';
 import '../form_components/textInput.dart';
@@ -19,10 +20,10 @@ class NewParcelPage extends StatefulWidget {
 class _NewParcelPageState extends State<NewParcelPage> {
   final _formKey = GlobalKey<FormState>();
   bool showCustomerInfo = false;
-  final mobileTxtField = TextEditingController();
+  final customerMobileController = TextEditingController();
   final customerNameController = TextEditingController();
   int fromUpazillaId = 0;
-  int districId = 0;
+  int districtId = 0;
   int upazillaId = 0;
   int parcelTypeId = 0;
   int deliverySpeed = 0;
@@ -32,8 +33,8 @@ class _NewParcelPageState extends State<NewParcelPage> {
   final upazillaIdController = TextEditingController();
   final customerAddressController = TextEditingController();
   final parcelValue = TextEditingController();
-  final cashCollection = TextEditingController();
-  final parcelWeight = TextEditingController();
+  final cashCollectionController = TextEditingController();
+  final parcelWeightController = TextEditingController();
   final clientReference = TextEditingController();
   final note = TextEditingController();
 
@@ -54,23 +55,29 @@ class _NewParcelPageState extends State<NewParcelPage> {
         fromUpazillaId = StoredPickupPoint.upazillaId;
       });
     });
-    //parcelWeight.addListener(updateDeliveryCharge);
-    setDistrictList();
-    setpacerlTypeList();
+    parcelWeightController.addListener(updateDeliveryCharge);
+    cashCollectionController.addListener(updateCodCharge);
+
+    updatePacerlTypeList();
   }
 
   updateCustomer() {
-    setState(() {
-      districId = 47;
-      upazillaId = 272;
-      customerNameController.text = "Abdus Sattar Bhuiyan";
-      customerAddressController.text = "Rampura, Dhaka";
-      customerDataLoaded = true;
+    CustomerService()
+        .getCustomerByMobile(customerMobileController.text, context)
+        .then((customer) {
+      setState(() {
+        districtId = customer.districtId;
+        upazillaId = customer.upazillaId;
+        customerNameController.text = customer.name;
+        customerAddressController.text = customer.address;
+        customerDataLoaded = true;
+      });
+      updateDistrictList(customer.districtId);
+      updateUpazillaList(districtId);
     });
-    updateUpazillaList(districId);
   }
 
-  setDistrictList() {
+  updateDistrictList(selectedDistrictId) {
     LocationService().getDistrictList().then((districtList) {
       List<S2Choice<int>> formattedDistrictList = [];
       for (var i = 0; i < districtList.length; i++) {
@@ -79,12 +86,13 @@ class _NewParcelPageState extends State<NewParcelPage> {
       }
       setState(() {
         districts = formattedDistrictList;
+        districtId = selectedDistrictId;
         districtListLoaded = true;
       });
     });
   }
 
-  setpacerlTypeList() {
+  updatePacerlTypeList() {
     ParcelService().getParcelTypes().then((pacerlTypeList) {
       List<S2Choice<int>> formattedpacerlTypeList = [];
       for (var i = 0; i < pacerlTypeList.length; i++) {
@@ -97,8 +105,8 @@ class _NewParcelPageState extends State<NewParcelPage> {
     });
   }
 
-  updateUpazillaList(districId) {
-    LocationService().getUpazillaList(districId, context).then((upazillaList) {
+  updateUpazillaList(districtId) {
+    LocationService().getUpazillaList(districtId, context).then((upazillaList) {
       List<S2Choice<int>> formattedupazillaList = [];
       for (var i = 0; i < upazillaList.length; i++) {
         formattedupazillaList.add(S2Choice<int>(
@@ -131,17 +139,34 @@ class _NewParcelPageState extends State<NewParcelPage> {
   updateDeliveryCharge() {
     if (fromUpazillaId > 0 &&
         upazillaId > 0 &&
-        parcelWeight.text.isNotEmpty &&
+        parcelWeightController.text.isNotEmpty &&
         deliverySpeed > 0) {
       var data = {};
       data['fromUpazillaId'] = fromUpazillaId;
       data['toUpazillaId'] = upazillaId;
-      data['parcelWeight'] = double.parse(parcelWeight.text);
+      data['parcelWeight'] = double.parse(parcelWeightController.text);
       data['parcelTypeId'] = parcelTypeId;
       data['deliverySpeed'] = deliverySpeed;
       ChargeService().getDeliveryCharge(data, context).then((responseValue) {
         setState(() {
           deliveryChange = responseValue;
+          totalChange = deliveryChange + codChange;
+        });
+      });
+    }
+  }
+
+  updateCodCharge() {
+    if (fromUpazillaId > 0 &&
+        upazillaId > 0 &&
+        cashCollectionController.text.isNotEmpty) {
+      var data = {};
+      data['fromUpazillaId'] = fromUpazillaId;
+      data['toUpazillaId'] = upazillaId;
+      data['cashCollection'] = double.parse(cashCollectionController.text);
+      ChargeService().getCodCharge(data, context).then((responseValue) {
+        setState(() {
+          codChange = responseValue;
           totalChange = deliveryChange + codChange;
         });
       });
@@ -240,7 +265,7 @@ class _NewParcelPageState extends State<NewParcelPage> {
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30.0),
           child: TextFormField(
-            controller: mobileTxtField,
+            controller: customerMobileController,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
               border: UnderlineInputBorder(),
@@ -292,7 +317,7 @@ class _NewParcelPageState extends State<NewParcelPage> {
             inputIcon: Icon(Icons.supervised_user_circle_sharp),
           ),
         ),
-      if (customerDataLoaded)
+      if (customerDataLoaded && districtListLoaded)
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15.0),
           child: SmartSelect<int>.single(
@@ -312,15 +337,15 @@ class _NewParcelPageState extends State<NewParcelPage> {
             choiceItems: districts,
             onChange: (state) {
               setState(() {
-                districId = state.value!;
+                districtId = state.value!;
                 upazillaListLoaded = false;
               });
               updateUpazillaList(state.value);
             },
-            selectedValue: districId,
+            selectedValue: districtId,
           ),
         ),
-      if (districId != 0 && upazillaListLoaded && customerDataLoaded)
+      if (districtId != 0 && upazillaListLoaded && customerDataLoaded)
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15.0),
           child: SmartSelect<int>.single(
@@ -342,8 +367,10 @@ class _NewParcelPageState extends State<NewParcelPage> {
               setState(() {
                 upazillaId = state.value!;
                 upazillaListLoaded = true;
+                deliverySpeed = 0;
               });
-              // updateDeliverySpeedList();
+              updateDeliverySpeedList();
+              updateDeliveryCharge();
             },
             selectedValue: upazillaId,
           ),
@@ -413,7 +440,13 @@ class _NewParcelPageState extends State<NewParcelPage> {
             title: 'ডেলিভারি স্পিড',
             placeholder: 'সিলেক্ট করুন',
             choiceItems: deliverySpeeds,
-            onChange: (state) => setState(() => deliverySpeed = state.value!),
+            onChange: (state) {
+              setState(() {
+                deliverySpeed = state.value!;
+              });
+
+              updateDeliveryCharge();
+            },
             selectedValue: deliverySpeed,
           ),
         ),
@@ -421,7 +454,7 @@ class _NewParcelPageState extends State<NewParcelPage> {
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30.0),
         child: numberInput(
           label: 'পার্সের ওজন',
-          inputController: parcelWeight,
+          inputController: parcelWeightController,
           onChangeEvent: () {
             updateDeliveryCharge();
           },
@@ -445,7 +478,7 @@ class _NewParcelPageState extends State<NewParcelPage> {
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30.0),
         child: numberInput(
           label: 'ক্যাশ কালেশন',
-          inputController: cashCollection,
+          inputController: cashCollectionController,
           inputIcon: Icon(Icons.collections_sharp),
           suffixHelpText:
               Padding(padding: EdgeInsets.all(15), child: Text('৳')),

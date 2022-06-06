@@ -6,9 +6,9 @@ import '../constants.dart' as Constants;
 
 class CallApi {
   final String _url = Constants.BASE_URL;
-
+  final excludeToLoading = ['getDeliveryCharge', 'getCodCharge'];
   Future<Map<String, dynamic>> postData(data, apiUrl, context) async {
-    if (apiUrl != 'getDeliveryCharge') {
+    if (!excludeToLoading.contains(apiUrl)) {
       showloadingDialog(context);
     }
 
@@ -21,7 +21,7 @@ class CallApi {
     });
     Map<String, dynamic> responseData = json.decode(response.body);
     // For dismissing Loading
-    if (apiUrl != 'getDeliveryCharge') {
+    if (!excludeToLoading.contains(apiUrl)) {
       Navigator.of(context).pop();
     }
     // Also need to dismiss the loader because it makes trouble if the function not works properly due to internet connection etc

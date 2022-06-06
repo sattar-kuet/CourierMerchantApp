@@ -10,6 +10,15 @@ class ChargeService {
     return deliveryCharge;
   }
 
+  Future<double> getCodCharge(data, context) async {
+    User user = await User.readSession();
+    data['userId'] = user.id;
+    var response = await CallApi().postData(data, 'getCodCharge', context);
+    double codCharge = double.parse(response['data'].toString());
+    print(data);
+    return codCharge;
+  }
+
   Future getDeliverySpeedList(
       fromUpazillaId, toUpazillaId, parcelTypeId, context) async {
     User sessionUser = await User.readSession();

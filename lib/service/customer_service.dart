@@ -10,7 +10,7 @@ class CustomerService {
         await CallApi().postData(data, 'getCustomerByMobile', context);
     var customerData = response['data'];
     if (customerData.length == 0) {
-      return Customer(0, '', '', '', 0, 0, '');
+      return Customer(0, '', '', '', 0, 0, 0, '');
     }
     Customer customer = Customer(
         customerData['id'],
@@ -19,6 +19,7 @@ class CustomerService {
         customerData['alternativeMobile'],
         customerData['districtId'],
         customerData['upazillaId'],
+        customerData['areaId'],
         customerData['address']);
     return customer;
   }
