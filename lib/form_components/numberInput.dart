@@ -25,7 +25,18 @@ class numberInput extends StatelessWidget {
       controller: inputController,
       onChanged: onChangeEvent != null ? (_) => onChangeEvent!() : null,
       keyboardType: TextInputType.number,
-      //DON'T ADD inputFormatters because : https://stackoverflow.com/questions/72514576/floating-value-formatting-in-textformfield-in-flutter
+      inputFormatters: [
+        FilteringTextInputFormatter.allow(RegExp(r"[0-9.]")),
+        TextInputFormatter.withFunction((oldValue, newValue) {
+          try {
+            String text = newValue.text;
+            if (text.startsWith('.')) text = '0$text';
+            if (text.isNotEmpty) double.parse(text);
+            return newValue;
+          } catch (e) {}
+          return oldValue;
+        }),
+      ],
       decoration: InputDecoration(
         labelText: label,
         helperText: helperText != null ? helperText : '',
