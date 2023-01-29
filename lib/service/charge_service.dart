@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import '../model/user.dart';
 import '../remote/api.dart';
 
@@ -15,7 +17,7 @@ class ChargeService {
     data['userId'] = user.id;
     var response = await CallApi().postData(data, 'getCodCharge', context);
     double codCharge = double.parse(response['data'].toString());
-    print(data);
+    debugPrint('$data');
     return codCharge;
   }
 

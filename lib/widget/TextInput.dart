@@ -10,14 +10,14 @@ class TextInput extends StatelessWidget {
 
   final TextEditingController inputController;
   final String label;
-  final icon;
+  final IconData icon;
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: inputController,
       keyboardType: TextInputType.text,
       decoration: InputDecoration(
-        border: UnderlineInputBorder(),
+        border: const UnderlineInputBorder(),
         prefixIcon: Icon(icon),
         labelText: label,
       ),

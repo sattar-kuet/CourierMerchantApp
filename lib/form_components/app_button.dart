@@ -13,15 +13,15 @@ class AppButton extends StatelessWidget {
         width: double.infinity,
         height: 60,
         child: ElevatedButton(
-          child: Text(
-            text,
-            style: TextStyle(
-              fontSize: 15,
-            ),
-          ),
           onPressed: () {},
           style: ElevatedButton.styleFrom(
-            primary: Color(Constants.Color.BUTTON_BG),
+            backgroundColor: const Color(Constants.Color.BUTTON_BG),
+          ),
+          child: Text(
+            text,
+            style: const TextStyle(
+              fontSize: 15,
+            ),
           ),
         ));
   }

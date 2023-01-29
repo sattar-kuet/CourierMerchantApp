@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 const String BASE_URL = 'https://portal.gofirstbd.com/api/v2';
 
 class Color {
-  static const BUTTON_BG =
-      0xff123456; // where 123456 is your hex color code and 0xff is the opacity value and can be changed.
+  static const BUTTON_BG = 0xff123456; // where 123456 is your hex color code and 0xff is the opacity value and can be changed.
   static const BUTTON_TEXT = 0xffffffff;
   static const BRAND = 0xffA5A4A4;
 }
@@ -21,25 +20,29 @@ class NeumorphismDecoration {
     shape: BoxShape.rectangle,
     boxShadow: [
       BoxShadow(
-          color: Colors.grey.shade300,
-          spreadRadius: 0.0,
-          blurRadius: 1.5,
-          offset: Offset(3.0, 3.0)),
+        color: Colors.grey.shade300,
+        spreadRadius: 0.0,
+        blurRadius: 1.5,
+        offset: const Offset(3.0, 3.0),
+      ),
       BoxShadow(
-          color: Colors.grey.shade400,
-          spreadRadius: 0.0,
-          blurRadius: 1.5 / 2.0,
-          offset: Offset(3.0, 3.0)),
-      BoxShadow(
-          color: Colors.white,
-          spreadRadius: 2.0,
-          blurRadius: 1.5,
-          offset: Offset(-3.0, -3.0)),
-      BoxShadow(
-          color: Colors.white,
-          spreadRadius: 2.0,
-          blurRadius: 1.5 / 2,
-          offset: Offset(-3.0, -3.0)),
+        color: Colors.grey.shade400,
+        spreadRadius: 0.0,
+        blurRadius: 1.5 / 2.0,
+        offset: const Offset(3.0, 3.0),
+      ),
+      const BoxShadow(
+        color: Colors.white,
+        spreadRadius: 2.0,
+        blurRadius: 1.5,
+        offset: Offset(-3.0, -3.0),
+      ),
+      const BoxShadow(
+        color: Colors.white,
+        spreadRadius: 2.0,
+        blurRadius: 1.5 / 2,
+        offset: Offset(-3.0, -3.0),
+      ),
     ],
   );
 }

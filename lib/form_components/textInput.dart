@@ -24,7 +24,7 @@ class textInput extends StatelessWidget {
       onChanged: onChangeEvent != null ? (_) => onChangeEvent!() : null,
       decoration: InputDecoration(
         labelText: label,
-        helperText: helperText != null ? helperText : '',
+        helperText: helperText ?? '',
         icon: inputIcon,
         suffixIcon: suffixHelpText,
       ),

@@ -9,6 +9,8 @@ import 'home.dart';
 class LoginbyotpPage extends StatefulWidget {
   static const String routeName = '/loginbyotpPage';
 
+  const LoginbyotpPage({Key? key}) : super(key: key);
+
   @override
   State<LoginbyotpPage> createState() => _LoginPageState();
 }
@@ -28,14 +30,14 @@ class _LoginPageState extends State<LoginbyotpPage> {
       mobile = arguments['mobile'];
     }
     return Scaffold(
-      body: new Form(
+      body: Form(
         key: _formKey,
         autovalidateMode: AutovalidateMode.onUserInteraction,
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           Container(
             height: 70,
-            margin: EdgeInsets.only(bottom: 50),
-            child: Image(image: AssetImage('assets/logo.png')),
+            margin: const EdgeInsets.only(bottom: 50),
+            child: const Image(image: AssetImage('assets/logo.png')),
           ),
           Text('Sent Otp is: $sentOtp'),
           Padding(
@@ -79,21 +81,21 @@ class _LoginPageState extends State<LoginbyotpPage> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => NewPickupPoint(),
+                builder: (context) => const NewPickupPoint(),
               ));
           break;
         case 2:
           Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => BankScreen(),
+                builder: (context) => const BankScreen(),
               ));
           break;
         default:
           Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Home(),
+                builder: (context) => const Home(),
               ));
           break;
       }

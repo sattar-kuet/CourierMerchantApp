@@ -33,13 +33,15 @@ class numberInput extends StatelessWidget {
             if (text.startsWith('.')) text = '0$text';
             if (text.isNotEmpty) double.parse(text);
             return newValue;
-          } catch (e) {}
+          } catch (e) {
+            debugPrint(e.toString());
+          }
           return oldValue;
         }),
       ],
       decoration: InputDecoration(
         labelText: label,
-        helperText: helperText != null ? helperText : '',
+        helperText: helperText ?? '',
         icon: inputIcon,
         suffixIcon: suffixHelpText,
       ),

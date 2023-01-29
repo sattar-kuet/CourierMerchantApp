@@ -9,6 +9,7 @@ import '../widget/TextInput.dart';
 
 class NewPickupPoint extends StatefulWidget {
   static const String routeName = '/newPickupPointPage';
+
   const NewPickupPoint({Key? key}) : super(key: key);
 
   @override
@@ -27,6 +28,8 @@ class _NewPickupPointState extends State<NewPickupPoint> {
   bool districtListLoadingDone = false;
   bool upazillaListLoadingDone = false;
   bool existingDataLoded = false;
+
+  @override
   void initState() {
     super.initState();
     PickupPoint.readSession().then((StoredPickupPoint) {
@@ -43,10 +46,10 @@ class _NewPickupPointState extends State<NewPickupPoint> {
   }
 
   updateDistrictList() {
-    LocationService().getDistrictList().then((_districtList) {
-      for (var i = 0; i < _districtList.length; i++) {
-        int id = _districtList[i]['id'];
-        String name = _districtList[i]['name'];
+    LocationService().getDistrictList().then((districtList) {
+      for (var i = 0; i < districtList.length; i++) {
+        int id = districtList[i]['id'];
+        String name = districtList[i]['name'];
         setState(() {
           districts.add(S2Choice<int>(value: id, title: name));
           districtListLoadingDone = true;
@@ -56,17 +59,15 @@ class _NewPickupPointState extends State<NewPickupPoint> {
   }
 
   updateUpazillaList() {
-    LocationService()
-        .getUpazillaList(districtId, context)
-        .then((_upazillaList) {
-      List<S2Choice<int>> upazillaList = [];
-      for (var i = 0; i < _upazillaList.length; i++) {
-        int id = _upazillaList[i]['id'];
-        String name = _upazillaList[i]['name'];
-        upazillaList.add(S2Choice<int>(value: id, title: name));
+    LocationService().getUpazillaList(districtId, context).then((upazillaList) {
+      List<S2Choice<int>> upAZillaList = [];
+      for (var i = 0; i < upazillaList.length; i++) {
+        int id = upazillaList[i]['id'];
+        String name = upazillaList[i]['name'];
+        upAZillaList.add(S2Choice<int>(value: id, title: name));
       }
       setState(() {
-        upazillas = upazillaList;
+        upazillas = upAZillaList;
         upazillaListLoadingDone = true;
       });
     });
@@ -77,10 +78,10 @@ class _NewPickupPointState extends State<NewPickupPoint> {
     bool keyboardIsOpen = MediaQuery.of(context).viewInsets.bottom != 0;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add new pickup point'),
+        title: const Text('Add new pickup point'),
       ),
       body: SingleChildScrollView(
-        child: new Form(
+        child: Form(
           key: _formKey,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -91,8 +92,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                 child: Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 30.0),
+                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30.0),
                       child: TextInput(
                         inputController: nameController,
                         label: 'পিকআপ পয়েন্টের নাম',
@@ -101,8 +101,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                     ),
                     if (existingDataLoded && districtListLoadingDone)
                       Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 30.0),
+                        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30.0),
                         child: SmartSelect<int>.single(
                           modalFilter: true,
                           modalFilterAuto: true,
@@ -111,8 +110,8 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                             title: const Text(
                               'জেলা',
                             ),
-                            value: state.selected?.toWidget() ?? Container(),
-                            leading: Icon(Icons.list_outlined),
+                            value: state.selected.toWidget(),
+                            leading: const Icon(Icons.list_outlined),
                             onTap: state.showModal,
                           ),
                           title: 'জেলা',
@@ -120,7 +119,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                           choiceItems: districts,
                           onChange: (state) {
                             setState(() {
-                              districtId = state.value!;
+                              districtId = state.value;
                               upazillaListLoadingDone = false;
                             });
                             updateUpazillaList();
@@ -130,8 +129,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                       ),
                     if (upazillaListLoadingDone && existingDataLoded)
                       Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 30.0),
+                        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30.0),
                         child: SmartSelect<int>.single(
                           modalFilter: true,
                           modalFilterAuto: true,
@@ -140,27 +138,22 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                             title: const Text(
                               'এলাকা',
                             ),
-                            value: state.selected?.toWidget() ?? Container(),
-                            leading: Icon(Icons.list_outlined),
+                            value: state.selected.toWidget(),
+                            leading: const Icon(Icons.list_outlined),
                             onTap: state.showModal,
                           ),
                           title: 'এলাকা',
                           placeholder: 'সিলেক্ট করুন',
                           choiceItems: upazillas,
-                          onChange: (state) =>
-                              setState(() => upazillaId = state.value!),
+                          onChange: (state) => setState(() => upazillaId = state.value),
                           selectedValue: upazillaId,
                         ),
                       ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 30.0),
-                      child: TextInput(
-                          inputController: addressController,
-                          label: 'বিস্তারিত ঠিকানা',
-                          icon: Icons.map_outlined),
+                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30.0),
+                      child: TextInput(inputController: addressController, label: 'বিস্তারিত ঠিকানা', icon: Icons.map_outlined),
                     ),
-                    Text(
+                    const Text(
                       'যেমনঃ ২য় তলা, বাসা নংঃ ১১৮, ব্লকঃ ডি, রোডঃ ০৫, মহানগর প্রজেক্ট, রামপুরা, ঢাকা',
                       textAlign: TextAlign.center,
                       style: TextStyle(
@@ -174,7 +167,7 @@ class _NewPickupPointState extends State<NewPickupPoint> {
                           _savePickupPoint(context);
                         }
                       },
-                      child: Text('Save'),
+                      child: const Text('Save'),
                     )
                   ],
                 ),
@@ -183,11 +176,11 @@ class _NewPickupPointState extends State<NewPickupPoint> {
           ]),
         ),
       ),
-      bottomNavigationBar: BottomNavigation(),
+      bottomNavigationBar: const BottomNavigation(),
       floatingActionButton: Visibility(
         visible: !keyboardIsOpen,
         child: Padding(
-          padding: EdgeInsets.only(
+          padding: const EdgeInsets.only(
             top: 45,
           ),
           child: floating(context),
@@ -198,7 +191,6 @@ class _NewPickupPointState extends State<NewPickupPoint> {
   }
 
   void _savePickupPoint(BuildContext context) {
-    PickupPointService().savePickupPoint(nameController.text, districtId,
-        upazillaId, addressController.text, context);
+    PickupPointService().savePickupPoint(nameController.text, districtId, upazillaId, addressController.text, context);
   }
 }

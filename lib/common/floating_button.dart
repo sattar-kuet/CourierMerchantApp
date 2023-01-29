@@ -3,7 +3,7 @@ import 'package:flutter_app/fragments/new_parcel_screen.dart';
 
 Widget floating(BuildContext context) {
   return Padding(
-    padding: EdgeInsets.only(top: 20),
+    padding: const EdgeInsets.only(top: 20),
     child: SizedBox(
       height: 70,
       width: 70,
@@ -23,7 +23,7 @@ Widget floating(BuildContext context) {
               border: Border.all(color: Colors.white, width: 4),
               shape: BoxShape.circle,
               color: Colors.red),
-          child: Icon(Icons.add, size: 40),
+          child: const Icon(Icons.add, size: 40),
         ),
       ),
     ),

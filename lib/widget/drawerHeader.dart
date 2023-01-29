@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 Widget drawerHeader() {
   return DrawerHeader(
-    decoration: BoxDecoration(
+    decoration: const BoxDecoration(
       color: Colors.pink,
     ),
     child: Stack(
       children: <Widget>[
-        Align(
+        const Align(
           alignment: Alignment.centerLeft,
           child: CircleAvatar(
             backgroundImage: NetworkImage(
@@ -15,7 +15,7 @@ Widget drawerHeader() {
             radius: 50.0,
           ),
         ),
-        Align(
+        const Align(
           alignment: Alignment.centerRight,
           child: Text(
             'Alec Reynolds',
@@ -24,17 +24,14 @@ Widget drawerHeader() {
         ),
    
         Align(
-          alignment: Alignment.centerRight + Alignment(0, .8),
-          child: Container(
-            child: Padding(
-              padding: EdgeInsets.all(1.0),
-              child: IconButton(
-                icon: Icon(Icons.edit),
-                color: Colors.white,
-               onPressed: (){},)
-             
-            ),
-          
+          alignment: Alignment.centerRight + const Alignment(0, .8),
+          child: Padding(
+            padding: const EdgeInsets.all(1.0),
+            child: IconButton(
+              icon: const Icon(Icons.edit),
+              color: Colors.white,
+             onPressed: (){},)
+
           ),
         ),
       ],

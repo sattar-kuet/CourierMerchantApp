@@ -2,7 +2,7 @@
   Container logo() {
     return Container(
           height: 70,
-          margin: EdgeInsets.only(bottom: 20),
-          child: Image(image: AssetImage('assets/logo.png')),
+          margin: const EdgeInsets.only(bottom: 20),
+          child: const Image(image: AssetImage('assets/logo.png')),
         );
   }

@@ -13,6 +13,8 @@ import '../utility/validatation.dart';
 class NewParcelPage extends StatefulWidget {
   static const String routeName = '/NewParcelPage';
 
+  const NewParcelPage({Key? key}) : super(key: key);
+
   @override
   State<NewParcelPage> createState() => _NewParcelPageState();
 }
@@ -47,6 +49,7 @@ class _NewParcelPageState extends State<NewParcelPage> {
   List<S2Choice<int>> upazillas = [];
   List<S2Choice<int>> pacerlTypes = [];
   List<S2Choice<int>> deliverySpeeds = [];
+
   @override
   void initState() {
     super.initState();
@@ -62,9 +65,7 @@ class _NewParcelPageState extends State<NewParcelPage> {
   }
 
   updateCustomer() {
-    CustomerService()
-        .getCustomerByMobile(customerMobileController.text, context)
-        .then((customer) {
+    CustomerService().getCustomerByMobile(customerMobileController.text, context).then((customer) {
       setState(() {
         districtId = customer.districtId;
         upazillaId = customer.upazillaId;
@@ -81,8 +82,7 @@ class _NewParcelPageState extends State<NewParcelPage> {
     LocationService().getDistrictList().then((districtList) {
       List<S2Choice<int>> formattedDistrictList = [];
       for (var i = 0; i < districtList.length; i++) {
-        formattedDistrictList.add(S2Choice<int>(
-            value: districtList[i]['id'], title: districtList[i]['name']));
+        formattedDistrictList.add(S2Choice<int>(value: districtList[i]['id'], title: districtList[i]['name']));
       }
       setState(() {
         districts = formattedDistrictList;
@@ -96,8 +96,7 @@ class _NewParcelPageState extends State<NewParcelPage> {
     ParcelService().getParcelTypes().then((pacerlTypeList) {
       List<S2Choice<int>> formattedpacerlTypeList = [];
       for (var i = 0; i < pacerlTypeList.length; i++) {
-        formattedpacerlTypeList.add(S2Choice<int>(
-            value: pacerlTypeList[i]['id'], title: pacerlTypeList[i]['name']));
+        formattedpacerlTypeList.add(S2Choice<int>(value: pacerlTypeList[i]['id'], title: pacerlTypeList[i]['name']));
       }
       setState(() {
         pacerlTypes = formattedpacerlTypeList;
@@ -109,8 +108,7 @@ class _NewParcelPageState extends State<NewParcelPage> {
     LocationService().getUpazillaList(districtId, context).then((upazillaList) {
       List<S2Choice<int>> formattedupazillaList = [];
       for (var i = 0; i < upazillaList.length; i++) {
-        formattedupazillaList.add(S2Choice<int>(
-            value: upazillaList[i]['id'], title: upazillaList[i]['name']));
+        formattedupazillaList.add(S2Choice<int>(value: upazillaList[i]['id'], title: upazillaList[i]['name']));
       }
       setState(() {
         upazillas = formattedupazillaList;
@@ -120,14 +118,10 @@ class _NewParcelPageState extends State<NewParcelPage> {
   }
 
   updateDeliverySpeedList() {
-    ChargeService()
-        .getDeliverySpeedList(fromUpazillaId, upazillaId, parcelTypeId, context)
-        .then((deliverySpeedList) {
+    ChargeService().getDeliverySpeedList(fromUpazillaId, upazillaId, parcelTypeId, context).then((deliverySpeedList) {
       List<S2Choice<int>> formattedDeliverySpeedList = [];
       for (var i = 0; i < deliverySpeedList.length; i++) {
-        formattedDeliverySpeedList.add(S2Choice<int>(
-            value: deliverySpeedList[i]['value'],
-            title: deliverySpeedList[i]['label']));
+        formattedDeliverySpeedList.add(S2Choice<int>(value: deliverySpeedList[i]['value'], title: deliverySpeedList[i]['label']));
       }
       setState(() {
         deliverySpeeds = formattedDeliverySpeedList;
@@ -137,10 +131,7 @@ class _NewParcelPageState extends State<NewParcelPage> {
   }
 
   updateDeliveryCharge() {
-    if (fromUpazillaId > 0 &&
-        upazillaId > 0 &&
-        parcelWeightController.text.isNotEmpty &&
-        deliverySpeed > 0) {
+    if (fromUpazillaId > 0 && upazillaId > 0 && parcelWeightController.text.isNotEmpty && deliverySpeed > 0) {
       var data = {};
       data['fromUpazillaId'] = fromUpazillaId;
       data['toUpazillaId'] = upazillaId;
@@ -157,9 +148,7 @@ class _NewParcelPageState extends State<NewParcelPage> {
   }
 
   updateCodCharge() {
-    if (fromUpazillaId > 0 &&
-        upazillaId > 0 &&
-        cashCollectionController.text.isNotEmpty) {
+    if (fromUpazillaId > 0 && upazillaId > 0 && cashCollectionController.text.isNotEmpty) {
       var data = {};
       data['fromUpazillaId'] = fromUpazillaId;
       data['toUpazillaId'] = upazillaId;
@@ -183,7 +172,7 @@ class _NewParcelPageState extends State<NewParcelPage> {
       bottomSheet: showSaveButton
           ? BottomSheet(
               builder: (context) {
-                return AppButton(
+                return const AppButton(
                   text: 'Save',
                 );
               },
@@ -196,14 +185,14 @@ class _NewParcelPageState extends State<NewParcelPage> {
   AppBar DeliveryChargeAppBar() {
     return AppBar(
       title: Container(
-        padding: EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(20.0),
         child: Table(
           children: [
-            TableRow(children: [
+            const TableRow(children: [
               Text(
                 'ডেলিভারি চার্জ',
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
                 ),
@@ -211,7 +200,7 @@ class _NewParcelPageState extends State<NewParcelPage> {
               Text(
                 'COD চার্জ',
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
                 ),
@@ -219,7 +208,7 @@ class _NewParcelPageState extends State<NewParcelPage> {
               Text(
                 'মোট',
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
                 ),
@@ -258,7 +247,7 @@ class _NewParcelPageState extends State<NewParcelPage> {
   }
 
   Form ParcelForm(BuildContext context) {
-    return new Form(
+    return Form(
       key: _formKey,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -268,12 +257,12 @@ class _NewParcelPageState extends State<NewParcelPage> {
             controller: customerMobileController,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
-              border: UnderlineInputBorder(),
-              prefixIcon: Icon(Icons.phone),
+              border: const UnderlineInputBorder(),
+              prefixIcon: const Icon(Icons.phone),
               labelText: 'কাস্টমার মোবাইল নাম্বারটি দিন',
               suffixIcon: UnconstrainedBox(
                 child: IconButton(
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.arrow_circle_right_sharp,
                     color: Colors.blue,
                   ),
@@ -285,7 +274,7 @@ class _NewParcelPageState extends State<NewParcelPage> {
                         showSaveButton = true;
                         updateCustomer();
                       });
-                      Center(child: CircularProgressIndicator());
+                      const Center(child: CircularProgressIndicator());
                     }
                   },
                 ),
@@ -314,7 +303,7 @@ class _NewParcelPageState extends State<NewParcelPage> {
           child: textInput(
             label: "কাস্টমার এর নাম",
             inputController: customerNameController,
-            inputIcon: Icon(Icons.supervised_user_circle_sharp),
+            inputIcon: const Icon(Icons.supervised_user_circle_sharp),
           ),
         ),
       if (customerDataLoaded && districtListLoaded)
@@ -328,8 +317,8 @@ class _NewParcelPageState extends State<NewParcelPage> {
               title: const Text(
                 'জেলা',
               ),
-              value: state.selected?.toWidget() ?? Container(),
-              leading: Icon(Icons.map_sharp),
+              value: state.selected.toWidget(),
+              leading: const Icon(Icons.map_sharp),
               onTap: state.showModal,
             ),
             title: 'জেলা',
@@ -337,7 +326,7 @@ class _NewParcelPageState extends State<NewParcelPage> {
             choiceItems: districts,
             onChange: (state) {
               setState(() {
-                districtId = state.value!;
+                districtId = state.value;
                 upazillaListLoaded = false;
               });
               updateUpazillaList(state.value);
@@ -356,8 +345,8 @@ class _NewParcelPageState extends State<NewParcelPage> {
               title: const Text(
                 'এলাকা',
               ),
-              value: state.selected?.toWidget() ?? Container(),
-              leading: Icon(Icons.map_outlined),
+              value: state.selected.toWidget(),
+              leading: const Icon(Icons.map_outlined),
               onTap: state.showModal,
             ),
             title: 'এলাকা',
@@ -365,7 +354,7 @@ class _NewParcelPageState extends State<NewParcelPage> {
             choiceItems: upazillas,
             onChange: (state) {
               setState(() {
-                upazillaId = state.value!;
+                upazillaId = state.value;
                 upazillaListLoaded = true;
                 deliverySpeed = 0;
               });
@@ -380,7 +369,7 @@ class _NewParcelPageState extends State<NewParcelPage> {
         child: textInput(
           label: 'বিস্তারিত ঠিকানা',
           inputController: customerAddressController,
-          inputIcon: Icon(Icons.house_sharp),
+          inputIcon: const Icon(Icons.house_sharp),
         ),
       ),
     ];
@@ -402,8 +391,8 @@ class _NewParcelPageState extends State<NewParcelPage> {
             title: const Text(
               'পার্সেল এর ধরন',
             ),
-            value: state.selected?.toWidget() ?? Container(),
-            leading: Icon(Icons.list),
+            value: state.selected.toWidget(),
+            leading: const Icon(Icons.list),
             onTap: state.showModal,
           ),
           title: 'পার্সেল এর ধরন',
@@ -411,7 +400,7 @@ class _NewParcelPageState extends State<NewParcelPage> {
           choiceItems: pacerlTypes,
           onChange: (state) {
             setState(() {
-              parcelTypeId = state.value!;
+              parcelTypeId = state.value;
             });
             updateDeliverySpeedList();
             updateDeliveryCharge();
@@ -419,10 +408,7 @@ class _NewParcelPageState extends State<NewParcelPage> {
           selectedValue: parcelTypeId,
         ),
       ),
-      if (fromUpazillaId > 0 &&
-          upazillaId > 0 &&
-          parcelTypeId > 0 &&
-          deliverySpeedListLoaded)
+      if (fromUpazillaId > 0 && upazillaId > 0 && parcelTypeId > 0 && deliverySpeedListLoaded)
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15.0),
           child: SmartSelect<int>.single(
@@ -433,8 +419,8 @@ class _NewParcelPageState extends State<NewParcelPage> {
               title: const Text(
                 'ডেলিভারি স্পিড',
               ),
-              value: state.selected?.toWidget() ?? Container(),
-              leading: Icon(Icons.speed_sharp),
+              value: state.selected.toWidget(),
+              leading: const Icon(Icons.speed_sharp),
               onTap: state.showModal,
             ),
             title: 'ডেলিভারি স্পিড',
@@ -442,7 +428,7 @@ class _NewParcelPageState extends State<NewParcelPage> {
             choiceItems: deliverySpeeds,
             onChange: (state) {
               setState(() {
-                deliverySpeed = state.value!;
+                deliverySpeed = state.value;
               });
 
               updateDeliveryCharge();
@@ -458,10 +444,9 @@ class _NewParcelPageState extends State<NewParcelPage> {
           onChangeEvent: () {
             updateDeliveryCharge();
           },
-          inputIcon: Icon(Icons.monitor_weight_sharp),
+          inputIcon: const Icon(Icons.monitor_weight_sharp),
           helperText: "যেমনঃ 100 গ্রাম হলে 0.1",
-          suffixHelpText:
-              Padding(padding: EdgeInsets.all(15), child: Text('KG ')),
+          suffixHelpText: const Padding(padding: EdgeInsets.all(15), child: Text('KG ')),
         ),
       ),
       Padding(
@@ -469,9 +454,8 @@ class _NewParcelPageState extends State<NewParcelPage> {
         child: numberInput(
           label: 'পন্যের বিক্রয় মূল্য',
           inputController: parcelValue,
-          inputIcon: Icon(Icons.verified_sharp),
-          suffixHelpText:
-              Padding(padding: EdgeInsets.all(15), child: Text('৳')),
+          inputIcon: const Icon(Icons.verified_sharp),
+          suffixHelpText: const Padding(padding: EdgeInsets.all(15), child: Text('৳')),
         ),
       ),
       Padding(
@@ -479,9 +463,8 @@ class _NewParcelPageState extends State<NewParcelPage> {
         child: numberInput(
           label: 'ক্যাশ কালেশন',
           inputController: cashCollectionController,
-          inputIcon: Icon(Icons.collections_sharp),
-          suffixHelpText:
-              Padding(padding: EdgeInsets.all(15), child: Text('৳')),
+          inputIcon: const Icon(Icons.collections_sharp),
+          suffixHelpText: const Padding(padding: EdgeInsets.all(15), child: Text('৳')),
         ),
       ),
       Padding(
@@ -489,15 +472,13 @@ class _NewParcelPageState extends State<NewParcelPage> {
         child: textInput(
           label: 'নোট (যদি থাকে)',
           inputController: note,
-          inputIcon: Icon(Icons.edit_note),
+          inputIcon: const Icon(Icons.edit_note),
         ),
       ),
-      Container(
+      const SizedBox(
         height: 40,
         width: double.infinity,
       ),
     ];
   }
-
-  void _saveParcel(BuildContext context) {}
 }

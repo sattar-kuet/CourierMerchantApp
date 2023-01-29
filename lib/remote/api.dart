@@ -14,7 +14,7 @@ class CallApi {
 
     String fullUrl = '$_url/$apiUrl';
     var url = Uri.parse(fullUrl);
-    print(url);
+    debugPrint('$url');
     var response = await http.post(url, body: jsonEncode(data), headers: {
       'Content-type': 'application/json',
       'Accept': 'application/json',
@@ -27,7 +27,6 @@ class CallApi {
     // Also need to dismiss the loader because it makes trouble if the function not works properly due to internet connection etc
     //  For that rason I am adding one more condition so it can dismiss on any condition
     if (response.statusCode != 200) {
-      if (responseData != null) {}
     } else {}
     return responseData;
   }

@@ -15,6 +15,8 @@ import '../constants.dart' as Constents;
 class BankScreen extends StatefulWidget {
   static const String routeName = '/bankPage';
 
+  const BankScreen({Key? key}) : super(key: key);
+
   @override
   State<BankScreen> createState() => _BankScreenState();
 }
@@ -33,16 +35,17 @@ class _BankScreenState extends State<BankScreen> {
   List<S2Choice<int>> banks = [];
   Map<int, int> mobileBanksHashTable = {};
   int mobileBankAccountType = 0;
-  Bank bank = new Bank(0, '', '', '', BANK);
-  MobileBank mobileBank = new MobileBank(0, '', 0, MOBILE_BANK);
+  Bank bank = Bank(0, '', '', '', BANK);
+  MobileBank mobileBank = MobileBank(0, '', 0, MOBILE_BANK);
 
+  @override
   void initState() {
     super.initState();
-    BankService().getBankList(context).then((_bankList) {
-      for (var i = 0; i < _bankList.length; i++) {
-        int id = _bankList[i]['id'];
-        String name = _bankList[i]['name'];
-        int type = _bankList[i]['type'];
+    BankService().getBankList(context).then((bankList) {
+      for (var i = 0; i < bankList.length; i++) {
+        int id = bankList[i]['id'];
+        String name = bankList[i]['name'];
+        int type = bankList[i]['type'];
         setState(() {
           banks.add(S2Choice<int>(value: id, title: name));
           mobileBanksHashTable[id] = type;
@@ -79,11 +82,11 @@ class _BankScreenState extends State<BankScreen> {
   @override
   Widget build(BuildContext context) {
     bool keyboardIsOpen = MediaQuery.of(context).viewInsets.bottom != 0;
-    if (banks.length == 0) {
+    if (banks.isEmpty) {
       return Scaffold(
         drawer: MenuDrawer(),
         appBar: AppBar(
-          title: Text("Bank"),
+          title: const Text("Bank"),
         ),
         body: Center(
           // Aligns the container to center
@@ -95,12 +98,12 @@ class _BankScreenState extends State<BankScreen> {
               child: SpinKitThreeInOut(
                 itemBuilder: (BuildContext context, int index) {
                   return Container(
-                    margin: EdgeInsets.only(right: 3),
+                    margin: const EdgeInsets.only(right: 3),
                     child: DecoratedBox(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(30),
                         color: index.isEven
-                            ? Color.fromARGB(255, 20, 17, 17)
+                            ? const Color.fromARGB(255, 20, 17, 17)
                             : Colors.green,
                       ),
                     ),
@@ -110,13 +113,13 @@ class _BankScreenState extends State<BankScreen> {
         ),
       );
     } else {
-      return new Scaffold(
+      return Scaffold(
         appBar: AppBar(
-          title: Text("Bank"),
+          title: const Text("Bank"),
         ),
         drawer: MenuDrawer(),
         body: SingleChildScrollView(
-          child: new Form(
+          child: Form(
             key: _formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -143,7 +146,7 @@ class _BankScreenState extends State<BankScreen> {
             ),
           ),
         ),
-        bottomNavigationBar: BottomNavigation(),
+        bottomNavigationBar: const BottomNavigation(),
         floatingActionButton: Visibility(
           visible: !keyboardIsOpen,
           child: floating(context),
@@ -165,14 +168,14 @@ class _BankScreenState extends State<BankScreen> {
           title: const Text(
             'কোন ব্যাংক এ টাকা নিতে চান?',
           ),
-          value: state.selected?.toWidget() ?? Container(),
+          value: state.selected.toWidget(),
           onTap: state.showModal,
         ),
         title: 'কোন ব্যাংক এ টাকা নিতে চান?',
         choiceItems: banks,
         onChange: (state) async {
           setState(() {
-            bankId = state.value!;
+            bankId = state.value;
             bankType = mobileBanksHashTable[bankId] as int;
           });
         },
@@ -185,105 +188,101 @@ class _BankScreenState extends State<BankScreen> {
     return bankType == MOBILE_BANK ? mobileBanking() : normalBanking();
   }
 
-  Container mobileBanking() {
-    return Container(
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 10,
-              horizontal: 20.0,
-            ),
-            child: numberInput(
-              label: "মোবাইল নাম্বার",
-              inputController: mobileNumberController,
-              inputIcon: Icon(Icons.phone),
-            ),
+  Widget mobileBanking() {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: 10,
+            horizontal: 20.0,
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 10,
-              horizontal: 20.0,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: Row(
-                    children: [
-                      Radio(
-                        value: MobileBank.PEROSANL,
-                        groupValue: mobileBankAccountType,
-                        onChanged: (value) {
-                          setState(() {
-                            mobileBankAccountType = value as int;
-                          });
-                        },
-                      ),
-                      Expanded(
-                        child: Text('Personal'),
-                      )
-                    ],
-                  ),
-                  flex: 1,
-                ),
-                Expanded(
-                  child: Row(
-                    children: [
-                      Radio(
-                        value: MobileBank.MERCHANT,
-                        groupValue: mobileBankAccountType,
-                        onChanged: (value) {
-                          setState(() {
-                            mobileBankAccountType = value as int;
-                          });
-                        },
-                      ),
-                      Expanded(
-                        child: Text('Merchant'),
-                      )
-                    ],
-                  ),
-                  flex: 1,
-                ),
-              ],
-            ),
+          child: numberInput(
+            label: "মোবাইল নাম্বার",
+            inputController: mobileNumberController,
+            inputIcon: const Icon(Icons.phone),
           ),
-        ],
-      ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: 10,
+            horizontal: 20.0,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                flex: 1,
+                child: Row(
+                  children: [
+                    Radio(
+                      value: MobileBank.PEROSANL,
+                      groupValue: mobileBankAccountType,
+                      onChanged: (value) {
+                        setState(() {
+                          mobileBankAccountType = value as int;
+                        });
+                      },
+                    ),
+                    const Expanded(
+                      child: Text('Personal'),
+                    )
+                  ],
+                ),
+              ),
+              Expanded(
+                flex: 1,
+                child: Row(
+                  children: [
+                    Radio(
+                      value: MobileBank.MERCHANT,
+                      groupValue: mobileBankAccountType,
+                      onChanged: (value) {
+                        setState(() {
+                          mobileBankAccountType = value as int;
+                        });
+                      },
+                    ),
+                    const Expanded(
+                      child: Text('Merchant'),
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
-  Container normalBanking() {
-    return Container(
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20.0),
-            child: textInput(
-              label: "একাউন্ট এর নাম",
-              inputController: accountNameController,
-              inputIcon: Icon(Icons.verified_user),
-            ),
+  Widget normalBanking() {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20.0),
+          child: textInput(
+            label: "একাউন্ট এর নাম",
+            inputController: accountNameController,
+            inputIcon: const Icon(Icons.verified_user),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20.0),
-            child: numberInput(
-              label: "একাউন্ট নাম্বার",
-              inputController: accountNumberController,
-              inputIcon: Icon(Icons.cases_sharp),
-            ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20.0),
+          child: numberInput(
+            label: "একাউন্ট নাম্বার",
+            inputController: accountNumberController,
+            inputIcon: const Icon(Icons.cases_sharp),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20.0),
-            child: textInput(
-              label: "ব্রাঞ্চ এর নাম",
-              inputController: accountBranchController,
-              inputIcon: Icon(Icons.anchor),
-            ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20.0),
+          child: textInput(
+            label: "ব্রাঞ্চ এর নাম",
+            inputController: accountBranchController,
+            inputIcon: const Icon(Icons.anchor),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 

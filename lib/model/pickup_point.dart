@@ -40,6 +40,6 @@ class PickupPoint {
     var sessionPickupPoint = localStorage.getString('pickupPoint');
     return sessionPickupPoint != null
         ? PickupPoint.fromJson(json.decode(sessionPickupPoint))
-        : new PickupPoint(0, 0, 0, '', '');
+        : PickupPoint(0, 0, 0, '', '');
   }
 }

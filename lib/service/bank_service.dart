@@ -17,7 +17,7 @@ class BankService {
     data['token'] = user.id;
     data['userId'] = user.id;
     var response = await CallApi().postData(data, 'saveBank', context);
-    print(response);
+    debugPrint('$response');
     return response['data'];
   }
 

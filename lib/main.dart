@@ -9,8 +9,8 @@ import 'fragments/intro_screen.dart';
 import './routes/pageRoute.dart';
 
 void main() {
-  HttpOverrides.global = new MyHttpOverrides();
-  runApp(CourierApp());
+  HttpOverrides.global = MyHttpOverrides();
+  runApp(const CourierApp());
 }
 
 class CourierApp extends StatelessWidget {

@@ -4,7 +4,7 @@ class Validation {
       return 'Please enter valid mobile number';
     }
     String pattern = r"^(01|8801|\+8801)[13456789](\d){8}$";
-    RegExp regExp = new RegExp(pattern);
+    RegExp regExp = RegExp(pattern);
     return regExp.hasMatch(value) ? null : 'Please enter valid mobile number';
   }
 

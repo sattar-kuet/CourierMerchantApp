@@ -46,6 +46,6 @@ class User {
     var sessionUser = localStorage.getString('user');
     return sessionUser != null
         ? User.fromJson(json.decode(sessionUser))
-        : new User(0, '', '', '', 0, 0, '');
+        : User(0, '', '', '', 0, 0, '');
   }
 }

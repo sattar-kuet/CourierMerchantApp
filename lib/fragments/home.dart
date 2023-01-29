@@ -5,15 +5,17 @@ import '../common/floating_button.dart';
 
 class Home extends StatelessWidget {
   static const String routeName = '/homePage';
+
+  const Home({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+    return Scaffold(
       appBar: AppBar(
-        title: Text("Home"),
+        title: const Text("Home"),
       ),
       drawer: MenuDrawer(),
-      body: Center(child: Text("This is Home")),
-      bottomNavigationBar: BottomNavigation(),
+      body: const Center(child: Text("This is Home")),
+      bottomNavigationBar: const BottomNavigation(),
       floatingActionButton: floating(context),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );

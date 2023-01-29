@@ -10,6 +10,8 @@ import '../model/user.dart';
 class IntroPage extends StatefulWidget {
   static const String routeName = '/IntroPage';
 
+  const IntroPage({Key? key}) : super(key: key);
+
   @override
   State<IntroPage> createState() => _IntroPageState();
 }
@@ -41,16 +43,16 @@ class _IntroPageState extends State<IntroPage> {
   }
 
   Form loginForm(BuildContext context) {
-    return new Form(
+    return Form(
       key: _formKey,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
         Container(
           height: 70,
-          margin: EdgeInsets.only(bottom: 50),
-          child: Image(image: AssetImage('assets/logo.png')),
+          margin: const EdgeInsets.only(bottom: 50),
+          child: const Image(image: AssetImage('assets/logo.png')),
         ),
-        Text(
+        const Text(
           'মোবাইল নাম্বার দিয়ে খুব সহজেই রেজিস্ট্রেশন করুন।',
         ),
         Padding(
@@ -72,10 +74,10 @@ class _IntroPageState extends State<IntroPage> {
           onPressed: () {
             if (_formKey.currentState!.validate()) {
               _loginORregister(context);
-              Center(child: CircularProgressIndicator());
+              const Center(child: CircularProgressIndicator());
             }
           },
-          child: Text('Next'),
+          child: const Text('Next'),
         ),
       ]),
     );
@@ -94,6 +96,6 @@ class _IntroPageState extends State<IntroPage> {
       Navigator.pushNamed(context, PageRoutes.loginByOtp,
           arguments: {"otp": sentOtp, "mobile": mobileTxtField.text});
     }
-    print(mobileTxtField);
+    debugPrint('$mobileTxtField');
   }
 }

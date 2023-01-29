@@ -41,10 +41,10 @@ class PickupPointService {
     PickupPoint.writeSession(pickupPoint);
 
     Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (_) => NewPickupPoint()));
+        context, MaterialPageRoute(builder: (_) => const NewPickupPoint()));
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(response['message']),
-      duration: Duration(seconds: 2),
+      duration: const Duration(seconds: 2),
     ));
     return response['data'];
   }

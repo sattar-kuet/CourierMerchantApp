@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class BottomNavigation extends StatefulWidget {
-  BottomNavigation({Key? key}) : super(key: key);
+  const BottomNavigation({Key? key}) : super(key: key);
 
   @override
   State<BottomNavigation> createState() => _BottomNavigationState();
@@ -13,8 +13,8 @@ class _BottomNavigationState extends State<BottomNavigation> {
     return Container(
           height: 80.0,
           color: Theme.of(context).scaffoldBackgroundColor,
-          padding: new EdgeInsets.only(top: 20.0),
-          child: new Theme(
+          padding: const EdgeInsets.only(top: 20.0),
+          child: Theme(
             data: Theme.of(context).copyWith(
                 // sets the background color of the `BottomNavigationBar`
                 canvasColor: Theme.of(context).scaffoldBackgroundColor,
@@ -22,19 +22,19 @@ class _BottomNavigationState extends State<BottomNavigation> {
                 primaryColor: Colors.red,
                 bottomAppBarColor: Colors.green,
                 textTheme: Theme.of(context).textTheme.copyWith(
-                    caption: new TextStyle(
+                    caption: const TextStyle(
                         color: Colors
                             .grey))), // sets the inactive color of the `BottomNavigationBar`
-            child: new BottomNavigationBar(
+            child: BottomNavigationBar(
                 type: BottomNavigationBarType.fixed,
                 currentIndex: 0,
-                items: [
+                items: const [
                   BottomNavigationBarItem(
-                      icon: new Icon(Icons.home),
+                      icon: Icon(Icons.home),
                       label: 'Home',
                       backgroundColor: Colors.black),
                   BottomNavigationBarItem(
-                    icon: new Icon(Icons.search),
+                    icon: Icon(Icons.search),
                     label: 'Search',
                   ),
                   BottomNavigationBarItem(

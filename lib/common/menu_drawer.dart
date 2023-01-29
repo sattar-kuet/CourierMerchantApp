@@ -7,6 +7,8 @@ import '../widget/drawerHeader.dart';
 import '../widget/drawerItem.dart';
 
 class MenuDrawer extends StatelessWidget {
+  const MenuDrawer({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -19,7 +21,7 @@ class MenuDrawer extends StatelessWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => NewPickupPoint(),
+                builder: (context) => const NewPickupPoint(),
               ),
             ),
           ),
@@ -29,11 +31,11 @@ class MenuDrawer extends StatelessWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => BankScreen(),
+                builder: (context) => const BankScreen(),
               ),
             ),
           ),
-          Divider(),
+          const Divider(),
 
           Expanded(
             child: Container(),
@@ -66,7 +68,7 @@ class MenuDrawer extends StatelessWidget {
         children: <Widget>[
           Icon(icon),
           Padding(
-            padding: EdgeInsets.only(left: 8.0),
+            padding: const EdgeInsets.only(left: 8.0),
             child: Text(text),
           )
         ],
@@ -79,6 +81,6 @@ class MenuDrawer extends StatelessWidget {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     localStorage.clear();
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => IntroPage()));
+        context, MaterialPageRoute(builder: (context) => const IntroPage()));
   }
 }
