@@ -10,8 +10,7 @@ class LocationService {
   }
 
   Future getUpazillaList(districtId, context) async {
-    User user = await User.readSession();
-    var data = {'district_id': districtId, 'token': user.sessionId};
+    var data = {'district_id': districtId};
     var response = await CallApi().postData(data, 'upazillaList', context);
     debugPrint(response.toString());
     return response['data'];

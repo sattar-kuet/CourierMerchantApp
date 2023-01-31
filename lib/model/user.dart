@@ -1,7 +1,5 @@
 import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 @immutable
 class User {
@@ -15,7 +13,7 @@ class User {
     required this.message,
   });
 
-  final int? uid, companyId, partnerId, status;
+  final int uid, companyId, partnerId, status;
   final String? sessionId, name, message;
 
   // User(this.uid, this.sessionId, this.name, this.companyId, this.partnerId,
@@ -77,9 +75,9 @@ class User {
   //   localStorage.setString('user', json.encode(user.toJson()));
   // }
 
-  static Future<User> readSession() async {
-    SharedPreferences localStorage = await SharedPreferences.getInstance();
-    var sessionUser = localStorage.getString('user');
-    return User.fromJson(json.decode('$sessionUser'));
-  }
+  // static Future<User> readSession() async {
+  //   SharedPreferences localStorage = await SharedPreferences.getInstance();
+  //   var sessionUser = localStorage.getString('user');
+  //   return User.fromJson(json.decode('$sessionUser'));
+  // }
 }

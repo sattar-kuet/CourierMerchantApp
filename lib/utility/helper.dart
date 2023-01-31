@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -16,9 +18,10 @@ class Helper {
     ScaffoldMessenger.of(context).showSnackBar(errorSnackbar);
   }
 
-  static String? getUserId() => sharedPreference.getString('user');
+  static int? getUserId() => sharedPreference.getInt('user');
 
-  static Future<bool> setUserId(String newId) => sharedPreference.setString('user', newId);
+  static Future<bool> setUserId(int uid) =>
+      sharedPreference.setInt('user', uid);
 }
 
 class UserPickUpAddressesHelper {

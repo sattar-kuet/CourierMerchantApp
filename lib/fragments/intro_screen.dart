@@ -88,12 +88,14 @@ class _IntroPageState extends State<IntroPage> {
   }
 
   void _loginORregister(BuildContext context) async {
-    dynamic isUserExist = await UserService().isUserExist(mobileTxtField.text, context);
+    dynamic isUserExist =
+        await UserService().isUserExist(mobileTxtField.text, context);
     //debugPrint(isUserExist);
     if (isUserExist['status'] == false) {
       debugPrint('registration');
       // ignore: use_build_context_synchronously
-      Navigator.pushNamed(context, PageRoutes.registration, arguments: {"mobile": mobileTxtField.text});
+      Navigator.pushNamed(context, PageRoutes.registration,
+          arguments: {"mobile": mobileTxtField.text});
     } else {
       debugPrint('login');
       /*

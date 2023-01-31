@@ -59,7 +59,8 @@ class _LoginPageState extends State<LoginbyotpPage> {
                     _login(mobile);
                   } else {
                     optInutField.clear();
-                    Helper.errorSnackbar(context, 'Wrong CODE. Please try again.');
+                    Helper.errorSnackbar(
+                        context, 'Wrong CODE. Please try again.');
                   }
                 }
               },
@@ -71,37 +72,38 @@ class _LoginPageState extends State<LoginbyotpPage> {
   }
 
   Future<void> _login(String mobile) async {
-    var isSuccess = await RegisterLoginService().login(mobile, optInutField.text, context);
+    var isSuccess =
+        await RegisterLoginService().login(mobile, optInutField.text, context);
     if (isSuccess) {
-      int nextStep =
-          // ignore: use_build_context_synchronously
-          await RegisterLoginService().nextStepToFinishProfile(context);
-      switch (nextStep) {
-        case 1:
-          // ignore: use_build_context_synchronously
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const NewPickupPoint(),
-              ));
-          break;
-        case 2:
-          // ignore: use_build_context_synchronously
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const BankScreen(),
-              ));
-          break;
-        default:
-          // ignore: use_build_context_synchronously
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const Home(),
-              ));
-          break;
-      }
+      //  int nextStep =
+      // ignore: use_build_context_synchronously
+      //   await RegisterLoginService().nextStepToFinishProfile(context);
+      // switch (nextStep) {
+      //   case 1:
+      //     // ignore: use_build_context_synchronously
+      //     Navigator.push(
+      //         context,
+      //         MaterialPageRoute(
+      //           builder: (context) => const NewPickupPoint(),
+      //         ));
+      //     break;
+      //   case 2:
+      //     // ignore: use_build_context_synchronously
+      //     Navigator.push(
+      //         context,
+      //         MaterialPageRoute(
+      //           builder: (context) => const BankScreen(),
+      //         ));
+      //     break;
+      //   default:
+      //     // ignore: use_build_context_synchronously
+      //     Navigator.push(
+      //         context,
+      //         MaterialPageRoute(
+      //           builder: (context) => const Home(),
+      //         ));
+      //     break;
+      // }
     } else {
       // ignore: use_build_context_synchronously
       Helper.errorSnackbar(context, 'Unable to login user');

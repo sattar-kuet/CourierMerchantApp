@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/model/pickup_point.dart';
-import '../model/user.dart';
 import '../fragments/new_pickup_point.dart';
 import '../remote/api.dart';
+import '../utility/helper.dart';
 
 class PickupPointService {
   Future<PickupPoint> getPickupPointObjectFromJson(pickupPointJson) async {
@@ -16,18 +16,15 @@ class PickupPointService {
   }
 
   Future getPickupAddress(context) async {
-    User user = await User.readSession();
-    var data = {"user_id": user.uid};
+    var data = {"user_id": Helper.getUserId()};
     var response = await CallApi().postData(data, 'getPickupAddress', context);
     return response['data'];
   }
 
   Future<dynamic> savePickupPoint(
       String title, int district, int upazilla, String street, context) async {
-    User user = await User.readSession();
     var data = {
-      'user_id': user.uid,
-      'token': user.sessionId,
+      'user_id': Helper.getUserId(),
       'pickupPoint': {
         'title': title,
         'districtId': district,

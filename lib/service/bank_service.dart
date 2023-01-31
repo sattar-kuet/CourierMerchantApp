@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/utility/helper.dart';
 import '../model/mobile_bank.dart';
-import '../model/user.dart';
 import '../model/bank.dart';
 import '../remote/api.dart';
 import '../constants.dart' as Constents;
@@ -13,19 +13,15 @@ class BankService {
   }
 
   Future saveBank(dynamic data, BuildContext context) async {
-    User user = await User.readSession();
-    data['token'] = user.sessionId;
-    data['userId'] = user.uid;
+    data['user_id'] = Helper.getUserId();
     var response = await CallApi().postData(data, 'saveBank', context);
     debugPrint('$response');
     return response['data'];
   }
 
   Future getBank(BuildContext context) async {
-    User user = await User.readSession();
     dynamic data = {};
-    data['token'] = user.sessionId;
-    data['userId'] = user.uid;
+    data['user_id'] = Helper.getUserId();
     var response = await CallApi().postData(data, 'getBank', context);
     //print(response);
     var bankData = response['data'];
@@ -46,14 +42,11 @@ class BankService {
 
   Future getDeliverySpeedList(
       fromUpazillaId, toUpazillaId, parcelTypeId, context) async {
-    User user = await User.readSession();
     var data = {};
     data['fromUpazillaId'] = fromUpazillaId;
     data['toUpazillaId'] = toUpazillaId;
     data['parcelTypeId'] = parcelTypeId;
-
-    data['token'] = user.sessionId;
-    data['userId'] = user.uid;
+    data['userId'] = Helper.getUserId();
     var response = await CallApi().postData(data, 'getDeliverySpeeds', context);
     //print(response);
     return response['data'];

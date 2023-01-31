@@ -1,11 +1,9 @@
 import '../remote/api.dart';
-import '../model/user.dart';
 import '../model/customer.dart';
 
 class CustomerService {
   Future<Customer> getCustomerByMobile(String mobile, context) async {
-    User user = await User.readSession();
-    var data = {'mobile': mobile, 'token': user.sessionId};
+    var data = {'mobile': mobile};
     var response =
         await CallApi().postData(data, 'getCustomerByMobile', context);
     var customerData = response['data'];
