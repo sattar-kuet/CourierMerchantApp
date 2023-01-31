@@ -33,6 +33,11 @@ class User {
     };
   }
 
+  @override
+  String toString() {
+    return 'User{uid: $uid, companyId: $companyId, partnerId: $partnerId, status: $status, sessionId: $sessionId, name: $name, message: $message}';
+  }
+
   factory User.fromJson(Map<String, dynamic> map) {
     return User(
       uid: map['uid'] ?? 0,
