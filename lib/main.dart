@@ -11,14 +11,13 @@ import 'package:flutter_app/fragments/registration.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'fragments/intro_screen.dart';
 import './routes/pageRoute.dart';
+import 'utility/helper.dart';
 
-late SharedPreferences sharedPreference;
-late String? userId;
+
 
 void main() async {
   HttpOverrides.global = MyHttpOverrides();
-  sharedPreference = await SharedPreferences.getInstance();
-  userId = sharedPreference.getString('user');
+  Helper.sharedPreference = await SharedPreferences.getInstance();
   runApp(const CourierApp());
 }
 

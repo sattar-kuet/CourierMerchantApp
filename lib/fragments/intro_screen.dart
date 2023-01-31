@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/main.dart';
+import 'package:flutter_app/utility/helper.dart';
 
 // import 'package:sms_autofill/sms_autofill.dart';
 import '../routes/pageRoute.dart';
@@ -29,6 +29,7 @@ class _IntroPageState extends State<IntroPage> {
   }
 
   void _checkIsLoggedIn() async {
+    final userId = Helper.getUserId();
     if (userId != null) {
       setState(() {
         _isLoggedIn = true;
