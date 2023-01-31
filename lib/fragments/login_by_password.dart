@@ -67,8 +67,9 @@ class _LoginPageState extends State<LoginByPasswordPage> {
   }
 
   Future<void> _login(String login, String password) async {
-    var response = await RegisterLoginService().login(login, password, context);
-    print(response);
+    // var response = await RegisterLoginService().login(login, password, context);
+    var response = await RegisterLoginService().readCookiesFromAPI(login, password, context);
+    // print(response);
     // if (response['status'] == 1) {
     //   int nextStep =
     //       // ignore: use_build_context_synchronously
