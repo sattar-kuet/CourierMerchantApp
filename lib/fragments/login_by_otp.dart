@@ -75,9 +75,11 @@ class _LoginPageState extends State<LoginbyotpPage> {
         await RegisterLoginService().login(mobile, optInutField.text, context);
     if (response['status'] == 1) {
       int nextStep =
+          // ignore: use_build_context_synchronously
           await RegisterLoginService().nextStepToFinishProfile(context);
       switch (nextStep) {
         case 1:
+          // ignore: use_build_context_synchronously
           Navigator.push(
               context,
               MaterialPageRoute(
@@ -85,6 +87,7 @@ class _LoginPageState extends State<LoginbyotpPage> {
               ));
           break;
         case 2:
+          // ignore: use_build_context_synchronously
           Navigator.push(
               context,
               MaterialPageRoute(
@@ -92,6 +95,7 @@ class _LoginPageState extends State<LoginbyotpPage> {
               ));
           break;
         default:
+          // ignore: use_build_context_synchronously
           Navigator.push(
               context,
               MaterialPageRoute(
@@ -100,6 +104,7 @@ class _LoginPageState extends State<LoginbyotpPage> {
           break;
       }
     } else {
+      // ignore: use_build_context_synchronously
       Helper.errorSnackbar(context, response.message.toString());
       optInutField.clear();
       //print(response);

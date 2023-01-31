@@ -4,6 +4,7 @@ import '../model/user.dart';
 import '../remote/api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import '../constants.dart' as Constants;
 
 class RegisterLoginService {
   Future<String> sendOtp(String mobile, String signatureCode, context) async {
@@ -17,27 +18,40 @@ class RegisterLoginService {
     return response['otp'].toString();
   }
 
-  dynamic login(String mobile, String otp, context) async {
-    var data = {'mobile': mobile, 'otp': otp};
-    Map response = await CallApi().postData(data, 'login', context);
-    if (response['status'] == 1) {
-      User user = User(
-          response['user']['id'],
-          response['token'],
-          response['user']['name'],
-          response['user']['mobile'],
-          response['user']['company_profile_id'],
-          response['status'],
-          response['message']);
-      User.writeSession(user);
-
-      if (response['pickupPoint'].length > 0) {
-        PickupPoint pickupPoint = await PickupPointService()
-            .getPickupPointObjectFromJson(response['pickupPoint']);
-
-        PickupPoint.writeSession(pickupPoint);
+  dynamic login(String login, String password, context) async {
+    var data = {
+      "params": {
+        "db": Constants.DATABASE,
+        "login": login,
+        "password": password,
       }
+    };
+    Map response =
+        await CallApi().postData(data, 'web/session/authenticate', context);
+    if (response.containsKey('error')) {
+      print(" পাসওয়ার্ড অথবা মোবাইল নাম্বার ভুল।");
+    } else {
+      print(response);
     }
+
+    // if (response['status'] == 1) {
+    //   User user = User(
+    //       response['uid'],
+    //       response['token'],
+    //       response['user']['name'],
+    //       response['user']['mobile'],
+    //       response['user']['company_profile_id'],
+    //       response['status'],
+    //       response['message']);
+    //   User.writeSession(user);
+
+    //   if (response['pickupPoint'].length > 0) {
+    //     PickupPoint pickupPoint = await PickupPointService()
+    //         .getPickupPointObjectFromJson(response['pickupPoint']);
+
+    //     PickupPoint.writeSession(pickupPoint);
+    //   }
+    // }
     return response;
   }
 

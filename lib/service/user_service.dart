@@ -1,11 +1,13 @@
-import '../model/user.dart';
 import '../remote/api.dart';
 
 class UserService {
-  Future<bool> isUserExist(String mobile, context) async {
-    User user = await User.readSession();
-    var data = {'mobile': mobile, 'token': user.token};
-    var response = await CallApi().postData(data, 'isUserExist', context);
-    return response['user_exist'];
+  Future<dynamic> isUserExist(String mobile, context) async {
+    var data = {
+      'params': {
+        'phone': mobile,
+      }
+    };
+    var response = await CallApi().postData(data, 'user/login', context);
+    return response['result'];
   }
 }

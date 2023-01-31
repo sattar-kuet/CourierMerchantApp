@@ -34,10 +34,13 @@ class CallApi {
   Future<Map<String, dynamic>> getData(apiUrl) async {
     String fullUrl = '$_url/$apiUrl';
     var url = Uri.parse(fullUrl);
-    var response = await http.get(url, headers: {
-      'Content-type': 'application/json',
-      'Accept': 'application/json',
-    });
+    var response = await http.get(
+      url,
+      headers: {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+      },
+    );
     Map<String, dynamic> responseData = json.decode(response.body);
     return responseData;
   }

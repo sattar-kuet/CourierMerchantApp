@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:sms_autofill/sms_autofill.dart';
+// import 'package:sms_autofill/sms_autofill.dart';
 import '../routes/pageRoute.dart';
 import '../service/user_service.dart';
 import '../utility/validatation.dart';
-import '../service/register_login_service.dart';
+// import '../service/register_login_service.dart';
 import '../fragments/home.dart';
 import '../model/user.dart';
 
@@ -38,7 +38,7 @@ class _IntroPageState extends State<IntroPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _isLoggedIn ? Home() : loginForm(context),
+      body: _isLoggedIn ? const Home() : loginForm(context),
     );
   }
 
@@ -84,18 +84,33 @@ class _IntroPageState extends State<IntroPage> {
   }
 
   void _loginORregister(BuildContext context) async {
-    bool isUserExist =
+    dynamic isUserExist =
         await UserService().isUserExist(mobileTxtField.text, context);
-    if (isUserExist == false) {
+    //debugPrint(isUserExist);
+    if (isUserExist['status'] == false) {
+      debugPrint('registration');
+      // ignore: use_build_context_synchronously
       Navigator.pushNamed(context, PageRoutes.registration,
           arguments: {"mobile": mobileTxtField.text});
     } else {
-      String signatureCode = await SmsAutoFill().getAppSignature;
-      var sentOtp = await RegisterLoginService()
-          .sendOtp(mobileTxtField.text, signatureCode, context);
-      Navigator.pushNamed(context, PageRoutes.loginByOtp,
-          arguments: {"otp": sentOtp, "mobile": mobileTxtField.text});
+      debugPrint('login');
+      /*
+      #################################################
+      Login by OTP is disabled
+      #################################################
+      */
+      // String signatureCode = await SmsAutoFill().getAppSignature;
+      // // ignore: use_build_context_synchronously
+      // var sentOtp = await RegisterLoginService()
+      //     .sendOtp(mobileTxtField.text, signatureCode, context);
+      // ignore: use_build_context_synchronously
+      // Navigator.pushNamed(context, PageRoutes.loginByOtp,
+      //     arguments: {"otp": sentOtp, "mobile": mobileTxtField.text});
+      // ignore: use_build_context_synchronously
+      Navigator.pushNamed(context, PageRoutes.loginByPassword, arguments: {
+        "mobile": mobileTxtField.text,
+        "login": isUserExist['login'],
+      });
     }
-    debugPrint('$mobileTxtField');
   }
 }
