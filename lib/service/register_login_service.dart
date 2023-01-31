@@ -12,12 +12,16 @@ import '../constants.dart' as Constants;
 class RegisterLoginService {
   Future<String> sendOtp(String mobile, String signatureCode, context) async {
     User user = await User.readSession();
-    var data = {'mobile': mobile, 'signatureCode': signatureCode, 'token': user.token};
+    var data = {
+      'mobile': mobile,
+      'signatureCode': signatureCode,
+      'token': user.token
+    };
     var response = await CallApi().postData(data, 'sendOtp', context);
     return response['otp'].toString();
   }
 
-  dynamic login(String login, String password, context) async {
+  dynamic login_old(String login, String password, context) async {
     var data = {
       "params": {
         "db": Constants.DATABASE,
@@ -25,7 +29,8 @@ class RegisterLoginService {
         "password": password,
       }
     };
-    Map response = await CallApi().postData(data, 'web/session/authenticate', context);
+    Map response =
+        await CallApi().postData(data, 'web/session/authenticate', context);
     if (response.containsKey('error')) {
       debugPrint(" পাসওয়ার্ড অথবা মোবাইল নাম্বার ভুল।");
     } else {
@@ -53,7 +58,7 @@ class RegisterLoginService {
     return response;
   }
 
-  Future<void> readCookiesFromAPI(String login, String password, dynamic context) async {
+  Future<void> login(String login, String password, dynamic context) async {
     final url = Uri.parse('${Constants.BASE_URL}/web/session/authenticate');
     final body = jsonEncode({
       "params": {
@@ -65,7 +70,7 @@ class RegisterLoginService {
     final headers = {"Content-Type": "application/json"};
     try {
       final response = await http.post(url, body: body, headers: headers);
-
+      debugPrint('response $response.body');
       final cookies = response.headers['set-cookie'];
       debugPrint('Cookies $cookies');
       // session_id=ba2fa9e192dc8a8cb1d7a21dd3541df4d4c9cde4; Expires=Mon, 01-May-2023 08:47:54 GMT; Max-Age=7776000; HttpOnly; Path=/
@@ -74,7 +79,9 @@ class RegisterLoginService {
         final entity = cookies.split("; ").map((item) {
           final split = item.split("=");
 
-          return (split.length == 2) ? MapEntry(split[0], split[1]) : MapEntry(split[0], '/');
+          return (split.length == 2)
+              ? MapEntry(split[0], split[1])
+              : MapEntry(split[0], '/');
         });
         final cookieMap = Map.fromEntries(entity);
 
@@ -88,7 +95,8 @@ class RegisterLoginService {
     }
   }
 
-  Future<Map<String, dynamic>> register(String mobile, String name, String businessName, int productTypeId, context) async {
+  Future<Map<String, dynamic>> register(String mobile, String name,
+      String businessName, int productTypeId, context) async {
     var data = {
       'mobile': mobile,
       'name': name,
@@ -107,7 +115,8 @@ class RegisterLoginService {
   Future<int> nextStepToFinishProfile(context) async {
     User loggedInUser = await User.readSession();
     var data = {'user_id': loggedInUser.id};
-    var response = await CallApi().postData(data, 'nextStepToFinishProfile', context);
+    var response =
+        await CallApi().postData(data, 'nextStepToFinishProfile', context);
     return response['type'];
   }
 }

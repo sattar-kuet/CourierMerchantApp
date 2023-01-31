@@ -3,34 +3,34 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class User {
-  int id = 0;
-  String token = '';
+  int uid = 0;
+  String sessionId = '';
   String name = '';
-  String mobile = '';
-  int companyProfileId = 0;
+  int companyId = 0;
+  int partnerId = 0;
   int status = 0;
   String message = ' ';
 
-  User(this.id, this.token, this.name, this.mobile, this.companyProfileId,
+  User(this.uid, this.sessionId, this.name, this.companyId, this.partnerId,
       this.status, this.message);
 
   User.fromJson(Map<String, dynamic> sessionMap) {
-    id = sessionMap['id'] ?? 0;
-    token = sessionMap['token'] ?? '';
+    uid = sessionMap['uid'] ?? 0;
+    sessionId = sessionMap['session_id'] ?? '';
     name = sessionMap['name'] ?? '';
-    mobile = sessionMap['mobile'] ?? '';
-    companyProfileId = sessionMap['companyProfileId'] ?? 0;
+    companyId = sessionMap['company_id'] ?? 0;
+    partnerId = sessionMap['partner_id'] ?? 0;
     status = sessionMap['status'] ?? 0;
     message = sessionMap['message'] ?? '';
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'token': token,
+      'uid': uid,
+      'sessionId': sessionId,
       'name': name,
-      'mobile': mobile,
-      'companyProfileId': companyProfileId,
+      'companyId': companyId,
+      'partnerId': partnerId,
       'status': status,
       'message': message,
     };
