@@ -72,10 +72,10 @@ class User {
 //   };
 // }
 
-  static Future writeSession(User user) async {
-    SharedPreferences localStorage = await SharedPreferences.getInstance();
-    localStorage.setString('user', json.encode(user.toJson()));
-  }
+  // static Future writeSession(User user) async {
+  //   SharedPreferences localStorage = await SharedPreferences.getInstance();
+  //   localStorage.setString('user', json.encode(user.toJson()));
+  // }
 
   static Future<User> readSession() async {
     SharedPreferences localStorage = await SharedPreferences.getInstance();

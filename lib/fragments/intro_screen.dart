@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/main.dart';
+
 // import 'package:sms_autofill/sms_autofill.dart';
 import '../routes/pageRoute.dart';
 import '../service/user_service.dart';
 import '../utility/validatation.dart';
+
 // import '../service/register_login_service.dart';
 import '../fragments/home.dart';
-import '../model/user.dart';
 
 class IntroPage extends StatefulWidget {
   static const String routeName = '/IntroPage';
@@ -19,6 +21,7 @@ class IntroPage extends StatefulWidget {
 class _IntroPageState extends State<IntroPage> {
   bool _isLoggedIn = false;
   final _formKey = GlobalKey<FormState>();
+
   @override
   void initState() {
     super.initState();
@@ -26,8 +29,7 @@ class _IntroPageState extends State<IntroPage> {
   }
 
   void _checkIsLoggedIn() async {
-    User user = await User.readSession();
-    if (user.uid != 0) {
+    if (userId != null) {
       setState(() {
         _isLoggedIn = true;
       });
@@ -35,6 +37,7 @@ class _IntroPageState extends State<IntroPage> {
   }
 
   final mobileTxtField = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,14 +87,12 @@ class _IntroPageState extends State<IntroPage> {
   }
 
   void _loginORregister(BuildContext context) async {
-    dynamic isUserExist =
-        await UserService().isUserExist(mobileTxtField.text, context);
+    dynamic isUserExist = await UserService().isUserExist(mobileTxtField.text, context);
     //debugPrint(isUserExist);
     if (isUserExist['status'] == false) {
       debugPrint('registration');
       // ignore: use_build_context_synchronously
-      Navigator.pushNamed(context, PageRoutes.registration,
-          arguments: {"mobile": mobileTxtField.text});
+      Navigator.pushNamed(context, PageRoutes.registration, arguments: {"mobile": mobileTxtField.text});
     } else {
       debugPrint('login');
       /*
