@@ -27,7 +27,7 @@ class _IntroPageState extends State<IntroPage> {
 
   void _checkIsLoggedIn() async {
     User user = await User.readSession();
-    if (user.id != 0) {
+    if (user.uid != 0) {
       setState(() {
         _isLoggedIn = true;
       });

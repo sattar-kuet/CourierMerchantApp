@@ -19,6 +19,7 @@ class _LoginPageState extends State<LoginbyotpPage> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController optInutField = TextEditingController();
   final mobileTxtField = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     final Map arguments = ModalRoute.of(context)?.settings.arguments as Map;
@@ -58,8 +59,7 @@ class _LoginPageState extends State<LoginbyotpPage> {
                     _login(mobile);
                   } else {
                     optInutField.clear();
-                    Helper.errorSnackbar(
-                        context, 'Wrong CODE. Please try again.');
+                    Helper.errorSnackbar(context, 'Wrong CODE. Please try again.');
                   }
                 }
               },
@@ -71,9 +71,8 @@ class _LoginPageState extends State<LoginbyotpPage> {
   }
 
   Future<void> _login(String mobile) async {
-    var response =
-        await RegisterLoginService().login(mobile, optInutField.text, context);
-    if (response['status'] == 1) {
+    var isSuccess = await RegisterLoginService().login(mobile, optInutField.text, context);
+    if (isSuccess) {
       int nextStep =
           // ignore: use_build_context_synchronously
           await RegisterLoginService().nextStepToFinishProfile(context);
@@ -105,7 +104,8 @@ class _LoginPageState extends State<LoginbyotpPage> {
       }
     } else {
       // ignore: use_build_context_synchronously
-      Helper.errorSnackbar(context, response.message.toString());
+      Helper.errorSnackbar(context, 'Unable to login user');
+      // Helper.errorSnackbar(context, response.message.toString());
       optInutField.clear();
       //print(response);
     }

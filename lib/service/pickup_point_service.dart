@@ -17,7 +17,7 @@ class PickupPointService {
 
   Future getPickupAddress(context) async {
     User user = await User.readSession();
-    var data = {"user_id": user.id};
+    var data = {"user_id": user.uid};
     var response = await CallApi().postData(data, 'getPickupAddress', context);
     return response['data'];
   }
@@ -26,8 +26,8 @@ class PickupPointService {
       String title, int district, int upazilla, String street, context) async {
     User user = await User.readSession();
     var data = {
-      'user_id': user.id,
-      'token': user.token,
+      'user_id': user.uid,
+      'token': user.sessionId,
       'pickupPoint': {
         'title': title,
         'districtId': district,

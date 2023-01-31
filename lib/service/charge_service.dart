@@ -6,7 +6,7 @@ import '../remote/api.dart';
 class ChargeService {
   Future<double> getDeliveryCharge(data, context) async {
     User user = await User.readSession();
-    data['userId'] = user.id;
+    data['userId'] = user.uid;
     var response = await CallApi().postData(data, 'getDeliveryCharge', context);
     double deliveryCharge = double.parse(response['data'].toString());
     return deliveryCharge;
@@ -14,7 +14,7 @@ class ChargeService {
 
   Future<double> getCodCharge(data, context) async {
     User user = await User.readSession();
-    data['userId'] = user.id;
+    data['userId'] = user.uid;
     var response = await CallApi().postData(data, 'getCodCharge', context);
     double codCharge = double.parse(response['data'].toString());
     debugPrint('$data');
@@ -29,8 +29,8 @@ class ChargeService {
     data['toUpazillaId'] = toUpazillaId;
     data['parcelTypeId'] = parcelTypeId;
 
-    data['token'] = sessionUser.token;
-    data['userId'] = sessionUser.id;
+    data['token'] = sessionUser.sessionId;
+    data['userId'] = sessionUser.uid;
     var response = await CallApi().postData(data, 'getDeliverySpeeds', context);
     //print(response);
     return response['data'];

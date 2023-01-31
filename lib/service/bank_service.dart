@@ -14,8 +14,8 @@ class BankService {
 
   Future saveBank(dynamic data, BuildContext context) async {
     User user = await User.readSession();
-    data['token'] = user.id;
-    data['userId'] = user.id;
+    data['token'] = user.sessionId;
+    data['userId'] = user.uid;
     var response = await CallApi().postData(data, 'saveBank', context);
     debugPrint('$response');
     return response['data'];
@@ -24,8 +24,8 @@ class BankService {
   Future getBank(BuildContext context) async {
     User user = await User.readSession();
     dynamic data = {};
-    data['token'] = user.token;
-    data['userId'] = user.id;
+    data['token'] = user.sessionId;
+    data['userId'] = user.uid;
     var response = await CallApi().postData(data, 'getBank', context);
     //print(response);
     var bankData = response['data'];
@@ -52,8 +52,8 @@ class BankService {
     data['toUpazillaId'] = toUpazillaId;
     data['parcelTypeId'] = parcelTypeId;
 
-    data['token'] = user.token;
-    data['userId'] = user.id;
+    data['token'] = user.sessionId;
+    data['userId'] = user.uid;
     var response = await CallApi().postData(data, 'getDeliverySpeeds', context);
     //print(response);
     return response['data'];
