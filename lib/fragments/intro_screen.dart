@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/utility/helper.dart';
+import 'package:sms_autofill/sms_autofill.dart';
 
 // import 'package:sms_autofill/sms_autofill.dart';
 import '../routes/pageRoute.dart';
+import '../service/register_login_service.dart';
 import '../service/user_service.dart';
 import '../utility/validatation.dart';
 
@@ -20,6 +22,8 @@ class IntroPage extends StatefulWidget {
 
 class _IntroPageState extends State<IntroPage> {
   bool _isLoggedIn = false;
+  String newPassword = '';
+  String login = '';
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -103,18 +107,24 @@ class _IntroPageState extends State<IntroPage> {
       Login by OTP is disabled
       #################################################
       */
-      // String signatureCode = await SmsAutoFill().getAppSignature;
-      // // ignore: use_build_context_synchronously
-      // var sentOtp = await RegisterLoginService()
-      //     .sendOtp(mobileTxtField.text, signatureCode, context);
-      // ignore: use_build_context_synchronously
-      // Navigator.pushNamed(context, PageRoutes.loginByOtp,
-      //     arguments: {"otp": sentOtp, "mobile": mobileTxtField.text});
-      // ignore: use_build_context_synchronously
-      Navigator.pushNamed(context, PageRoutes.loginByPassword, arguments: {
-        "mobile": mobileTxtField.text,
-        "login": isUserExist['login'],
+      String signatureCode = await SmsAutoFill().getAppSignature;
+      setState(() {
+        newPassword = isUserExist['new_password'];
+        login = isUserExist['login'];
       });
+      var message =
+          "Your verification code  is : {newPassword} {signatureCode}";
+      // ignore: use_build_context_synchronously
+      await RegisterLoginService()
+          .sendOtp(mobileTxtField.text, message, context);
+      //ignore: use_build_context_synchronously
+      Navigator.pushNamed(context, PageRoutes.loginByOtp,
+          arguments: {"password": newPassword, "login": login});
+      //ignore: use_build_context_synchronously
+      // Navigator.pushNamed(context, PageRoutes.loginByPassword, arguments: {
+      //   "mobile": mobileTxtField.text,
+      //   "login": isUserExist['login'],
+      // });
     }
   }
 }

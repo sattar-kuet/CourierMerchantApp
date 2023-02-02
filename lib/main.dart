@@ -1,9 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-
-//import 'package:flutter_app/fragments/login_by_otp.dart';
-import 'package:flutter_app/fragments/login_by_password.dart';
+import 'package:flutter_app/fragments/login_by_otp.dart';
+// import 'package:flutter_app/fragments/login_by_password.dart';
 
 //import 'package:flutter_app/fragments/profile_details.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -13,9 +12,8 @@ import 'fragments/intro_screen.dart';
 import './routes/pageRoute.dart';
 import 'utility/helper.dart';
 
-
-
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   HttpOverrides.global = MyHttpOverrides();
   Helper.sharedPreference = await SharedPreferences.getInstance();
   runApp(const CourierApp());
@@ -32,8 +30,8 @@ class CourierApp extends StatelessWidget {
       routes: {
         PageRoutes.login: (context) => const IntroPage(),
         PageRoutes.registration: (context) => const RegistrationPage(),
-        PageRoutes.loginByPassword: (context) => const LoginByPasswordPage(),
-        //PageRoutes.loginByOtp: (context) => LoginbyotpPage(),
+        // PageRoutes.loginByPassword: (context) => const LoginByPasswordPage(),
+        PageRoutes.loginByOtp: (context) => const LoginbyotpPage(),
         // PageRoutes.profile: (context) => ProfileDetails(),
       },
       builder: EasyLoading.init(),
@@ -52,6 +50,8 @@ class CourierApp extends StatelessWidget {
 class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
-    return super.createHttpClient(context)..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
   }
 }

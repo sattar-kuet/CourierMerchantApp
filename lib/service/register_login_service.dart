@@ -9,7 +9,16 @@ import '../model/user.dart';
 import '../remote/api.dart';
 
 class RegisterLoginService {
-  Future<bool> login(String login, String password, dynamic context) async {
+  Future<dynamic> sendOtp(String phone, String message, context) async {
+    var data = {
+      "params": {'phone': phone, 'message': 'message'}
+    };
+    var response = await CallApi().postData(data, 'password/sendotp', context);
+    print(response);
+    return response;
+  }
+
+  Future<dynamic> login(String login, String password, dynamic context) async {
     final url = Uri.parse('${Constants.BASE_URL}/web/session/authenticate');
     final body = jsonEncode({
       "params": {
@@ -47,10 +56,10 @@ class RegisterLoginService {
       final user = User.fromJson(json['result']);
       Helper.setUserId(user.uid);
       debugPrint(user.toString());
-      return true;
+      return {'status': true, 'user': user};
     } catch (e) {
       debugPrint('Failed to read cookies from API: $e');
-      return false;
+      return {'status': false};
     }
   }
 

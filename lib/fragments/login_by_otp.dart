@@ -23,12 +23,12 @@ class _LoginPageState extends State<LoginbyotpPage> {
   @override
   Widget build(BuildContext context) {
     final Map arguments = ModalRoute.of(context)?.settings.arguments as Map;
-    String sentOtp = '';
-    String mobile = '';
+    String password = '';
+    String login = '';
     // ignore: unnecessary_null_comparison
     if (arguments != null) {
-      sentOtp = arguments['otp'];
-      mobile = arguments['mobile'];
+      password = arguments['password'];
+      login = arguments['login'];
     }
     return Scaffold(
       body: Form(
@@ -40,11 +40,11 @@ class _LoginPageState extends State<LoginbyotpPage> {
             margin: const EdgeInsets.only(bottom: 50),
             child: const Image(image: AssetImage('assets/logo.png')),
           ),
-          Text('Sent Otp is: $sentOtp'),
+          Text('Sent Otp is: $password'),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 70),
             child: PinFieldAutoFill(
-              codeLength: 4,
+              codeLength: 6,
               controller: optInutField,
               autoFocus: true,
               cursor: Cursor(
@@ -54,9 +54,9 @@ class _LoginPageState extends State<LoginbyotpPage> {
                 height: 30,
               ),
               onCodeChanged: (enteredCode) {
-                if (enteredCode?.length == 4) {
-                  if (enteredCode.toString() == sentOtp.toString()) {
-                    _login(mobile);
+                if (enteredCode?.length == 6) {
+                  if (enteredCode.toString() == password.toString()) {
+                    _login(login, password);
                   } else {
                     optInutField.clear();
                     Helper.errorSnackbar(
@@ -71,39 +71,39 @@ class _LoginPageState extends State<LoginbyotpPage> {
     );
   }
 
-  Future<void> _login(String mobile) async {
-    var isSuccess =
-        await RegisterLoginService().login(mobile, optInutField.text, context);
-    if (isSuccess) {
-      //  int nextStep =
-      // ignore: use_build_context_synchronously
-      //   await RegisterLoginService().nextStepToFinishProfile(context);
-      // switch (nextStep) {
-      //   case 1:
-      //     // ignore: use_build_context_synchronously
-      //     Navigator.push(
-      //         context,
-      //         MaterialPageRoute(
-      //           builder: (context) => const NewPickupPoint(),
-      //         ));
-      //     break;
-      //   case 2:
-      //     // ignore: use_build_context_synchronously
-      //     Navigator.push(
-      //         context,
-      //         MaterialPageRoute(
-      //           builder: (context) => const BankScreen(),
-      //         ));
-      //     break;
-      //   default:
-      //     // ignore: use_build_context_synchronously
-      //     Navigator.push(
-      //         context,
-      //         MaterialPageRoute(
-      //           builder: (context) => const Home(),
-      //         ));
-      //     break;
-      // }
+  Future<void> _login(String login, String password) async {
+    var response = await RegisterLoginService().login(login, password, context);
+    if (response['status'] == true) {
+      print('login sucess');
+      int nextStep = 3;
+      //ignore: use_build_context_synchronously
+      // await RegisterLoginService().nextStepToFinishProfile(context);
+      switch (nextStep) {
+        case 1:
+          // ignore: use_build_context_synchronously
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const NewPickupPoint(),
+              ));
+          break;
+        case 2:
+          // ignore: use_build_context_synchronously
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const BankScreen(),
+              ));
+          break;
+        default:
+          // ignore: use_build_context_synchronously
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const Home(),
+              ));
+          break;
+      }
     } else {
       // ignore: use_build_context_synchronously
       Helper.errorSnackbar(context, 'Unable to login user');

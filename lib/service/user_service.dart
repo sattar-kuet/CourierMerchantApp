@@ -7,7 +7,7 @@ class UserService {
         'phone': mobile,
       }
     };
-    var response = await CallApi().postData(data, 'user/login', context);
+    var response = await CallApi().postData(data, 'user/is_exist', context);
     return response['result'];
   }
 }
