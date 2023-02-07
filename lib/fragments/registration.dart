@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import '../service/parcel_service.dart';
 import '../service/register_login_service.dart';
+import 'home.dart';
 import 'new_pickup_point.dart';
 import '../utility/helper.dart';
 import '../widget/TextInput.dart';
-import 'package:awesome_select/awesome_select.dart';
 
 class RegistrationPage extends StatefulWidget {
   static const String routeName = '/registrationPage';
@@ -18,40 +18,34 @@ class RegistrationPage extends StatefulWidget {
 class _RegistrationPageState extends State<RegistrationPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
   final TextEditingController businessNameController = TextEditingController();
-  int productTypeId = 0;
-  List<S2Choice<int>> productTypes = [];
 
   @override
   void initState() {
     super.initState();
-    setProductList();
-  }
-
-  void setProductList() async {
-    var futureOfList = ParcelService().getParcelTypes();
-    List list = await futureOfList;
-    for (var i = 0; i < list.length; i++) {
-      setState(() {
-        productTypes
-            .add(S2Choice<int>(value: list[i]['id'], title: list[i]['name']));
-      });
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     final Map arguments = ModalRoute.of(context)?.settings.arguments as Map;
     String mobile = '';
+    String password = '';
     // ignore: unnecessary_null_comparison
     if (arguments != null) {
-      mobile = arguments['mobile'];
+      mobile = arguments['phone'];
+      password = arguments['password'];
     }
     return Scaffold(
       body: Form(
         key: _formKey,
         autovalidateMode: AutovalidateMode.onUserInteraction,
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Container(
+            height: 70,
+            margin: const EdgeInsets.only(bottom: 50),
+            child: const Image(image: AssetImage('assets/logo.png')),
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30.0),
             child: TextInput(
@@ -63,36 +57,23 @@ class _RegistrationPageState extends State<RegistrationPage> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30.0),
             child: TextInput(
-              inputController: businessNameController,
-              label: 'আপনার বিজনেস এর নাম',
-              icon: Icons.business_center,
+              inputController: emailController,
+              label: 'আপনার ই-মেইল',
+              icon: Icons.email_sharp,
             ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30.0),
-            child: SmartSelect<int>.single(
-              modalFilter: true,
-              modalFilterAuto: true,
-              tileBuilder: (context, state) => S2Tile<dynamic>(
-                //https://github.com/akbarpulatov/flutter_awesome_select/blob/master/example/lib/features_single/single_chips.dart
-                title: const Text(
-                  'প্রোডাক্ট এর ধরন',
-                ),
-                value: state.selected.toWidget(),
-                leading: const Icon(Icons.list_outlined),
-                onTap: state.showModal,
-              ),
-              title: 'প্রোডাক্ট এর ধরন',
-              placeholder: 'সিলেক্ট করুন',
-              choiceItems: productTypes,
-              onChange: (state) => setState(() => productTypeId = state.value),
-              selectedValue: productTypeId,
+            child: TextInput(
+              inputController: businessNameController,
+              label: 'আপনার ব্যবসা / ব্র্যান্ড এর নাম',
+              icon: Icons.business_sharp,
             ),
           ),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               if (_formKey.currentState!.validate()) {
-                _register(context, mobile);
+                _register(context, mobile, password);
               }
             },
             child: const Text('রেজিস্ট্রার'),
@@ -102,18 +83,28 @@ class _RegistrationPageState extends State<RegistrationPage> {
     );
   }
 
-  void _register(BuildContext context, String mobile) async {
+  void _register(BuildContext context, String mobile, String password) async {
     var response = await RegisterLoginService().register(
-        mobile,
         nameController.text,
+        emailController.text,
+        mobile,
         businessNameController.text,
-        productTypeId,
+        password,
         context);
-    if (response['status'] == 1) {
+    if (response['status'] == 200) {
+      // ignore: use_build_context_synchronously
+      await RegisterLoginService()
+          .login(emailController.text, password, context);
+      // ignore: use_build_context_synchronously
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => const NewPickupPoint()));
+          context,
+          MaterialPageRoute(
+            builder: (context) => const Home(),
+          ));
     } else {
-      Helper.errorSnackbar(context, response['message'].toString());
+      // ignore: use_build_context_synchronously
+      print(response);
+      Helper.errorSnackbar(context, response['error'].toString());
       //print(response);
     }
   }

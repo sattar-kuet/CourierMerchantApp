@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_app/utility/helper.dart';
 import 'package:flutter_app/widget/loading.dart';
 import 'package:http/http.dart' as http;
 import '../constants.dart' as Constants;
@@ -7,19 +8,19 @@ import '../constants.dart' as Constants;
 class CallApi {
   final String _url = Constants.BASE_URL;
   final excludeToLoading = ['getDeliveryCharge', 'getCodCharge'];
-  Future<Map<String, dynamic>> postData(data, apiUrl, context) async {
+  Future<dynamic> postData(data, apiUrl, context) async {
     if (!excludeToLoading.contains(apiUrl)) {
       showloadingDialog(context);
     }
 
     String fullUrl = '$_url/$apiUrl';
     var url = Uri.parse(fullUrl);
-    debugPrint('$url');
     var response = await http.post(url, body: jsonEncode(data), headers: {
       'Content-type': 'application/json',
       'Accept': 'application/json',
+      'Cookie': 'session_id=${Helper.getSessionId()}'
     });
-    Map<String, dynamic> responseData = json.decode(response.body);
+    dynamic responseData = json.decode(response.body);
     // For dismissing Loading
     if (!excludeToLoading.contains(apiUrl)) {
       Navigator.of(context).pop();
@@ -31,7 +32,7 @@ class CallApi {
     return responseData;
   }
 
-  Future<Map<String, dynamic>> getData(apiUrl) async {
+  Future<dynamic> getData(apiUrl) async {
     String fullUrl = '$_url/$apiUrl';
     var url = Uri.parse(fullUrl);
     var response = await http.get(
@@ -39,9 +40,10 @@ class CallApi {
       headers: {
         'Content-type': 'application/json',
         'Accept': 'application/json',
+        'Cookie': 'session_id=${Helper.getSessionId()}'
       },
     );
-    Map<String, dynamic> responseData = json.decode(response.body);
-    return responseData;
+    print(response.body);
+    return json.decode(response.body);
   }
 }

@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/foundation.dart';
 
 @immutable
@@ -7,33 +6,28 @@ class User {
     required this.uid,
     required this.sessionId,
     required this.name,
-    required this.companyId,
-    required this.partnerId,
-    required this.status,
-    required this.message,
+    required this.email,
+    required this.phone,
+    required this.company,
   });
 
-  final int uid, companyId, partnerId, status;
-  final String? sessionId, name, message;
-
-  // User(this.uid, this.sessionId, this.name, this.companyId, this.partnerId,
-  //     this.status, this.message);
+  final int uid;
+  final String? sessionId, name, email, phone, company;
 
   Map<String, dynamic> toJson() {
     return {
       'uid': uid,
       'sessionId': sessionId,
       'name': name,
-      'companyId': companyId,
-      'partnerId': partnerId,
-      'status': status,
-      'message': message,
+      'email': email,
+      'phone': phone,
+      'company': company
     };
   }
 
   @override
   String toString() {
-    return 'User{uid: $uid, companyId: $companyId, partnerId: $partnerId, status: $status, sessionId: $sessionId, name: $name, message: $message}';
+    return 'User{uid: $uid, sessionId: $sessionId, name: $name, email: $email, phone: $phone, company: $company}';
   }
 
   factory User.fromJson(Map<String, dynamic> map) {
@@ -41,43 +35,9 @@ class User {
       uid: map['uid'] ?? 0,
       sessionId: map['session_id'] ?? '',
       name: map['name'] ?? '',
-      message: map['message'] ?? '',
-      companyId: map['company_id'] ?? 0,
-      partnerId: map['partner_id'] ?? 0,
-      status: map['status'] ?? 0,
+      email: map['email'] ?? '',
+      phone: map['phone'] ?? '',
+      company: map['company'] ?? '',
     );
   }
-
-// User.fromJson(Map<String, dynamic> sessionMap) {
-//   uid = sessionMap['uid'] ?? 0;
-//   sessionId = sessionMap['session_id'] ?? '';
-//   name = sessionMap['name'] ?? '';
-//   companyId = sessionMap['company_id'] ?? 0;
-//   partnerId = sessionMap['partner_id'] ?? 0;
-//   status = sessionMap['status'] ?? 0;
-//   message = sessionMap['message'] ?? '';
-// }
-//
-// Map<String, dynamic> toJson() {
-//   return {
-//     'uid': uid,
-//     'sessionId': sessionId,
-//     'name': name,
-//     'companyId': companyId,
-//     'partnerId': partnerId,
-//     'status': status,
-//     'message': message,
-//   };
-// }
-
-  // static Future writeSession(User user) async {
-  //   SharedPreferences localStorage = await SharedPreferences.getInstance();
-  //   localStorage.setString('user', json.encode(user.toJson()));
-  // }
-
-  // static Future<User> readSession() async {
-  //   SharedPreferences localStorage = await SharedPreferences.getInstance();
-  //   var sessionUser = localStorage.getString('user');
-  //   return User.fromJson(json.decode('$sessionUser'));
-  // }
 }

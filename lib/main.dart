@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_app/fragments/login_by_otp.dart';
+import 'package:flutter_app/fragments/otp_validation.dart';
 // import 'package:flutter_app/fragments/login_by_password.dart';
 
 //import 'package:flutter_app/fragments/profile_details.dart';
@@ -31,7 +31,7 @@ class CourierApp extends StatelessWidget {
         PageRoutes.login: (context) => const IntroPage(),
         PageRoutes.registration: (context) => const RegistrationPage(),
         // PageRoutes.loginByPassword: (context) => const LoginByPasswordPage(),
-        PageRoutes.loginByOtp: (context) => const LoginbyotpPage(),
+        PageRoutes.otpValidation: (context) => const OtpValidationPage(),
         // PageRoutes.profile: (context) => ProfileDetails(),
       },
       builder: EasyLoading.init(),

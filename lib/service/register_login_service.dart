@@ -7,6 +7,7 @@ import 'package:flutter_app/utility/helper.dart';
 import '../constants.dart' as Constants;
 import '../model/user.dart';
 import '../remote/api.dart';
+import '../widget/loading.dart';
 
 class RegisterLoginService {
   Future<dynamic> sendOtp(String phone, String message, context) async {
@@ -29,6 +30,7 @@ class RegisterLoginService {
     });
     final headers = {"Content-Type": "application/json"};
     try {
+      showloadingDialog(context);
       final response = await http.post(url, body: body, headers: headers);
       debugPrint('response $response.body');
       final cookies = response.headers['set-cookie'];
@@ -48,6 +50,7 @@ class RegisterLoginService {
 
         debugPrint(cookieMap.toString());
         debugPrint('session_id: ${cookieMap['session_id']}');
+        Helper.setSessionId(cookieMap['session_id']!);
       }
 
       final responseBody = response.body;
@@ -63,20 +66,20 @@ class RegisterLoginService {
     }
   }
 
-  Future<Map<String, dynamic>> register(String mobile, String name,
-      String businessName, int productTypeId, context) async {
+  Future<dynamic> register(String name, String email, String phone,
+      String company, String password, context) async {
     var data = {
-      'mobile': mobile,
-      'name': name,
-      'businessName': businessName,
-      'productTypeId': productTypeId,
+      "params": {
+        'name': name,
+        'email': email,
+        'phone': phone,
+        'company': company,
+        'password': password,
+      }
     };
-    var response = await CallApi().postData(data, 'register', context);
-    if (response['status'] == 1) {
-      User user = User.fromJson(response);
-      Helper.setUserId(10);
-    }
-    return response;
+    var response =
+        await CallApi().postData(data, 'api/custom/registration', context);
+    return response['result'];
   }
 
   // Future<int> nextStepToFinishProfile(context) async {

@@ -53,11 +53,7 @@ class _NewParcelPageState extends State<NewParcelPage> {
   @override
   void initState() {
     super.initState();
-    PickupPoint.readSession().then((StoredPickupPoint) {
-      setState(() {
-        fromUpazillaId = StoredPickupPoint.upazillaId;
-      });
-    });
+
     parcelWeightController.addListener(updateDeliveryCharge);
     cashCollectionController.addListener(updateCodCharge);
 
@@ -65,7 +61,9 @@ class _NewParcelPageState extends State<NewParcelPage> {
   }
 
   updateCustomer() {
-    CustomerService().getCustomerByMobile(customerMobileController.text, context).then((customer) {
+    CustomerService()
+        .getCustomerByMobile(customerMobileController.text, context)
+        .then((customer) {
       setState(() {
         districtId = customer.districtId;
         upazillaId = customer.upazillaId;
@@ -81,9 +79,10 @@ class _NewParcelPageState extends State<NewParcelPage> {
   updateDistrictList(selectedDistrictId) {
     LocationService().getDistrictList().then((districtList) {
       List<S2Choice<int>> formattedDistrictList = [];
-      for (var i = 0; i < districtList.length; i++) {
-        formattedDistrictList.add(S2Choice<int>(value: districtList[i]['id'], title: districtList[i]['name']));
-      }
+      districtList.forEach((district) {
+        formattedDistrictList
+            .add(S2Choice<int>(value: district.id, title: district.name));
+      });
       setState(() {
         districts = formattedDistrictList;
         districtId = selectedDistrictId;
@@ -96,7 +95,8 @@ class _NewParcelPageState extends State<NewParcelPage> {
     ParcelService().getParcelTypes().then((pacerlTypeList) {
       List<S2Choice<int>> formattedpacerlTypeList = [];
       for (var i = 0; i < pacerlTypeList.length; i++) {
-        formattedpacerlTypeList.add(S2Choice<int>(value: pacerlTypeList[i]['id'], title: pacerlTypeList[i]['name']));
+        formattedpacerlTypeList.add(S2Choice<int>(
+            value: pacerlTypeList[i]['id'], title: pacerlTypeList[i]['name']));
       }
       setState(() {
         pacerlTypes = formattedpacerlTypeList;
@@ -107,9 +107,11 @@ class _NewParcelPageState extends State<NewParcelPage> {
   updateUpazillaList(districtId) {
     LocationService().getUpazillaList(districtId, context).then((upazillaList) {
       List<S2Choice<int>> formattedupazillaList = [];
-      for (var i = 0; i < upazillaList.length; i++) {
-        formattedupazillaList.add(S2Choice<int>(value: upazillaList[i]['id'], title: upazillaList[i]['name']));
-      }
+      upazillaList.forEach((upazilla) {
+        formattedupazillaList
+            .add(S2Choice<int>(value: upazilla.id, title: upazilla.name));
+      });
+
       setState(() {
         upazillas = formattedupazillaList;
         upazillaListLoaded = true;
@@ -118,10 +120,14 @@ class _NewParcelPageState extends State<NewParcelPage> {
   }
 
   updateDeliverySpeedList() {
-    ChargeService().getDeliverySpeedList(fromUpazillaId, upazillaId, parcelTypeId, context).then((deliverySpeedList) {
+    ChargeService()
+        .getDeliverySpeedList(fromUpazillaId, upazillaId, parcelTypeId, context)
+        .then((deliverySpeedList) {
       List<S2Choice<int>> formattedDeliverySpeedList = [];
       for (var i = 0; i < deliverySpeedList.length; i++) {
-        formattedDeliverySpeedList.add(S2Choice<int>(value: deliverySpeedList[i]['value'], title: deliverySpeedList[i]['label']));
+        formattedDeliverySpeedList.add(S2Choice<int>(
+            value: deliverySpeedList[i]['value'],
+            title: deliverySpeedList[i]['label']));
       }
       setState(() {
         deliverySpeeds = formattedDeliverySpeedList;
@@ -131,7 +137,10 @@ class _NewParcelPageState extends State<NewParcelPage> {
   }
 
   updateDeliveryCharge() {
-    if (fromUpazillaId > 0 && upazillaId > 0 && parcelWeightController.text.isNotEmpty && deliverySpeed > 0) {
+    if (fromUpazillaId > 0 &&
+        upazillaId > 0 &&
+        parcelWeightController.text.isNotEmpty &&
+        deliverySpeed > 0) {
       var data = {};
       data['fromUpazillaId'] = fromUpazillaId;
       data['toUpazillaId'] = upazillaId;
@@ -148,7 +157,9 @@ class _NewParcelPageState extends State<NewParcelPage> {
   }
 
   updateCodCharge() {
-    if (fromUpazillaId > 0 && upazillaId > 0 && cashCollectionController.text.isNotEmpty) {
+    if (fromUpazillaId > 0 &&
+        upazillaId > 0 &&
+        cashCollectionController.text.isNotEmpty) {
       var data = {};
       data['fromUpazillaId'] = fromUpazillaId;
       data['toUpazillaId'] = upazillaId;
@@ -408,7 +419,10 @@ class _NewParcelPageState extends State<NewParcelPage> {
           selectedValue: parcelTypeId,
         ),
       ),
-      if (fromUpazillaId > 0 && upazillaId > 0 && parcelTypeId > 0 && deliverySpeedListLoaded)
+      if (fromUpazillaId > 0 &&
+          upazillaId > 0 &&
+          parcelTypeId > 0 &&
+          deliverySpeedListLoaded)
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15.0),
           child: SmartSelect<int>.single(
@@ -446,7 +460,8 @@ class _NewParcelPageState extends State<NewParcelPage> {
           },
           inputIcon: const Icon(Icons.monitor_weight_sharp),
           helperText: "যেমনঃ 100 গ্রাম হলে 0.1",
-          suffixHelpText: const Padding(padding: EdgeInsets.all(15), child: Text('KG ')),
+          suffixHelpText:
+              const Padding(padding: EdgeInsets.all(15), child: Text('KG ')),
         ),
       ),
       Padding(
@@ -455,7 +470,8 @@ class _NewParcelPageState extends State<NewParcelPage> {
           label: 'পন্যের বিক্রয় মূল্য',
           inputController: parcelValue,
           inputIcon: const Icon(Icons.verified_sharp),
-          suffixHelpText: const Padding(padding: EdgeInsets.all(15), child: Text('৳')),
+          suffixHelpText:
+              const Padding(padding: EdgeInsets.all(15), child: Text('৳')),
         ),
       ),
       Padding(
@@ -464,7 +480,8 @@ class _NewParcelPageState extends State<NewParcelPage> {
           label: 'ক্যাশ কালেশন',
           inputController: cashCollectionController,
           inputIcon: const Icon(Icons.collections_sharp),
-          suffixHelpText: const Padding(padding: EdgeInsets.all(15), child: Text('৳')),
+          suffixHelpText:
+              const Padding(padding: EdgeInsets.all(15), child: Text('৳')),
         ),
       ),
       Padding(

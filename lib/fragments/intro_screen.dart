@@ -92,39 +92,22 @@ class _IntroPageState extends State<IntroPage> {
   }
 
   void _loginORregister(BuildContext context) async {
-    dynamic isUserExist =
+    dynamic response =
         await UserService().isUserExist(mobileTxtField.text, context);
-    //debugPrint(isUserExist);
-    if (isUserExist['status'] == false) {
-      debugPrint('registration');
-      // ignore: use_build_context_synchronously
-      Navigator.pushNamed(context, PageRoutes.registration,
-          arguments: {"mobile": mobileTxtField.text});
-    } else {
-      debugPrint('login');
-      /*
-      #################################################
-      Login by OTP is disabled
-      #################################################
-      */
-      String signatureCode = await SmsAutoFill().getAppSignature;
-      setState(() {
-        newPassword = isUserExist['new_password'];
-        login = isUserExist['login'];
-      });
-      var message =
-          "Your verification code  is : {newPassword} {signatureCode}";
-      // ignore: use_build_context_synchronously
-      await RegisterLoginService()
-          .sendOtp(mobileTxtField.text, message, context);
-      //ignore: use_build_context_synchronously
-      Navigator.pushNamed(context, PageRoutes.loginByOtp,
-          arguments: {"password": newPassword, "login": login});
-      //ignore: use_build_context_synchronously
-      // Navigator.pushNamed(context, PageRoutes.loginByPassword, arguments: {
-      //   "mobile": mobileTxtField.text,
-      //   "login": isUserExist['login'],
-      // });
-    }
+    String signatureCode = await SmsAutoFill().getAppSignature;
+    setState(() {
+      newPassword = response['new_password'];
+      login = response['login'];
+    });
+    var message = "Your verification code  is : {newPassword} {signatureCode}";
+    // ignore: use_build_context_synchronously
+    await RegisterLoginService().sendOtp(mobileTxtField.text, message, context);
+    //ignore: use_build_context_synchronously
+    Navigator.pushNamed(context, PageRoutes.otpValidation, arguments: {
+      "password": newPassword,
+      "login": login,
+      "phone": mobileTxtField.text,
+      'userExist': response['status'],
+    });
   }
 }

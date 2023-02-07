@@ -1,41 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/model/pickup_point.dart';
 import '../fragments/new_pickup_point.dart';
 import '../remote/api.dart';
 import '../utility/helper.dart';
 
 class PickupPointService {
-  Future<PickupPoint> getPickupPointObjectFromJson(pickupPointJson) async {
-    PickupPoint pickupPoint = PickupPoint(
-        pickupPointJson['id'],
-        pickupPointJson['districtId'],
-        pickupPointJson['upazillaId'],
-        pickupPointJson['title'],
-        pickupPointJson['street']);
-    return pickupPoint;
-  }
-
-  Future getPickupAddress(context) async {
-    var data = {"user_id": Helper.getUserId()};
-    var response = await CallApi().postData(data, 'getPickupAddress', context);
-    return response['data'];
-  }
-
-  Future<dynamic> savePickupPoint(
-      String title, int district, int upazilla, String street, context) async {
+  Future savePickupPoint(
+      int district, int upazilla, String address, context) async {
     var data = {
-      'user_id': Helper.getUserId(),
-      'pickupPoint': {
-        'title': title,
-        'districtId': district,
-        'upazillaId': upazilla,
-        'street': street
-      },
+      'params': {
+        'user_id': Helper.getUserId(),
+        'district_id': district,
+        'upazilla_id': upazilla,
+        'address': address
+      }
     };
-    var response = await CallApi().postData(data, 'savePickupPoint', context);
-    PickupPoint pickupPoint =
-        await getPickupPointObjectFromJson(response['pickupPoint']);
-    PickupPoint.writeSession(pickupPoint);
+    var response =
+        await CallApi().postData(data, 'pickup_point/add_or_update', context);
 
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (_) => const NewPickupPoint()));
@@ -43,6 +23,5 @@ class PickupPointService {
       content: Text(response['message']),
       duration: const Duration(seconds: 2),
     ));
-    return response['data'];
   }
 }
